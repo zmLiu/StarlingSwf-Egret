@@ -80,6 +80,8 @@ class GameApp extends egret.DisplayObjectContainer{
     }
 
     private textContainer:egret.Sprite;
+
+    private swf:starlingswf.Swf;
     /**
      * 创建游戏场景
      */
@@ -90,13 +92,31 @@ class GameApp extends egret.DisplayObjectContainer{
         var assetsManager = new starlingswf.SwfAssetManager();
         assetsManager.addSpriteSheet("test",spriteSheet);
 
-        var swf:starlingswf.Swf = new starlingswf.Swf(swfData,assetsManager,60);
-        var sprite:starlingswf.SwfSprite = swf.createSprite("spr_1");
-        this.addChild(sprite);
+        this.swf = new starlingswf.Swf(swfData,assetsManager,60);
+
+        this.test1();
 
         egret.Profiler.getInstance().run();
 
     }
+
+    private test1():void{
+        var sprite:starlingswf.SwfSprite = this.swf.createSprite("spr_1");
+        this.addChild(sprite);
+    }
+
+    private test2():void{
+
+        for(var i:number = 0 ; i < 100 ; i++){
+            var mc:starlingswf.SwfMovieClip = this.swf.createMovie("mc_Tain");
+            mc.x = Math.random() * 480;
+            mc.y = Math.random() * 320;
+            this.addChild(mc);
+        }
+
+    }
+
+
 
 
 

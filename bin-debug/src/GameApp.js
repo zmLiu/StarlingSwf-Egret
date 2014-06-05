@@ -90,11 +90,25 @@ var GameApp = (function (_super) {
         var assetsManager = new starlingswf.SwfAssetManager();
         assetsManager.addSpriteSheet("test", spriteSheet);
 
-        var swf = new starlingswf.Swf(swfData, assetsManager, 30);
-        var sprite = swf.createSprite("spr_1");
-        this.addChild(sprite);
+        this.swf = new starlingswf.Swf(swfData, assetsManager, 60);
+
+        this.test1();
 
         egret.Profiler.getInstance().run();
+    };
+
+    GameApp.prototype.test1 = function () {
+        var sprite = this.swf.createSprite("spr_1");
+        this.addChild(sprite);
+    };
+
+    GameApp.prototype.test2 = function () {
+        for (var i = 0; i < 100; i++) {
+            var mc = this.swf.createMovie("mc_Tain");
+            mc.x = Math.random() * 480;
+            mc.y = Math.random() * 320;
+            this.addChild(mc);
+        }
     };
     return GameApp;
 })(egret.DisplayObjectContainer);
