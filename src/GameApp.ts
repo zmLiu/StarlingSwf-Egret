@@ -79,8 +79,6 @@ class GameApp extends egret.DisplayObjectContainer{
         }
     }
 
-    private textContainer:egret.Sprite;
-
     private swf:starlingswf.Swf;
     /**
      * 创建游戏场景
@@ -100,20 +98,43 @@ class GameApp extends egret.DisplayObjectContainer{
 
     }
 
+    /**
+     * Sprite测试
+     * */
     private test1():void{
         var sprite:starlingswf.SwfSprite = this.swf.createSprite("spr_1");
         this.addChild(sprite);
     }
 
+    /**
+     * MovieClip测试
+     * */
     private test2():void{
 
-        for(var i:number = 0 ; i < 100 ; i++){
-            var mc:starlingswf.SwfMovieClip = this.swf.createMovie("mc_Tain");
+        var mcNames:string[] = ["mc_lajiao","mc_test1","mc_Tain","mc_Zombie_balloon","mc_Zombie_dolphinrider","mc_Zombie_gargantuar","mc_Zombie_imp","mc_Zombie_jackbox","mc_Zombie_ladder","mc_Zombie_polevaulter"];
+        for(var i:number = 0 ; i < 50 ; i++){
+            var mcName:string = mcNames[Math.floor(Math.random() * mcNames.length)];
+            var mc:starlingswf.SwfMovieClip = this.swf.createMovie(mcName);
             mc.x = Math.random() * 480;
             mc.y = Math.random() * 320;
             this.addChild(mc);
         }
 
+    }
+
+    /**
+     * 动画事件测试
+     * */
+    private test3():void{
+        var mc:starlingswf.SwfMovieClip = this.swf.createMovie("mc_Tain");
+        mc.x = 480 / 2;
+        mc.y = 320 / 2;
+        mc.addEventListener(egret.Event.COMPLETE,this.mcComplete,mc);
+        this.addChild(mc);
+    }
+
+    private mcComplete(e:egret.Event):void{
+        console.log("mcComplete");
     }
 
 

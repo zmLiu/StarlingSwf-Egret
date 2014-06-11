@@ -15,6 +15,18 @@ var starlingswf;
         function SwfSprite() {
             _super.apply(this, arguments);
         }
+        SwfSprite.prototype.getChildByName = function (name) {
+            var locChildren = this._children;
+            var count = this.numChildren;
+            var displayObject;
+            for (var i = 0; i < count; i++) {
+                displayObject = locChildren[i];
+                if (displayObject.name == name) {
+                    return displayObject;
+                }
+            }
+            return null;
+        };
         return SwfSprite;
     })(egret.DisplayObjectContainer);
     starlingswf.SwfSprite = SwfSprite;

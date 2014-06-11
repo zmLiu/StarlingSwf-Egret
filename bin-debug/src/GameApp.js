@@ -97,18 +97,41 @@ var GameApp = (function (_super) {
         egret.Profiler.getInstance().run();
     };
 
+    /**
+    * Sprite测试
+    * */
     GameApp.prototype.test1 = function () {
         var sprite = this.swf.createSprite("spr_1");
         this.addChild(sprite);
     };
 
+    /**
+    * MovieClip测试
+    * */
     GameApp.prototype.test2 = function () {
-        for (var i = 0; i < 100; i++) {
-            var mc = this.swf.createMovie("mc_Tain");
+        var mcNames = ["mc_lajiao", "mc_test1", "mc_Tain", "mc_Zombie_balloon", "mc_Zombie_dolphinrider", "mc_Zombie_gargantuar", "mc_Zombie_imp", "mc_Zombie_jackbox", "mc_Zombie_ladder", "mc_Zombie_polevaulter"];
+        for (var i = 0; i < 50; i++) {
+            var mcName = mcNames[Math.floor(Math.random() * mcNames.length)];
+            var mc = this.swf.createMovie(mcName);
             mc.x = Math.random() * 480;
             mc.y = Math.random() * 320;
             this.addChild(mc);
         }
+    };
+
+    /**
+    * 动画事件测试
+    * */
+    GameApp.prototype.test3 = function () {
+        var mc = this.swf.createMovie("mc_Tain");
+        mc.x = 480 / 2;
+        mc.y = 320 / 2;
+        mc.addEventListener(egret.Event.COMPLETE, this.mcComplete, mc);
+        this.addChild(mc);
+    };
+
+    GameApp.prototype.mcComplete = function (e) {
+        console.log("mcComplete");
     };
     return GameApp;
 })(egret.DisplayObjectContainer);

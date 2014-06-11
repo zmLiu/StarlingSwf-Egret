@@ -34,7 +34,6 @@ var starlingswf;
                 return;
 
             if (this._currentFrame > this._endFrame) {
-                //if(_completeFunction) _completeFunction(this);
                 if (this._hasCompleteListener)
                     this.dispatchEventWith(egret.Event.COMPLETE);
 

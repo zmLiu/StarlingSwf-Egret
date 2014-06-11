@@ -41,7 +41,6 @@ module starlingswf{
             if (!this._isPlay) return;
 
             if(this._currentFrame > this._endFrame){
-                //if(_completeFunction) _completeFunction(this);
                 if(this._hasCompleteListener) this.dispatchEventWith(egret.Event.COMPLETE);
 
                 this._currentFrame = this._startFrame;
