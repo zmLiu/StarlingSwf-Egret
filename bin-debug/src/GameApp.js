@@ -92,7 +92,7 @@ var GameApp = (function (_super) {
 
         this.swf = new starlingswf.Swf(swfData, assetsManager, 60);
 
-        this.test1();
+        this.test3();
 
         egret.Profiler.getInstance().run();
     };
@@ -127,6 +127,7 @@ var GameApp = (function (_super) {
         mc.x = 480 / 2;
         mc.y = 320 / 2;
         mc.addEventListener(egret.Event.COMPLETE, this.mcComplete, mc);
+        mc.gotoAndPlay("walk");
         this.addChild(mc);
     };
 

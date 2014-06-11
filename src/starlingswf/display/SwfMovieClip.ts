@@ -177,12 +177,12 @@ module starlingswf{
         }
 
         private goTo(frame:any):void{
-            if((frame instanceof String)){
+            if(typeof(frame) == "string"){
                 var labelData:any[] = this.getLabelData(frame);
                 this._currentLabel = labelData[0];
                 this._currentFrame = this._startFrame = labelData[1];
                 this._endFrame = labelData[2];
-            }else if(frame instanceof Number){
+            }else if(typeof(frame) == "number"){
                 this._currentFrame = this._startFrame = frame;
                 this._endFrame = this._frames.length - 1;
             }
