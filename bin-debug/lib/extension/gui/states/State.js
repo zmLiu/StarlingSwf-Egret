@@ -47,27 +47,14 @@ var egret;
         * @method egret.State#constructor
         * @param properties {any}
         */
-        function State(properties) {
-            if (typeof properties === "undefined") { properties = null; }
+        function State(name, overrides) {
             _super.call(this);
             /**
             * 已经初始化标志
             */
             this.initialized = false;
-            /**
-            * 该视图状态的覆盖，表现为实现 IOverride 接口的对象的数组。
-            * 这些覆盖在进入状态时按顺序应用，在退出状态时按相反的顺序删除。
-            * @member egret.State#overrides
-            */
-            this.overrides = [];
-            /**
-            * 此视图状态作为 String 数组所属的状态组。
-            * @member egret.State#stateGroups
-            */
-            this.stateGroups = [];
-            for (var p in properties) {
-                this[p] = properties[p];
-            }
+            this.name = name;
+            this.overrides = overrides;
         }
         /**
         * 初始化视图

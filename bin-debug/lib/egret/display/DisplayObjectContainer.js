@@ -153,6 +153,11 @@ var egret;
                 child.dispatchEventWith(egret.Event.ADDED, true);
             if (this._stage) {
                 child._onAddToStage();
+                var list = DisplayObjectContainer.__EVENT__ADD_TO_STAGE_LIST;
+                while (list.length > 0) {
+                    var childAddToStage = list.shift();
+                    childAddToStage.dispatchEventWith(egret.Event.ADDED_TO_STAGE);
+                }
             }
 
             return child;
@@ -196,6 +201,11 @@ var egret;
                 child.dispatchEventWith(egret.Event.REMOVED, true);
             if (this._stage) {
                 child._onRemoveFromStage();
+                var list = DisplayObjectContainer.__EVENT__REMOVE_FROM_STAGE_LIST;
+                while (list.length > 0) {
+                    var childAddToStage = list.shift();
+                    childAddToStage.dispatchEventWith(egret.Event.REMOVED_FROM_STAGE);
+                }
             }
             child._parentChanged(null);
             locChildren.splice(index, 1);
@@ -418,6 +428,25 @@ var egret;
                 child._onRemoveFromStage();
             }
         };
+
+        /**
+        * 根据对象名字获取对象
+        * @param   name    显示对象名
+        * */
+        DisplayObjectContainer.prototype.getChildByName = function (name) {
+            var locChildren = this._children;
+            var count = this.numChildren;
+            var displayObject;
+            for (var i = 0; i < count; i++) {
+                displayObject = locChildren[i];
+                if (displayObject.name == name) {
+                    return displayObject;
+                }
+            }
+            return null;
+        };
+        DisplayObjectContainer.__EVENT__ADD_TO_STAGE_LIST = [];
+        DisplayObjectContainer.__EVENT__REMOVE_FROM_STAGE_LIST = [];
         return DisplayObjectContainer;
     })(egret.DisplayObject);
     egret.DisplayObjectContainer = DisplayObjectContainer;

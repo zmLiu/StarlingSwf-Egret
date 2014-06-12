@@ -49,7 +49,7 @@ var egret;
         * 构造函数
         * @method egret.AddItems#constructor
         */
-        function AddItems() {
+        function AddItems(target, propertyName, position, relativeTo) {
             _super.call(this);
             /**
             * 要添加到的属性
@@ -61,6 +61,10 @@ var egret;
             * @member egret.AddItems#position
             */
             this.position = AddItems.LAST;
+            this.target = target;
+            this.propertyName = propertyName;
+            this.position = position;
+            this.relativeTo = relativeTo;
         }
         /**
         * @method egret.AddItems#initialize

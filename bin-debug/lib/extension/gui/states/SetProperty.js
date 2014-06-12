@@ -46,8 +46,11 @@ var egret;
         * 构造函数
         * @method egret.SetProperty#constructor
         */
-        function SetProperty() {
+        function SetProperty(target, name, value) {
             _super.call(this);
+            this.target = target;
+            this.name = name;
+            this.value = value;
         }
         /**
         * @method egret.SetProperty#apply

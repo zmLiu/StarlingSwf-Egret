@@ -17,12 +17,17 @@
 */
 var RES;
 (function (RES) {
+    /**
+    * @class RES.ResourceItem
+    * @classdesc
+    */
     var ResourceItem = (function () {
         /**
         * 构造函数
-        * @param name 加载项名称
-        * @param url 要加载的文件地址
-        * @param type 加载项文件类型
+        * @method RES.ResourceItem#constructor
+        * @param name {string} 加载项名称
+        * @param url {string} 要加载的文件地址
+        * @param type {string} 加载项文件类型
         */
         function ResourceItem(name, url, type) {
             this._loaded = false;
@@ -33,6 +38,7 @@ var RES;
         Object.defineProperty(ResourceItem.prototype, "loaded", {
             /**
             * 加载完成的标志
+            * @member {boolean} RES.ResourceItem#loaded
             */
             get: function () {
                 return this.data ? this.data.loaded : this._loaded;
@@ -47,6 +53,10 @@ var RES;
         });
 
 
+        /**
+        * @method RES.ResourceItem#toString
+        * @returns {string}
+        */
         ResourceItem.prototype.toString = function () {
             return "[ResourceItem name=\"" + this.name + "\" url=\"" + this.url + "\" type=\"" + this.type + "\"]";
         };

@@ -26,10 +26,19 @@ var __extends = this.__extends || function (d, b) {
 /// <reference path="../core/ResourceItem.ts"/>
 var RES;
 (function (RES) {
+    /**
+    * @class RES.ResourceEvent
+    * @classdesc
+    * @extends egret.Event
+    */
     var ResourceEvent = (function (_super) {
         __extends(ResourceEvent, _super);
         /**
         * 构造函数
+        * @method RES.ResourceEvent#constructor
+        * @param type {string}
+        * @param bubbles {boolean}
+        * @param cancelable {boolean}
         */
         function ResourceEvent(type, bubbles, cancelable) {
             if (typeof bubbles === "undefined") { bubbles = false; }
@@ -37,16 +46,24 @@ var RES;
             _super.call(this, type, bubbles, cancelable);
             /**
             * 已经加载的文件数
+            * @member {number} RES.ResourceEvent#itemsLoaded
             */
             this.itemsLoaded = 0;
             /**
             * 要加载的总文件数
+            * @member {number} RES.ResourceEvent#itemsTotal
             */
             this.itemsTotal = 0;
         }
         /**
         * 使用指定的EventDispatcher对象来抛出事件对象。抛出的对象将会缓存在对象池上，供下次循环复用。
-        * @method egret.ResourceEvent.dispatchResourceEvent
+        * @method RES.ResourceEvent.dispatchResourceEvent
+        * @param target {egret.IEventDispatcher}
+        * @param type {string}
+        * @param groupName {string}
+        * @param resItem {egret.ResourceItem}
+        * @param itemsLoaded {number}
+        * @param itemsTotal {number}
         */
         ResourceEvent.dispatchResourceEvent = function (target, type, groupName, resItem, itemsLoaded, itemsTotal) {
             if (typeof groupName === "undefined") { groupName = ""; }

@@ -728,12 +728,12 @@ var egret;
 
         DisplayObject.prototype._onAddToStage = function () {
             this._stage = egret.MainContext.instance.stage;
-            this.dispatchEventWith(egret.Event.ADDED_TO_STAGE);
+            egret.DisplayObjectContainer.__EVENT__ADD_TO_STAGE_LIST.push(this);
         };
 
         DisplayObject.prototype._onRemoveFromStage = function () {
             this._stage = null;
-            this.dispatchEventWith(egret.Event.REMOVED_FROM_STAGE);
+            egret.DisplayObjectContainer.__EVENT__REMOVE_FROM_STAGE_LIST.push(this);
         };
 
         Object.defineProperty(DisplayObject.prototype, "stage", {

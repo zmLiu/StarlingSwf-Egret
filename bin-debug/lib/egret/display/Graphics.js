@@ -51,18 +51,18 @@ var egret;
 
         Graphics.prototype.drawRect = function (x, y, width, height) {
             var rendererContext = this.renderContext;
-            if (this.strokeStyleColor) {
-                this.commandQueue.push(new Command(function (x, y, width, height, color) {
-                    //this.canvasContext.fill();
-                    this.canvasContext.strokeRect(rendererContext._transformTx + x, rendererContext._transformTy + y, width, height, color);
-                }, this, [x, y, width, height, this.strokeStyleColor]));
-            }
-            if (this.fillStyleColor) {
-                this.commandQueue.push(new Command(function (x, y, width, height) {
-                    //this.canvasContext.fill();
-                    this.canvasContext.fillRect(rendererContext._transformTx + x, rendererContext._transformTy + y, width, height);
-                }, this, [x, y, width, height]));
-            }
+            this.commandQueue.push(new Command(function (x, y, width, height) {
+                this.canvasContext.rect(rendererContext._transformTx + x, rendererContext._transformTy + y, width, height);
+            }, this, [x, y, width, height]));
+        };
+
+        Graphics.prototype.drawCircle = function (x, y, r) {
+            var rendererContext = this.renderContext;
+            this.commandQueue.push(new Command(function (x, y, r) {
+                this.canvasContext.beginPath();
+                this.canvasContext.arc(rendererContext._transformTx + x, rendererContext._transformTy + y, r, 0, Math.PI * 2);
+                this.canvasContext.closePath();
+            }, this, [x, y, r]));
         };
 
         /**
@@ -119,6 +119,17 @@ var egret;
         };
 
         Graphics.prototype.endFill = function () {
+            if (this.strokeStyleColor) {
+                this.commandQueue.push(new Command(function () {
+                    this.canvasContext.stroke();
+                }, this, null));
+            }
+
+            if (this.fillStyleColor) {
+                this.commandQueue.push(new Command(function () {
+                    this.canvasContext.fill();
+                }, this, null));
+            }
         };
 
         Graphics.prototype._draw = function () {

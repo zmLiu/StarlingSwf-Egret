@@ -29,10 +29,16 @@ var __extends = this.__extends || function (d, b) {
 /// <reference path="../events/ResourceEvent.ts"/>
 var RES;
 (function (RES) {
+    /**
+    * @class RES.ResourceLoader
+    * @classdesc
+    * @extends egret.EventDispatcher
+    */
     var ResourceLoader = (function (_super) {
         __extends(ResourceLoader, _super);
         /**
         * 构造函数
+        * @method RES.ResourceLoader#constructor
         */
         function ResourceLoader() {
             _super.call(this);
@@ -67,6 +73,9 @@ var RES;
         }
         /**
         * 检查指定的组是否正在加载中
+        * @method RES.ResourceLoader#isGroupInLoading
+        * @param groupName {string}
+        * @returns {boolean}
         */
         ResourceLoader.prototype.isGroupInLoading = function (groupName) {
             return this.itemListDic[groupName] !== undefined;
@@ -74,9 +83,10 @@ var RES;
 
         /**
         * 开始加载一组文件
-        * @param list 加载项列表
-        * @param groupName 组名
-        * @param priority 加载优先级
+        * @method RES.ResourceLoader#loadGroup
+        * @param list {egret.Array<ResourceItem>} 加载项列表
+        * @param groupName {string} 组名
+        * @param priority {number} 加载优先级
         */
         ResourceLoader.prototype.loadGroup = function (list, groupName, priority) {
             if (typeof priority === "undefined") { priority = 0; }
@@ -105,7 +115,8 @@ var RES;
 
         /**
         * 加载一个文件
-        * @param resItem 要加载的项
+        * @method RES.ResourceLoader#loadItem
+        * @param resItem {egret.ResourceItem} 要加载的项
         */
         ResourceLoader.prototype.loadItem = function (resItem) {
             this.lazyLoadList.push(resItem);

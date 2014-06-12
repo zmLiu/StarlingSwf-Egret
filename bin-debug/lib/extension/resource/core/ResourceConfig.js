@@ -19,10 +19,11 @@
 /// <reference path="ResourceItem.ts"/>
 var RES;
 (function (RES) {
+    /**
+    * @class RES.ResourceConfig
+    * @classdesc
+    */
     var ResourceConfig = (function () {
-        /**
-        * 构造函数
-        */
         function ResourceConfig() {
             /**
             * 一级键名字典
@@ -35,7 +36,9 @@ var RES;
         }
         /**
         * 根据组名获取组加载项列表
-        * @param name 组名
+        * @method RES.ResourceConfig#getGroupByName
+        * @param name {string} 组名
+        * @returns {egret.ResourceItem}
         */
         ResourceConfig.prototype.getGroupByName = function (name) {
             var group = new Array();
@@ -53,10 +56,11 @@ var RES;
         /**
         * 创建自定义的加载资源组,注意：此方法仅在资源配置文件加载完成后执行才有效。
         * 可以监听ResourceEvent.CONFIG_COMPLETE事件来确认配置加载完成。
-        * @param name 要创建的加载资源组的组名
-        * @param keys 要包含的键名列表，key对应配置文件里的name属性或sbuKeys属性的一项。
-        * @param override 是否覆盖已经存在的同名资源组,默认false。
-        * @return 是否创建成功，如果传入的keys为空，或keys全部无效，则创建失败。
+        * @method RES.ResourceConfig#createGroup
+        * @param name {string} 要创建的加载资源组的组名
+        * @param keys {egret.Array<string>} 要包含的键名列表，key对应配置文件里的name属性或sbuKeys属性的一项。
+        * @param override {boolean} 是否覆盖已经存在的同名资源组,默认false。
+        * @returns {boolean}
         */
         ResourceConfig.prototype.createGroup = function (name, keys, override) {
             if (typeof override === "undefined") { override = false; }
@@ -78,8 +82,9 @@ var RES;
 
         /**
         * 解析一个配置文件
-        * @param data 配置文件数据
-        * @param folder 加载项的路径前缀。
+        * @method RES.ResourceConfig#parseConfig
+        * @param data {any} 配置文件数据
+        * @param folder {string} 加载项的路径前缀。
         */
         ResourceConfig.prototype.parseConfig = function (data, folder) {
             if (!data)
@@ -116,7 +121,9 @@ var RES;
 
         /**
         * 获取加载项类型。
-        * @param name 对应配置文件里的name属性。
+        * @method RES.ResourceConfig#getType
+        * @param name {string} 对应配置文件里的name属性。
+        * @returns {string}
         */
         ResourceConfig.prototype.getType = function (name) {
             var data = this.keyMap[name];
@@ -125,7 +132,9 @@ var RES;
 
         /**
         * 获取加载项信息对象
-        * @param name 对应配置文件里的name属性。
+        * @method RES.ResourceConfig#getResourceItem
+        * @param name {string} 对应配置文件里的name属性。
+        * @returns {egret.ResourceItem}
         */
         ResourceConfig.prototype.getResourceItem = function (name) {
             var data = this.keyMap[name];
@@ -151,15 +160,15 @@ var RES;
         ResourceConfig.prototype.trim = function (str) {
             if (!str)
                 return "";
-            var char = str.charAt(0);
-            while (str.length > 0 && (char == " " || char == "\t" || char == "\n" || char == "\r" || char == "\f")) {
+            var strChar = str.charAt(0);
+            while (str.length > 0 && (strChar == " " || strChar == "\t" || strChar == "\n" || strChar == "\r" || strChar == "\f")) {
                 str = str.substr(1);
-                char = str.charAt(0);
+                strChar = str.charAt(0);
             }
-            char = str.charAt(str.length - 1);
-            while (str.length > 0 && (char == " " || char == "\t" || char == "\n" || char == "\r" || char == "\f")) {
+            strChar = str.charAt(str.length - 1);
+            while (str.length > 0 && (strChar == " " || strChar == "\t" || strChar == "\n" || strChar == "\r" || strChar == "\f")) {
                 str = str.substr(0, str.length - 1);
-                char = str.charAt(str.length - 1);
+                strChar = str.charAt(str.length - 1);
             }
             return str;
         };

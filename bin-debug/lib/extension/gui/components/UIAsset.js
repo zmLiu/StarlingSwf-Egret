@@ -57,8 +57,9 @@ var egret;
         __extends(UIAsset, _super);
         /**
         * @method egret.UIAsset#constructor
+        * @param source {any} 素材标识符
         */
-        function UIAsset() {
+        function UIAsset(source) {
             _super.call(this);
             /**
             * 确定位图填充尺寸的方式。默认值：BitmapFillMode.SCALE。
@@ -72,10 +73,13 @@ var egret;
             this.createChildrenCalled = false;
             this.contentReused = false;
             this.touchChildren = false;
+            if (source) {
+                this.source = source;
+            }
         }
         Object.defineProperty(UIAsset.prototype, "source", {
             /**
-            * 皮肤标识符。可以为Class,String,或DisplayObject实例等任意类型，具体规则由项目注入的素材适配器决定，
+            * 素材标识符。可以为Class,String,或DisplayObject实例等任意类型，具体规则由项目注入的素材适配器决定，
             * 适配器根据此属性值解析获取对应的显示对象，并赋值给content属性。
             * @member egret.UIAsset#source
             */

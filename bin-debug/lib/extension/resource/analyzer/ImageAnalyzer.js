@@ -42,8 +42,9 @@ var RES;
                 return;
             }
             this.fileDic[name] = data;
-            if (resItem.data["scale9grid"]) {
-                var str = resItem.data["scale9grid"];
+            var config = resItem.data;
+            if (config && config["scale9grid"]) {
+                var str = config["scale9grid"];
                 var list = str.split(",");
                 data["scale9Grid"] = new egret.Rectangle(parseInt(list[0]), parseInt(list[1]), parseInt(list[2]), parseInt(list[3]));
             }

@@ -401,8 +401,7 @@ var egret;
             if (typeof (value[0]) == "string") {
                 var length = value.length;
                 for (var i = 0; i < length; i++) {
-                    var state = new egret.State();
-                    state.name = value[i];
+                    var state = new egret.State(value[i], []);
                     value[i] = state;
                 }
             }

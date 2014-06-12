@@ -29,6 +29,7 @@ var __extends = this.__extends || function (d, b) {
 /// <reference path="analyzer/ImageAnalyzer.ts"/>
 /// <reference path="analyzer/JsonAnalyzer.ts"/>
 /// <reference path="analyzer/TextAnalyzer.ts"/>
+/// <reference path="analyzer/XMLAnalyzer.ts"/>
 /// <reference path="core/ResourceConfig.ts"/>
 /// <reference path="core/ResourceItem.ts"/>
 /// <reference path="core/ResourceLoader.ts"/>
@@ -37,8 +38,9 @@ var RES;
 (function (RES) {
     /**
     * 加载配置文件并解析
-    * @param url 配置文件路径(resource.json的路径)
-    * @param resourceRoot 资源根路径。配置中的所有url都是这个路径的相对值。
+    * @method RES.loadConfig
+    * @param url {string} 配置文件路径(resource.json的路径)
+    * @param resourceRoot {string} 资源根路径。配置中的所有url都是这个路径的相对值。最终url是这个字符串与配置里资源项的url相加的值。
     */
     function loadConfig(url, resourceRoot) {
         if (typeof resourceRoot === "undefined") { resourceRoot = ""; }
@@ -48,8 +50,9 @@ var RES;
 
     /**
     * 根据组名加载一组资源
-    * @param name 要加载资源组的组名
-    * @param priority 加载优先级,可以为负数,默认值为0。
+    * @method RES.loadGroup
+    * @param name {string} 要加载资源组的组名
+    * @param priority {number} 加载优先级,可以为负数,默认值为0。
     * 低优先级的组必须等待高优先级组完全加载结束才能开始，同一优先级的组会同时加载。
     */
     function loadGroup(name, priority) {
@@ -60,7 +63,9 @@ var RES;
 
     /**
     * 检查某个资源组是否已经加载完成
-    * @param groupName 组名
+    * @method RES.isGroupLoaded
+    * @param name {string} 组名
+    * @returns {boolean}
     */
     function isGroupLoaded(name) {
         return instance.isGroupLoaded(name);
@@ -69,7 +74,9 @@ var RES;
 
     /**
     * 根据组名获取组加载项列表
-    * @param name 组名
+    * @method RES.getGroupByName
+    * @param name {string} 组名
+    * @returns {egret.ResourceItem}
     */
     function getGroupByName(name) {
         return instance.getGroupByName(name);
@@ -79,10 +86,11 @@ var RES;
     /**
     * 创建自定义的加载资源组,注意：此方法仅在资源配置文件加载完成后执行才有效。
     * 可以监听ResourceEvent.CONFIG_COMPLETE事件来确认配置加载完成。
-    * @param name 要创建的加载资源组的组名
-    * @param keys 要包含的键名列表，key对应配置文件里的name属性或sbuKeys属性的一项。
-    * @param override 是否覆盖已经存在的同名资源组,默认false。
-    * @return 是否创建成功，如果传入的keys为空，或keys全部无效，则创建失败。
+    * @method RES.createGroup
+    * @param name {string} 要创建的加载资源组的组名
+    * @param keys {egret.Array<string>} 要包含的键名列表，key对应配置文件里的name属性或sbuKeys属性的一项。
+    * @param override {boolean} 是否覆盖已经存在的同名资源组,默认false。
+    * @returns {boolean}
     */
     function createGroup(name, keys, override) {
         if (typeof override === "undefined") { override = false; }
@@ -92,7 +100,9 @@ var RES;
 
     /**
     * 检查配置文件里是否含有指定的资源
-    * @param name 对应配置文件里的name属性。
+    * @method RES.hasRes
+    * @param name {string} 对应配置文件里的name属性。
+    * @returns {boolean}
     */
     function hasRes(name) {
         return instance.hasRes(name);
@@ -101,7 +111,9 @@ var RES;
 
     /**
     * 同步方式获取缓存的已经加载成功的资源。<br/>
-    * @param name 对应配置文件里的name属性。
+    * @method RES.getRes
+    * @param name {string} 对应配置文件里的name属性。
+    * @returns {any}
     */
     function getRes(name) {
         return instance.getRes(name);
@@ -110,9 +122,10 @@ var RES;
 
     /**
     * 异步方式获取配置里的资源。只要是配置文件里存在的资源，都可以通过异步方式获取。
-    * @param name 对应配置文件里的name属性。
-    * @param compFunc 回调函数。示例：compFunc(data):void,若设置了other参数则为:compFunc(data,other):void。
-    * @param thisObject 回调函数的this引用
+    * @method RES.getResAsync
+    * @param name {string} 对应配置文件里的name属性。
+    * @param compFunc {Function} 回调函数。示例：compFunc(data):void,若设置了other参数则为:compFunc(data,other):void。
+    * @param thisObject {any} 回调函数的this引用
     */
     function getResAsync(name, compFunc, thisObject) {
         instance.getResAsync(name, compFunc, thisObject);
@@ -121,10 +134,11 @@ var RES;
 
     /**
     * 通过完整URL方式获取外部资源。
-    * @param url 要加载文件的外部路径。
-    * @param compFunc 回调函数。示例：compFunc(data):void,若设置了other参数则为:compFunc(data,other):void。
-    * @param thisObject 回调函数的this引用
-    * @param type 文件类型(可选)。请使用ResourceItem类中定义的静态常量。若不设置将根据文件扩展名生成。
+    * @method RES.getResByUrl
+    * @param url {string} 要加载文件的外部路径。
+    * @param compFunc {Function} 回调函数。示例：compFunc(data):void,若设置了other参数则为:compFunc(data,other):void。
+    * @param thisObject {any} 回调函数的this引用
+    * @param type {string} 文件类型(可选)。请使用ResourceItem类中定义的静态常量。若不设置将根据文件扩展名生成。
     */
     function getResByUrl(url, compFunc, thisObject, type) {
         if (typeof type === "undefined") { type = ""; }
@@ -134,7 +148,9 @@ var RES;
 
     /**
     * 销毁某个资源文件的缓存数据,返回是否删除成功。
-    * @param name 配置文件中加载项的name属性
+    * @method RES.destroyRes
+    * @param name {string} 配置文件中加载项的name属性
+    * @returns {boolean}
     */
     function destroyRes(name) {
         return instance.destroyRes(name);
@@ -143,6 +159,7 @@ var RES;
 
     /**
     * 添加事件侦听器,参考ResourceEvent定义的常量。
+    * @method RES.addEventListener
     * @param type {string} 事件的类型。
     * @param listener {Function} 处理事件的侦听器函数。此函数必须接受 Event 对象作为其唯一的参数，并且不能返回任何结果，
     * 如下面的示例所示： function(evt:Event):void 函数可以有任何名称。
@@ -150,7 +167,7 @@ var RES;
     * @param useCapture {boolean} 确定侦听器是运行于捕获阶段还是运行于目标和冒泡阶段。如果将 useCapture 设置为 true，
     * 则侦听器只在捕获阶段处理事件，而不在目标或冒泡阶段处理事件。如果 useCapture 为 false，则侦听器只在目标或冒泡阶段处理事件。
     * 要在所有三个阶段都侦听事件，请调用 addEventListener 两次：一次将 useCapture 设置为 true，一次将 useCapture 设置为 false。
-    * @param  priority {number} 事件侦听器的优先级。优先级由一个带符号的 32 位整数指定。数字越大，优先级越高。优先级为 n 的所有侦听器会在
+    * @param priority {number} 事件侦听器的优先级。优先级由一个带符号的 32 位整数指定。数字越大，优先级越高。优先级为 n 的所有侦听器会在
     * 优先级为 n -1 的侦听器之前得到处理。如果两个或更多个侦听器共享相同的优先级，则按照它们的添加顺序进行处理。默认优先级为 0。
     */
     function addEventListener(type, listener, thisObject, useCapture, priority) {
@@ -162,7 +179,7 @@ var RES;
 
     /**
     * 移除事件侦听器,参考ResourceEvent定义的常量。
-    * @method egret.EventDispatcher#removeEventListener
+    * @method RES.removeEventListener
     * @param type {string} 事件名
     * @param listener {Function} 侦听函数
     * @param thisObject {any} 侦听函数绑定的this对象
@@ -178,6 +195,7 @@ var RES;
         __extends(Resource, _super);
         /**
         * 构造函数
+        * @method RES.constructor
         */
         function Resource() {
             _super.call(this);
@@ -192,7 +210,7 @@ var RES;
             /**
             * 已经加载过组名列表
             */
-            this.loadedGroups = new Array();
+            this.loadedGroups = [];
             this.groupNameList = [];
             /**
             * 异步获取资源参数缓存字典
@@ -229,6 +247,8 @@ var RES;
                 egret.Injector.mapClass(RES.AnalyzerBase, RES.FontAnalyzer, RES.ResourceItem.TYPE_FONT);
             if (!egret.Injector.hasMapRule(RES.AnalyzerBase, RES.ResourceItem.TYPE_SOUND))
                 egret.Injector.mapClass(RES.AnalyzerBase, RES.SoundAnalyzer, RES.ResourceItem.TYPE_SOUND);
+            if (!egret.Injector.hasMapRule(RES.AnalyzerBase, RES.ResourceItem.TYPE_XML))
+                egret.Injector.mapClass(RES.AnalyzerBase, RES.XMLAnalyzer, RES.ResourceItem.TYPE_XML);
             this.resConfig = new RES.ResourceConfig();
             this.resLoader = new RES.ResourceLoader();
             this.resLoader.callBack = this.onResourceItemComp;
@@ -238,6 +258,9 @@ var RES;
 
         /**
         * 开始加载配置
+        * @method RES.loadConfig
+        * @param url {string}
+        * @param resourceRoot {string}
         */
         Resource.prototype.loadConfig = function (url, resourceRoot) {
             this.configURL = url;
@@ -249,6 +272,9 @@ var RES;
 
         /**
         * 检查某个资源组是否已经加载完成
+        * @method RES.isGroupLoaded
+        * @param name {string}
+        * @returns {boolean}
         */
         Resource.prototype.isGroupLoaded = function (name) {
             return this.loadedGroups.indexOf(name) != -1;
@@ -256,6 +282,9 @@ var RES;
 
         /**
         * 根据组名获取组加载项列表
+        * @method RES.getGroupByName
+        * @param name {string}
+        * @returns {egret.ResourceItem}
         */
         Resource.prototype.getGroupByName = function (name) {
             return this.resConfig.getGroupByName(name);
@@ -263,6 +292,9 @@ var RES;
 
         /**
         * 根据组名加载一组资源
+        * @method RES.loadGroup
+        * @param name {string}
+        * @param priority {number}
         */
         Resource.prototype.loadGroup = function (name, priority) {
             if (typeof priority === "undefined") { priority = 0; }
@@ -278,6 +310,11 @@ var RES;
 
         /**
         * 创建自定义的加载资源组
+        * @method RES.createGroup
+        * @param name {string}
+        * @param keys {egret.Array<string>}
+        * @param override {boolean}
+        * @returns {boolean}
         */
         Resource.prototype.createGroup = function (name, keys, override) {
             if (typeof override === "undefined") { override = false; }
@@ -310,7 +347,9 @@ var RES;
 
         /**
         * 检查配置文件里是否含有指定的资源
-        * @param name 对应配置文件里的name属性。
+        * @method RES.hasRes
+        * @param name {string} 对应配置文件里的name属性。
+        * @returns {boolean}
         */
         Resource.prototype.hasRes = function (name) {
             var type = this.resConfig.getType(name);
@@ -326,6 +365,9 @@ var RES;
 
         /**
         * 通过name同步获取资源
+        * @method RES.getRes
+        * @param name {string}
+        * @returns {any}
         */
         Resource.prototype.getRes = function (name) {
             var type = this.resConfig.getType(name);
@@ -343,6 +385,10 @@ var RES;
 
         /**
         * 通过name异步获取资源
+        * @method RES.getResAsync
+        * @param name {string}
+        * @param compFunc {Function}
+        * @param thisObject {any}
         */
         Resource.prototype.getResAsync = function (name, compFunc, thisObject) {
             var type = this.resConfig.getType(name);
@@ -372,6 +418,11 @@ var RES;
 
         /**
         * 通过url获取资源
+        * @method RES.getResByUrl
+        * @param url {string}
+        * @param compFunc {Function}
+        * @param thisObject {any}
+        * @param type {string}
         */
         Resource.prototype.getResByUrl = function (url, compFunc, thisObject, type) {
             if (typeof type === "undefined") { type = ""; }
@@ -446,7 +497,9 @@ var RES;
 
         /**
         * 销毁某个资源文件的缓存数据,返回是否删除成功。
-        * @param name 配置文件中加载项的name属性
+        * @method RES.destroyRes
+        * @param name {string} 配置文件中加载项的name属性
+        * @returns {boolean}
         */
         Resource.prototype.destroyRes = function (name) {
             var type = this.resConfig.getType(name);
