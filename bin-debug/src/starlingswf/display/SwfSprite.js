@@ -15,6 +15,21 @@ var starlingswf;
         function SwfSprite() {
             _super.apply(this, arguments);
         }
+        SwfSprite.prototype.getTextField = function (name) {
+            return this.getChildByName(name);
+        };
+
+        SwfSprite.prototype.getMovie = function (name) {
+            return this.getChildByName(name);
+        };
+
+        SwfSprite.prototype.getSprite = function (name) {
+            return this.getChildByName(name);
+        };
+
+        SwfSprite.prototype.getImage = function (name) {
+            return this.getChildByName(name);
+        };
         return SwfSprite;
     })(egret.DisplayObjectContainer);
     starlingswf.SwfSprite = SwfSprite;
