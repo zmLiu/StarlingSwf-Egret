@@ -30,18 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../../../egret/context/renderer/RenderFilter.ts"/>
-/// <reference path="../../../egret/context/renderer/RendererContext.ts"/>
-/// <reference path="../../../egret/display/DisplayObject.ts"/>
-/// <reference path="../../../egret/display/DisplayObjectContainer.ts"/>
-/// <reference path="../../../egret/display/Texture.ts"/>
-/// <reference path="../../../egret/geom/Rectangle.ts"/>
-/// <reference path="../../../egret/utils/Injector.ts"/>
-/// <reference path="supportClasses/DefaultAssetAdapter.ts"/>
-/// <reference path="../core/IAssetAdapter.ts"/>
-/// <reference path="../core/ILayoutElement.ts"/>
-/// <reference path="../core/UIComponent.ts"/>
-/// <reference path="../events/UIEvent.ts"/>
 var egret;
 (function (egret) {
     /**
@@ -59,7 +47,8 @@ var egret;
         * @method egret.UIAsset#constructor
         * @param source {any} 素材标识符
         */
-        function UIAsset(source) {
+        function UIAsset(source, autoScale) {
+            if (typeof autoScale === "undefined") { autoScale = true; }
             _super.call(this);
             /**
             * 确定位图填充尺寸的方式。默认值：BitmapFillMode.SCALE。
@@ -72,10 +61,15 @@ var egret;
             this.sourceChanged = false;
             this.createChildrenCalled = false;
             this.contentReused = false;
+            /**
+            * 是自动否缩放content对象，以符合UIAsset的尺寸。默认值true。
+            */
+            this.autoScale = true;
             this.touchChildren = false;
             if (source) {
                 this.source = source;
             }
+            this.autoScale = autoScale;
         }
         Object.defineProperty(UIAsset.prototype, "source", {
             /**
@@ -91,7 +85,7 @@ var egret;
                     return;
                 this._source = value;
                 if (this.createChildrenCalled) {
-                    this.parseSkinName();
+                    this.parseSource();
                 } else {
                     this.sourceChanged = true;
                 }
@@ -119,7 +113,7 @@ var egret;
         UIAsset.prototype.createChildren = function () {
             _super.prototype.createChildren.call(this);
             if (this.sourceChanged) {
-                this.parseSkinName();
+                this.parseSource();
             }
             this.createChildrenCalled = true;
         };
@@ -127,7 +121,7 @@ var egret;
         /**
         * 解析source
         */
-        UIAsset.prototype.parseSkinName = function () {
+        UIAsset.prototype.parseSource = function () {
             this.sourceChanged = false;
             var adapter = UIAsset.assetAdapter;
             if (!adapter) {
@@ -208,7 +202,7 @@ var egret;
         UIAsset.prototype.updateDisplayList = function (unscaledWidth, unscaledHeight) {
             _super.prototype.updateDisplayList.call(this, unscaledWidth, unscaledHeight);
             var content = this._content;
-            if (content instanceof egret.DisplayObject) {
+            if (this.autoScale && content instanceof egret.DisplayObject) {
                 if ("setLayoutBoundsSize" in content) {
                     (content).setLayoutBoundsSize(unscaledWidth, unscaledHeight);
                 } else {
@@ -222,7 +216,16 @@ var egret;
             if (this._content instanceof egret.Texture) {
                 var texture = this._content;
                 this._texture_to_render = texture;
-                egret.Bitmap._drawBitmap(renderContext, this._width, this._height, this);
+                var w;
+                var h;
+                if (this.autoScale) {
+                    w = this._width;
+                    h = this._height;
+                } else {
+                    w = texture.textureWidth;
+                    h = texture.textureHeight;
+                }
+                egret.Bitmap._drawBitmap(renderContext, w, h, this);
             } else {
                 this._texture_to_render = null;
             }

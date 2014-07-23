@@ -30,14 +30,12 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../display/SpriteSheet.ts"/>
-/// <reference path="../display/Texture.ts"/>
 var egret;
 (function (egret) {
     var BitmapTextSpriteSheet = (function (_super) {
         __extends(BitmapTextSpriteSheet, _super);
-        function BitmapTextSpriteSheet(bitmapData, fntText) {
-            _super.call(this, bitmapData);
+        function BitmapTextSpriteSheet(texture, fntText) {
+            _super.call(this, texture);
             this.charList = this.parseConfig(fntText);
         }
         BitmapTextSpriteSheet.prototype.getTexture = function (name) {
@@ -47,9 +45,7 @@ var egret;
                 if (!c) {
                     return null;
                 }
-                texture = this.createTexture(name, c.x, c.y, c.width, c.height);
-                texture._offsetX = c.offsetX;
-                texture._offsetY = c.offsetY;
+                texture = this.createTexture(name, c.x, c.y, c.width, c.height, c.offsetX, c.offsetY);
                 this._textureMap[name] = texture;
             }
             return texture;

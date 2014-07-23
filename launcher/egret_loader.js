@@ -65,15 +65,17 @@ egret_h5.startGame = function () {
     context.touchContext = new egret.HTML5TouchContext(canvas);
     context.deviceContext = new egret.HTML5DeviceContext();
     context.netContext = new egret.HTML5NetContext();
-    context.stage = new egret.Stage(canvas.width, canvas.height);
+
 
     //设置屏幕适配策略
     var container = new egret.EqualToFrame();
-    var content = egret.Browser.getInstance().isMobile ? new egret.FixedWidth() : new egret.FixedSize(480, 320);
+    var content = egret.Browser.getInstance().isMobile ? new egret.FixedWidth() : new egret.NoScale();
     var policy = new egret.ResolutionPolicy(container, content);
     egret.StageDelegate.getInstance().setDesignSize(480, 320, policy);
 
-    egret.RendererContext.CONTENT_SCALE_FACTOR = 1;
+    context.stage = new egret.Stage(canvas.width, canvas.height);
+
+    egret.MainContext.instance.rendererContext.texture_scale_factor = 1;
     context.run();
 
     var rootClass;
@@ -82,7 +84,7 @@ egret_h5.startGame = function () {
     }
     if(rootClass) {
         var rootContainer = new rootClass();
-        if(rootContainer instanceof egret.DisplayObject){
+        if(rootContainer instanceof egret.DisplayObjectContainer){
             context.stage.addChild(rootContainer);
         }
         else{
@@ -90,7 +92,7 @@ egret_h5.startGame = function () {
         }
     }
     else{
-        throw new Error("找不到文档类！请在game_file_list.js指定文档类的完全限定名。");
+        throw new Error("找不到文档类！");
     }
 }
 

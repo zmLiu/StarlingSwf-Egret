@@ -30,10 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../display/DisplayObject.ts"/>
-/// <reference path="Point.ts"/>
-/// <reference path="Rectangle.ts"/>
-/// <reference path="../utils/HashObject.ts"/>
 var egret;
 (function (egret) {
     /**
@@ -82,7 +78,7 @@ var egret;
         * @param d {number}
         * @param tx {number}
         * @param ty {number}
-        * @returns {ns_egret.Matrix}
+        * @returns {egret.Matrix}
         */
         Matrix.prototype.prepend = function (a, b, c, d, tx, ty) {
             var tx1 = this.tx;
@@ -231,27 +227,6 @@ var egret;
                 this.tx -= regX * this.a + regY * this.c;
                 this.ty -= regX * this.b + regY * this.d;
             }
-            return this;
-        };
-
-        /**
-        * @method egret.Matrix#appendTransformFromDisplay
-        * @param target {egret.DisplayObject}
-        * @returns {egret.Matrix}
-        */
-        Matrix.prototype.appendTransformFromDisplay = function (target) {
-            var o = target;
-            var anchorX, anchorY;
-            if (o.anchorX != 0 || o.anchorY != 0) {
-                var bounds = o.getBounds(egret.Rectangle.identity);
-                anchorX = bounds.width * o.anchorX;
-                anchorY = bounds.height * o.anchorY;
-            } else {
-                anchorX = o.anchorOffsetX;
-                anchorY = o.anchorOffsetY;
-            }
-            this.identity();
-            this.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, anchorX, anchorY);
             return this;
         };
 

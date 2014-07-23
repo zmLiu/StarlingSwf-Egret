@@ -19,7 +19,7 @@ var starlingswf;
             if (!frames) {
                 return;
             }
-            var spriteSheet = new egret.SpriteSheet(texture._bitmapData);
+            var spriteSheet = new egret.SpriteSheet(texture);
             for (var name in frames) {
                 var config = frames[name];
                 var texture = spriteSheet.createTexture(name, config.x, config.y, config.w, config.h);

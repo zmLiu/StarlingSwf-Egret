@@ -30,12 +30,12 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../context/MainContext.ts"/>
-/// <reference path="../context/renderer/RendererContext.ts"/>
-/// <reference path="DisplayObjectContainer.ts"/>
-/// <reference path="Graphics.ts"/>
 var egret;
 (function (egret) {
+    /**
+    * @class egret.Sprite
+    * @classdesc Sprite 类是基本显示列表构造块：一个可显示图形并且也可包含子项的显示列表节点。Sprite 对象与影片剪辑类似，但没有时间轴。Sprite 是不需要时间轴的对象的相应基类。例如，Sprite 将是通常不使用时间轴的用户界面 (UI) 组件的逻辑基类。
+    */
     var Sprite = (function (_super) {
         __extends(Sprite, _super);
         function Sprite() {
@@ -54,7 +54,7 @@ var egret;
 
         Sprite.prototype._render = function (renderContext) {
             if (this._graphics)
-                this._graphics._draw();
+                this._graphics._draw(renderContext);
             _super.prototype._render.call(this, renderContext);
         };
         return Sprite;

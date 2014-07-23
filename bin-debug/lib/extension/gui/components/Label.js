@@ -30,8 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="supportClasses/TextBase.ts"/>
-/// <reference path="../events/UIEvent.ts"/>
 var egret;
 (function (egret) {
     /**

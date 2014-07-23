@@ -21,15 +21,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../../../egret/events/Event.ts"/>
-/// <reference path="../../../egret/events/IOErrorEvent.ts"/>
-/// <reference path="../../../egret/net/URLLoader.ts"/>
-/// <reference path="../../../egret/net/URLLoaderDataFormat.ts"/>
-/// <reference path="../../../egret/net/URLRequest.ts"/>
-/// <reference path="../../../egret/utils/Recycler.ts"/>
-/// <reference path="../Resource.ts"/>
-/// <reference path="AnalyzerBase.ts"/>
-/// <reference path="../core/ResourceItem.ts"/>
 var RES;
 (function (RES) {
     var BinAnalyzer = (function (_super) {

@@ -30,17 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../../../egret/display/DisplayObject.ts"/>
-/// <reference path="../../../egret/events/EventDispatcher.ts"/>
-/// <reference path="SkinnableComponent.ts"/>
-/// <reference path="../core/IContainer.ts"/>
-/// <reference path="../core/ISkin.ts"/>
-/// <reference path="../core/IStateClient.ts"/>
-/// <reference path="../core/IVisualElement.ts"/>
-/// <reference path="../core/IVisualElementContainer.ts"/>
-/// <reference path="../events/ElementExistenceEvent.ts"/>
-/// <reference path="../events/StateChangeEvent.ts"/>
-/// <reference path="../states/State.ts"/>
 var egret;
 (function (egret) {
     /**
@@ -126,10 +115,6 @@ var egret;
         Skin.prototype._setHostComponent = function (value) {
             if (this._hostComponent == value)
                 return;
-            if (!this._initialized) {
-                this._initialized = true;
-                this.createChildren();
-            }
             var i;
             if (this._hostComponent) {
                 for (i = this._elementsContent.length - 1; i >= 0; i--) {
@@ -138,16 +123,15 @@ var egret;
             }
 
             this._hostComponent = value;
+            if (!this._initialized) {
+                this._initialized = true;
+                this.createChildren();
+            }
 
             if (this._hostComponent) {
                 var n = this._elementsContent.length;
                 for (i = 0; i < n; i++) {
-                    var elt = this._elementsContent[i];
-                    if (elt.parent && "removeElement" in elt.parent)
-                        (elt.parent).removeElement(elt);
-                    else if (elt.owner && "removeElement" in elt.owner)
-                        (elt.owner).removeElement(elt);
-                    this._elementAdded(elt, i);
+                    this._elementAdded(this._elementsContent[i], i);
                 }
 
                 this.initializeStates();
@@ -260,8 +244,6 @@ var egret;
             if (host == this) {
                 this.setElementIndex(element, index);
                 return element;
-            } else if (element.parent && "removeElement" in element.parent) {
-                (element.parent).removeElement(element);
             } else if (host && "removeElement" in host) {
                 host.removeElement(element);
             }
@@ -270,6 +252,8 @@ var egret;
 
             if (this._hostComponent)
                 this._elementAdded(element, index);
+            else
+                element.ownerChanged(this);
 
             return element;
         };
@@ -295,7 +279,8 @@ var egret;
 
             if (this._hostComponent)
                 this._elementRemoved(element, index);
-
+            else
+                element.ownerChanged(null);
             this._elementsContent.splice(index, 1);
 
             return element;

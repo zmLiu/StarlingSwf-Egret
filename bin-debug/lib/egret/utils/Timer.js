@@ -30,10 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../context/Ticker.ts"/>
-/// <reference path="../events/EventDispatcher.ts"/>
-/// <reference path="../events/TimerEvent.ts"/>
-/// <reference path="getTimer.ts"/>
 var egret;
 (function (egret) {
     var Timer = (function (_super) {

@@ -47,21 +47,20 @@ var egret;
     */
     function getQualifiedClassName(value) {
         var constructorFunction = value.prototype ? value.prototype.constructor : value.__proto__.constructor;
-        if (constructorFunction.__class__) {
-            return constructorFunction.__class__;
+        var key = constructorFunction.toString();
+        var className = __functionNameCache[key];
+        if (className) {
+            return className;
         }
         if (egret.__invalidateModuleFlag) {
             updateModules();
             egret.__invalidateModuleFlag = false;
-            if (constructorFunction.__class__) {
-                return constructorFunction.__class__;
+            className = __functionNameCache[key];
+            if (className) {
+                return className;
             }
         }
-        var key = constructorFunction.toString();
-        var className = __functionNameCache[key];
-        if (!className) {
-            __functionNameCache[key] = className = getFunctionName(constructorFunction);
-        }
+        __functionNameCache[key] = className = getFunctionName(constructorFunction);
         return className;
     }
     egret.getQualifiedClassName = getQualifiedClassName;
@@ -73,7 +72,6 @@ var egret;
     }
 
     function updateModules() {
-        //      var t:number = getTimer();
         var list = egret.__moduleNameList;
         var length = list.length;
         for (var i = 0; i < length; i++) {
@@ -83,8 +81,6 @@ var egret;
                 setModuleName(value, key);
             }
         }
-        //        t = getTimer()-t;
-        //        console.log("updateModules: "+t+"ms");
     }
 
     function setModuleName(ns, name) {
@@ -95,9 +91,9 @@ var egret;
                 if (!value.prototype) {
                     continue;
                 }
-                var func = value.prototype.constructor;
-                if (!func.__class__) {
-                    func.__class__ = name + "." + getFunctionName(func);
+                var classKey = value.toString();
+                if (!__functionNameCache[classKey]) {
+                    __functionNameCache[classKey] = name + "." + getFunctionName(value);
                 }
             } else if (type == "object" && !(value instanceof Array)) {
                 setModuleName(value, name + "." + key);

@@ -30,9 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../StageDelegate.ts"/>
-/// <reference path="TouchContext.ts"/>
-/// <reference path="../../geom/Point.ts"/>
 var egret;
 (function (egret) {
     var HTML5TouchContext = (function (_super) {

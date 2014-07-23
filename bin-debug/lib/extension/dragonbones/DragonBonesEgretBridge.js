@@ -4,10 +4,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-///<reference path="dragonBones.ts" />
-///<reference path="../../egret/display/DisplayObject.ts" />
-///<reference path="../../egret/display/DisplayObjectContainer.ts" />
-///<reference path="../../egret/display/Bitmap.ts" />
 /**
 * Copyright (c) 2014,Egret-Labs.org
 * All rights reserved.
@@ -61,7 +57,7 @@ var dragonBones;
                 if (this._display) {
                     var parent = this._display.parent;
                     if (parent) {
-                        var index = -1;
+                        var index = parent.getChildIndex(this._display);
                     }
                     this.removeDisplay();
                 }
@@ -75,24 +71,23 @@ var dragonBones;
 
             DragonBonesEgretBridge.prototype.updateTransform = function (matrix, transform) {
                 //                this._display.rotation = transform.getRotation() * 180 / Math.PI
-                this._display.x = matrix.tx;
-                this._display.y = matrix.ty;
-                this._display.skewX = transform.skewX * DragonBonesEgretBridge.RADIAN_TO_ANGLE;
-                this._display.skewY = transform.skewY * DragonBonesEgretBridge.RADIAN_TO_ANGLE;
-                this._display.scaleX = transform.scaleX;
-                this._display.scaleY = transform.scaleY;
+                this._display._x = matrix.tx;
+                this._display._y = matrix.ty;
+                this._display._skewX = transform.skewX * DragonBonesEgretBridge.RADIAN_TO_ANGLE;
+                this._display._skewY = transform.skewY * DragonBonesEgretBridge.RADIAN_TO_ANGLE;
+                this._display._scaleX = transform.scaleX;
+                this._display._scaleY = transform.scaleY;
             };
 
             DragonBonesEgretBridge.prototype.updateColor = function (aOffset, rOffset, gOffset, bOffset, aMultiplier, rMultiplier, gMultiplier, bMultiplier) {
                 if (this._display) {
-                    this._display.alpha = aMultiplier;
+                    this._display._alpha = aMultiplier;
                     //todo
                 }
             };
 
             DragonBonesEgretBridge.prototype.updateBlendMode = function (blendMode) {
-                //                console.log (blendMode);
-                if (this._display) {
+                if (this._display && blendMode) {
                     this._display.blendMode = egret.BlendMode.getBlendMode(blendMode);
                 }
             };
@@ -100,8 +95,8 @@ var dragonBones;
             DragonBonesEgretBridge.prototype.addDisplay = function (container, index) {
                 var parent = container;
                 if (parent && this._display) {
-                    if (this._display.parent) {
-                        this._display.parent.removeChild(this._display);
+                    if (this._display._parent) {
+                        this._display._parent.removeChild(this._display);
                     }
 
                     if (index < 0) {
@@ -113,8 +108,8 @@ var dragonBones;
             };
 
             DragonBonesEgretBridge.prototype.removeDisplay = function () {
-                if (this._display && this._display.parent) {
-                    this._display.parent.removeChild(this._display);
+                if (this._display && this._display._parent) {
+                    this._display._parent.removeChild(this._display);
                 }
             };
             DragonBonesEgretBridge.RADIAN_TO_ANGLE = 180 / Math.PI;
@@ -134,7 +129,7 @@ var dragonBones;
                 this.scale = scale;
                 this.name = textureAtlasRawData[dragonBones.utils.ConstValues.A_NAME];
                 this.parseData(textureAtlasRawData);
-                this.spriteSheet = new egret.SpriteSheet(texture.bitmapData);
+                this.spriteSheet = new egret.SpriteSheet(texture);
             }
             EgretTextureAtlas.prototype.getTexture = function (fullName) {
                 var result = this.spriteSheet.getTexture(fullName);
@@ -194,7 +189,7 @@ var dragonBones;
                 return bitmap1;
             };
             return EgretFactory;
-        })(dragonBones.factorys.BaseFactory);
+        })(factorys.BaseFactory);
         factorys.EgretFactory = EgretFactory;
     })(dragonBones.factorys || (dragonBones.factorys = {}));
     var factorys = dragonBones.factorys;

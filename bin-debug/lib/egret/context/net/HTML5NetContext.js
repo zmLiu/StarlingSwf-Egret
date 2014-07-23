@@ -30,17 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="NetContext.ts"/>
-/// <reference path="../../display/Texture.ts"/>
-/// <reference path="../../media/Sound.ts"/>
-/// <reference path="../../events/Event.ts"/>
-/// <reference path="../../events/IOErrorEvent.ts"/>
-/// <reference path="../../net/URLLoader.ts"/>
-/// <reference path="../../net/URLLoaderDataFormat.ts"/>
-/// <reference path="../../net/URLRequest.ts"/>
-/// <reference path="../../net/URLRequestMethod.ts"/>
-/// <reference path="../../net/URLVariables.ts"/>
-/// <reference path="../../utils/callLater.ts"/>
 var egret;
 (function (egret) {
     /**
@@ -86,7 +75,7 @@ var egret;
             ;
 
             function onLoadComplete(event) {
-                switch (this.dataFormat) {
+                switch (loader.dataFormat) {
                     case egret.URLLoaderDataFormat.TEXT:
                         loader.data = xhr.responseText;
                         break;
@@ -169,7 +158,7 @@ var egret;
                 image.onerror = null;
                 image.onload = null;
                 var texture = new egret.Texture();
-                texture.bitmapData = image;
+                texture._setBitmapData(image);
                 loader.data = texture;
                 egret.callLater(egret.Event.dispatchEvent, egret.Event, loader, egret.Event.COMPLETE);
             }

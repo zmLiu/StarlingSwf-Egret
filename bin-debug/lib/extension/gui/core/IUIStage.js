@@ -24,6 +24,3 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-/// <reference path="../../../egret/display/Stage.ts"/>
-/// <reference path="../../../egret/events/IEventDispatcher.ts"/>
-/// <reference path="IContainer.ts"/>

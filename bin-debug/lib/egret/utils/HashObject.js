@@ -27,7 +27,6 @@
 /**
 * @namespace egret
 */
-/// <reference path="IHashObject.ts"/>
 var egret;
 (function (egret) {
     /**

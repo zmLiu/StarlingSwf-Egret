@@ -30,32 +30,27 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../context/renderer/HTML5CanvasRenderer.ts"/>
-/// <reference path="../context/renderer/RenderFilter.ts"/>
-/// <reference path="DisplayObject.ts"/>
-/// <reference path="DisplayObjectContainer.ts"/>
-/// <reference path="Texture.ts"/>
-/// <reference path="../geom/Rectangle.ts"/>
 var egret;
 (function (egret) {
     var RenderTexture = (function (_super) {
         __extends(RenderTexture, _super);
         function RenderTexture() {
             _super.call(this);
-            this.cacheCanvas = document.createElement("canvas");
+            this._bitmapData = document.createElement("canvas");
+            this.renderContext = egret.RendererContext.createRendererContext(this._bitmapData);
         }
         RenderTexture.prototype.drawToTexture = function (displayObject) {
-            var cacheCanvas = this.cacheCanvas;
+            var cacheCanvas = this._bitmapData;
             var bounds = displayObject.getBounds(egret.Rectangle.identity);
             cacheCanvas.width = bounds.width;
             cacheCanvas.height = bounds.height;
 
-            displayObject.worldTransform.identity();
+            displayObject._worldTransform.identity();
             displayObject.worldAlpha = 1;
             if (displayObject instanceof egret.DisplayObjectContainer) {
                 this._offsetX = bounds.x;
                 this._offsetY = bounds.y;
-                displayObject.worldTransform.append(1, 0, 0, 1, -bounds.x, -bounds.y);
+                displayObject._worldTransform.append(1, 0, 0, 1, -bounds.x, -bounds.y);
                 var list = displayObject._children;
                 for (var i = 0, length = list.length; i < length; i++) {
                     var child = list[i];
@@ -63,18 +58,27 @@ var egret;
                 }
             }
 
-            var renderContext = new egret.HTML5CanvasRenderer(cacheCanvas);
             var renderFilter = egret.RenderFilter.getInstance();
             var drawAreaList = renderFilter._drawAreaList.concat();
             renderFilter._drawAreaList.length = 0;
-            displayObject._render(renderContext);
+            this.renderContext.clearScreen();
+            var mask = displayObject.mask || displayObject._scrollRect;
+            if (mask) {
+                this.renderContext.pushMask(mask);
+            }
+            displayObject._render(this.renderContext);
+            if (mask) {
+                this.renderContext.popMask();
+            }
             renderFilter._drawAreaList = drawAreaList;
-            this._bitmapData = this.cacheCanvas;
-            this._textureWidth = this.cacheCanvas.width;
-            this._textureHeight = this.cacheCanvas.height;
+
+            this._textureWidth = this._bitmapData.width;
+            this._textureHeight = this._bitmapData.height;
+            this._sourceWidth = this._textureWidth;
+            this._sourceHeight = this._textureHeight;
             //测试代码
-            //            renderContext.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
-            //            renderContext.strokeRect(0, 0,cacheCanvas.width,cacheCanvas.height,"#ff0000");
+            //            this.renderContext.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
+            //            this.renderContext.strokeRect(0, 0,cacheCanvas.width,cacheCanvas.height,"#ff0000");
             //            document.documentElement.appendChild(cacheCanvas);
         };
         return RenderTexture;

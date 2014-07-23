@@ -30,7 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../utils/HashObject.ts"/>
 var egret;
 (function (egret) {
     /**
@@ -139,6 +138,18 @@ var egret;
             return new Rectangle(this.x, this.y, this.width, this.height);
         };
 
+        /**
+        * 是否包含某个点
+        * @method egret.Rectangle#containsPoint
+        * @param point {egret.Point}
+        * @returns {boolean}
+        */
+        Rectangle.prototype.containsPoint = function (point) {
+            if (this.x < point.x && this.x + this.width > point.x && this.y < point.y && this.y + this.height > point.y) {
+                return true;
+            }
+            return false;
+        };
         Rectangle.identity = new Rectangle(0, 0, 0, 0);
         return Rectangle;
     })(egret.HashObject);

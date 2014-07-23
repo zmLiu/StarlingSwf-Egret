@@ -24,13 +24,6 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-/// <reference path="../../../../egret/display/DisplayObject.ts"/>
-/// <reference path="../../../../egret/display/Texture.ts"/>
-/// <reference path="../../../../egret/events/Event.ts"/>
-/// <reference path="../../../../egret/net/URLLoader.ts"/>
-/// <reference path="../../../../egret/net/URLLoaderDataFormat.ts"/>
-/// <reference path="../../../../egret/net/URLRequest.ts"/>
-/// <reference path="../../core/IAssetAdapter.ts"/>
 var egret;
 (function (egret) {
     /**

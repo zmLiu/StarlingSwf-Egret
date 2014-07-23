@@ -30,17 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="Ticker.ts"/>
-/// <reference path="devices/DeviceContext.ts"/>
-/// <reference path="interactive/TouchContext.ts"/>
-/// <reference path="net/NetContext.ts"/>
-/// <reference path="renderer/RendererContext.ts"/>
-/// <reference path="../display/DisplayObject.ts"/>
-/// <reference path="../display/Stage.ts"/>
-/// <reference path="../events/Event.ts"/>
-/// <reference path="../events/EventDispatcher.ts"/>
-/// <reference path="../utils/Recycler.ts"/>
-/// <reference path="../utils/callLater.ts"/>
 var egret;
 (function (egret) {
     /**
@@ -64,6 +53,7 @@ var egret;
             egret.Ticker.getInstance().register(this.renderLoop, this, Number.NEGATIVE_INFINITY);
             egret.Ticker.getInstance().register(this.broadcastEnterFrame, this, Number.POSITIVE_INFINITY);
             this.touchContext.run();
+            egret.__invalidateModuleFlag = true;
         };
 
         /**
@@ -72,12 +62,25 @@ var egret;
         MainContext.prototype.renderLoop = function (frameTime) {
             var context = this.rendererContext;
             context.clearScreen();
+
+            if (egret.__callLaterFunctionList.length > 0) {
+                var functionList = egret.__callLaterFunctionList;
+                egret.__callLaterFunctionList = [];
+                var thisList = egret.__callLaterThisList;
+                egret.__callLaterThisList = [];
+                var argsList = egret.__callLaterArgsList;
+                egret.__callLaterArgsList = [];
+            }
+
             this.dispatchEventWith(egret.Event.RENDER);
             if (egret.Stage._invalidateRenderFlag) {
                 this.broadcastRender();
                 egret.Stage._invalidateRenderFlag = false;
             }
-            this.doCallLaterList();
+            if (functionList) {
+                this.doCallLaterList(functionList, thisList, argsList);
+            }
+
             this.stage._updateTransform();
             this.dispatchEventWith(egret.Event.FINISH_UPDATE_TRANSFORM);
             this.stage._draw(context);
@@ -125,16 +128,7 @@ var egret;
         /**
         * 执行callLater回调函数列表
         */
-        MainContext.prototype.doCallLaterList = function () {
-            if (egret.__callLaterFunctionList.length == 0) {
-                return;
-            }
-            var funcList = egret.__callLaterFunctionList;
-            egret.__callLaterFunctionList = [];
-            var thisList = egret.__callLaterThisList;
-            egret.__callLaterThisList = [];
-            var argsList = egret.__callLaterArgsList;
-            egret.__callLaterArgsList = [];
+        MainContext.prototype.doCallLaterList = function (funcList, thisList, argsList) {
             var length = funcList.length;
             for (var i = 0; i < length; i++) {
                 var func = funcList[i];

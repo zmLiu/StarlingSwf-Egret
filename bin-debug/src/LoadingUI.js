@@ -30,8 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-///<reference path="egret.d.ts"/>
-///<reference path="GameApp.ts"/>
 var LoadingUI = (function (_super) {
     __extends(LoadingUI, _super);
     function LoadingUI() {

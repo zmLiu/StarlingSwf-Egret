@@ -31,8 +31,6 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 /** @namespace egret */
-/// <reference path="Event.ts"/>
-/// <reference path="IEventDispatcher.ts"/>
 var egret;
 (function (egret) {
     /**

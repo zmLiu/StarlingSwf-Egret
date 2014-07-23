@@ -8,7 +8,7 @@ module starlingswf {
             if (!frames) {
                 return;
             }
-            var spriteSheet:egret.SpriteSheet = new egret.SpriteSheet(texture._bitmapData);
+            var spriteSheet:egret.SpriteSheet = new egret.SpriteSheet(texture);
             for (var name in frames) {
                 var config:any = frames[name];
                 var texture:egret.Texture = spriteSheet.createTexture(name, config.x, config.y, config.w, config.h);

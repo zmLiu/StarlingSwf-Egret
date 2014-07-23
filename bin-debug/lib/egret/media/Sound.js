@@ -26,9 +26,18 @@
 */
 var egret;
 (function (egret) {
+    /**
+    * @class egret.Sound
+    * @classdesc Sound 类允许您在应用程序中使用声音。
+    */
     var Sound = (function () {
         function Sound() {
         }
+        /**
+        * 播放声音
+        * @method egret.Sound#play
+        * @param loop {boolean} 是否循环播放，默认为false
+        */
         Sound.prototype.play = function (loop) {
             if (typeof loop === "undefined") { loop = false; }
             var sound = this.audio;
@@ -42,12 +51,74 @@ var egret;
             sound.play();
         };
 
-        Sound.prototype.stop = function () {
+        /**
+        * 暂停声音
+        * @method egret.Sound#pause
+        */
+        Sound.prototype.pause = function () {
             var sound = this.audio;
             if (!sound) {
                 return;
             }
-            sound.stop();
+            sound.pause();
+        };
+
+        /**
+        * 重新加载声音
+        * @method egret.Sound#load
+        */
+        Sound.prototype.load = function () {
+            var sound = this.audio;
+            if (!sound) {
+                return;
+            }
+            sound.load();
+        };
+
+        /**
+        * 添加事件监听
+        * @param type 事件类型
+        * @param listener 监听函数
+        */
+        Sound.prototype.addEventListener = function (type, listener) {
+            var sound = this.audio;
+            if (!sound) {
+                return;
+            }
+            this.audio.addEventListener(type, listener, false);
+        };
+
+        /**
+        * 移除事件监听
+        * @param type 事件类型
+        * @param listener 监听函数
+        */
+        Sound.prototype.removeEventListener = function (type, listener) {
+            var sound = this.audio;
+            if (!sound) {
+                return;
+            }
+            this.audio.removeEventListener(type, listener, false);
+        };
+
+        /**
+        * 设置音量
+        * @param value 值需大于0 小于等于 1
+        */
+        Sound.prototype.setVolume = function (value) {
+            var sound = this.audio;
+            if (!sound) {
+                return;
+            }
+            sound.volume = value;
+        };
+
+        /**
+        * 获取当前音量值
+        * @returns number
+        */
+        Sound.prototype.getVolume = function () {
+            return this.audio ? this.audio.volume : 0;
         };
         return Sound;
     })();

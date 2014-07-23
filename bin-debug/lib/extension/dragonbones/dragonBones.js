@@ -2348,7 +2348,7 @@ var dragonBones;
                 var boneDataList = armatureData.getBoneDataList();
                 for (var index in boneDataList) {
                     boneData = boneDataList[index];
-                    bone = new dragonBones.Bone();
+                    bone = new Bone();
                     bone.name = boneData.name;
                     bone.fixedRotation = boneData.fixedRotation;
                     bone.scaleMode = boneData.scaleMode;

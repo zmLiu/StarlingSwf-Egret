@@ -30,9 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="RadioButtonGroup.ts"/>
-/// <reference path="supportClasses/ToggleButtonBase.ts"/>
-/// <reference path="../events/UIEvent.ts"/>
 var egret;
 (function (egret) {
     /**

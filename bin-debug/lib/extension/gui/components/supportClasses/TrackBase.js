@@ -30,16 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../../../../egret/display/DisplayObject.ts"/>
-/// <reference path="../../../../egret/events/Event.ts"/>
-/// <reference path="../../../../egret/events/TouchEvent.ts"/>
-/// <reference path="../../../../egret/geom/Point.ts"/>
-/// <reference path="../Button.ts"/>
-/// <reference path="Range.ts"/>
-/// <reference path="../../core/UIGlobals.ts"/>
-/// <reference path="../../events/ResizeEvent.ts"/>
-/// <reference path="../../events/TrackBaseEvent.ts"/>
-/// <reference path="../../events/UIEvent.ts"/>
 var egret;
 (function (egret) {
     /**
@@ -340,7 +330,7 @@ var egret;
         TrackBase.prototype.stage_mouseUpHandler = function (event) {
             egret.UIGlobals.stage.removeEventListener(egret.TouchEvent.TOUCH_MOVE, this.stage_mouseMoveHandler, this);
             egret.UIGlobals.stage.removeEventListener(egret.TouchEvent.TOUCH_END, this.stage_mouseUpHandler, this);
-            egret.UIGlobals.stage.addEventListener(egret.Event.LEAVE_STAGE, this.stage_mouseUpHandler, this);
+            egret.UIGlobals.stage.removeEventListener(egret.Event.LEAVE_STAGE, this.stage_mouseUpHandler, this);
             this.removeEventListener(egret.Event.ENTER_FRAME, this.updateWhenMouseMove, this);
             if (this.needUpdateValue) {
                 this.updateWhenMouseMove();

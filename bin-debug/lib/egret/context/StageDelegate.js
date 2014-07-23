@@ -30,8 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../utils/HashObject.ts"/>
-/// <reference path="../utils/Logger.ts"/>
 var egret;
 (function (egret) {
     /**
@@ -39,7 +37,6 @@ var egret;
     * @classdesc
     * StageDelegate负责处理屏幕适配策略
     * 有关屏幕适配策略，更多信息请了解 GitHub:理解egret的GameLauncher
-    * @stable B 目前StageDelegate和HTML5有一定的耦合关系，之后会对其解耦，保证NativeApp的正确运行
     * @extends egret.HashObject
     */
     var StageDelegate = (function (_super) {
@@ -51,16 +48,12 @@ var egret;
             _super.call(this);
             this._designWidth = 0;
             this._designHeight = 0;
-            this._originalDesignWidth = 0;
-            this._originalDesignHeight = 0;
             this._scaleX = 1;
             this._scaleY = 1;
             var canvas = document.getElementById(StageDelegate.canvas_name);
             var w = canvas.width, h = canvas.height;
             this._designWidth = w;
             this._designHeight = h;
-            this._originalDesignWidth = w;
-            this._originalDesignHeight = h;
         }
         /**
         * @method egret.StageDelegate.getInstance
@@ -69,7 +62,6 @@ var egret;
         StageDelegate.getInstance = function () {
             if (StageDelegate.instance == null) {
                 ContainerStrategy.initialize();
-                ContentStrategy.initialize();
                 StageDelegate.instance = new StageDelegate();
             }
             return StageDelegate.instance;
@@ -82,18 +74,9 @@ var egret;
         * @param resolutionPolicy {any}
         */
         StageDelegate.prototype.setDesignSize = function (width, height, resolutionPolicy) {
-            // Defensive code
-            if (isNaN(width) || width == 0 || isNaN(height) || height == 0) {
-                egret.Logger.info("Resolution Error");
-                return;
-            }
             this.setResolutionPolicy(resolutionPolicy);
-
             this._designWidth = width;
             this._designHeight = height;
-            this._originalDesignWidth = width;
-            this._originalDesignHeight = height;
-
             this._resolutionPolicy._apply(this, this._designWidth, this._designHeight);
         };
 
@@ -102,23 +85,8 @@ var egret;
         * @param resolutionPolic {any}
         */
         StageDelegate.prototype.setResolutionPolicy = function (resolutionPolicy) {
-            if (resolutionPolicy instanceof ResolutionPolicy) {
-                this._resolutionPolicy = resolutionPolicy;
-            } else {
-                switch (resolutionPolicy) {
-                    case ResolutionPolicy.FIXED_HEIGHT:
-                        this._resolutionPolicy = new ResolutionPolicy(ContainerStrategy.EQUAL_TO_FRAME, ContentStrategy.FIXED_HEIGHT);
-                        break;
-                    case ResolutionPolicy.FIXED_WIDTH:
-                        this._resolutionPolicy = new ResolutionPolicy(ContainerStrategy.EQUAL_TO_FRAME, ContentStrategy.FIXED_WIDTH);
-                        break;
-                }
-            }
-            if (this._resolutionPolicy != null)
-                this._resolutionPolicy.init(this);
-            else {
-                egret.Logger.fatal("需要先设置resolutionPolicy");
-            }
+            this._resolutionPolicy = resolutionPolicy;
+            resolutionPolicy.init(this);
         };
 
         /**
@@ -152,7 +120,7 @@ var egret;
         }
         /**
         * @method egret.ResolutionPolicy#init
-        * @param view {any}
+        * @param view {egret.StageDelegate}
         */
         ResolutionPolicy.prototype.init = function (view) {
             this._containerStrategy.init(view);
@@ -187,9 +155,6 @@ var egret;
             if (contentStg instanceof ContentStrategy)
                 this._contentStrategy = contentStg;
         };
-        ResolutionPolicy.FIXED_HEIGHT = 1;
-
-        ResolutionPolicy.FIXED_WIDTH = 2;
         return ResolutionPolicy;
     })();
     egret.ResolutionPolicy = ResolutionPolicy;
@@ -274,14 +239,6 @@ var egret;
         function ContentStrategy() {
         }
         /**
-        * @method egret.ContentStrategy.initialize
-        */
-        ContentStrategy.initialize = function () {
-            ContentStrategy.FIXED_HEIGHT = new FixedHeight();
-            ContentStrategy.FIXED_WIDTH = new FixedWidth();
-        };
-
-        /**
         * @method egret.ContentStrategy#init
         * @param vie {any}
         */
@@ -296,9 +253,6 @@ var egret;
         */
         ContentStrategy.prototype._apply = function (delegate, designedResolutionWidth, designedResolutionHeight) {
         };
-        ContentStrategy.FIXED_HEIGHT = null;
-
-        ContentStrategy.FIXED_WIDTH = null;
         return ContentStrategy;
     })();
     egret.ContentStrategy = ContentStrategy;
@@ -413,4 +367,33 @@ var egret;
         return FixedSize;
     })(ContentStrategy);
     egret.FixedSize = FixedSize;
+
+    /**
+    * @class egret.NoScale
+    * @classdesc
+    * @extends egret.ContentStrategy
+    */
+    var NoScale = (function (_super) {
+        __extends(NoScale, _super);
+        function NoScale(width, height) {
+            _super.call(this);
+            this.width = width;
+            this.height = height;
+        }
+        /**
+        * @method egret.NoScale#_apply
+        * @param delegate {egret.StageDelegate}
+        * @param designedResolutionWidth {number}
+        * @param designedResolutionHeight {number}
+        */
+        NoScale.prototype._apply = function (delegate, designedResolutionWidth, designedResolutionHeight) {
+            var canvas = document.getElementById(StageDelegate.canvas_name);
+            canvas.style.width = canvas.width + "px";
+            canvas.style.height = canvas.height + "px";
+            delegate._scaleX = 1;
+            delegate._scaleY = 1;
+        };
+        return NoScale;
+    })(ContentStrategy);
+    egret.NoScale = NoScale;
 })(egret || (egret = {}));

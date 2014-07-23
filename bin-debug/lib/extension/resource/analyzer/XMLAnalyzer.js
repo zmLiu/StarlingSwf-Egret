@@ -21,11 +21,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../../../egret/net/URLLoaderDataFormat.ts"/>
-/// <reference path="../../../egret/utils/SAXParser.ts"/>
-/// <reference path="../../../egret/utils/XML.ts"/>
-/// <reference path="BinAnalyzer.ts"/>
-/// <reference path="../core/ResourceItem.ts"/>
 var RES;
 (function (RES) {
     var XMLAnalyzer = (function (_super) {
@@ -44,9 +39,7 @@ var RES;
             }
             try  {
                 var xmlStr = data;
-                var xmlDoc = egret.SAXParser.getInstance().parserXML(xmlStr);
-                var xml = new egret.XML();
-                xml._ansXML(xmlDoc.documentElement);
+                var xml = egret.XML.parse(xmlStr);
                 this.fileDic[name] = xml;
             } catch (e) {
             }

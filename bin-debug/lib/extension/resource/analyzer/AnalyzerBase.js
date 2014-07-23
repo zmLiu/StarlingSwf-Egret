@@ -21,9 +21,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../../../egret/utils/HashObject.ts"/>
-/// <reference path="../Resource.ts"/>
-/// <reference path="../core/ResourceItem.ts"/>
 var RES;
 (function (RES) {
     var AnalyzerBase = (function (_super) {

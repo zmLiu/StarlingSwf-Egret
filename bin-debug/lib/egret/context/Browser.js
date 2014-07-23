@@ -30,8 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="MainContext.ts"/>
-/// <reference path="../utils/HashObject.ts"/>
 var egret;
 (function (egret) {
     /**

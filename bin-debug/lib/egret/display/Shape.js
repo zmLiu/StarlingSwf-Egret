@@ -30,12 +30,12 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../context/MainContext.ts"/>
-/// <reference path="../context/renderer/RendererContext.ts"/>
-/// <reference path="DisplayObject.ts"/>
-/// <reference path="Graphics.ts"/>
 var egret;
 (function (egret) {
+    /**
+    * @class egret.Shape
+    * @classdesc 此类用于使用 Egret 绘图应用程序编程接口 (API) 创建简单形状。Shape 类包括 graphics 属性，该属性使您可以从 Graphics 类访问方法。
+    */
     var Shape = (function (_super) {
         __extends(Shape, _super);
         function Shape() {
@@ -55,7 +55,7 @@ var egret;
 
         Shape.prototype._render = function (renderContext) {
             if (this._graphics)
-                this._graphics._draw();
+                this._graphics._draw(renderContext);
         };
         return Shape;
     })(egret.DisplayObject);

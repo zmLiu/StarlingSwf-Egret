@@ -15,8 +15,6 @@
 * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-/// <reference path="../Resource.ts"/>
-/// <reference path="ResourceItem.ts"/>
 var RES;
 (function (RES) {
     /**
@@ -38,7 +36,7 @@ var RES;
         * 根据组名获取组加载项列表
         * @method RES.ResourceConfig#getGroupByName
         * @param name {string} 组名
-        * @returns {egret.ResourceItem}
+        * @returns {Array<egret.ResourceItem>}
         */
         ResourceConfig.prototype.getGroupByName = function (name) {
             var group = new Array();
@@ -54,11 +52,23 @@ var RES;
         };
 
         /**
+        * 根据组名获取原始的组加载项列表
+        * @method RES.ResourceConfig#getRawGroupByName
+        * @param name {string} 组名
+        * @returns {Array<any>}
+        */
+        ResourceConfig.prototype.getRawGroupByName = function (name) {
+            if (this.groupDic[name])
+                return this.groupDic[name];
+            return [];
+        };
+
+        /**
         * 创建自定义的加载资源组,注意：此方法仅在资源配置文件加载完成后执行才有效。
         * 可以监听ResourceEvent.CONFIG_COMPLETE事件来确认配置加载完成。
         * @method RES.ResourceConfig#createGroup
         * @param name {string} 要创建的加载资源组的组名
-        * @param keys {egret.Array<string>} 要包含的键名列表，key对应配置文件里的name属性或sbuKeys属性的一项。
+        * @param keys {egret.Array<string>} 要包含的键名列表，key对应配置文件里的name属性或一个资源组名。
         * @param override {boolean} 是否覆盖已经存在的同名资源组,默认false。
         * @returns {boolean}
         */
@@ -66,13 +76,24 @@ var RES;
             if (typeof override === "undefined") { override = false; }
             if ((!override && this.groupDic[name]) || !keys || keys.length == 0)
                 return false;
+            var groupDic = this.groupDic;
             var group = [];
             var length = keys.length;
             for (var i = 0; i < length; i++) {
                 var key = keys[i];
-                var item = this.keyMap[key];
-                if (item && group.indexOf(item) == -1)
-                    group.push(item);
+                var g = groupDic[key];
+                if (g) {
+                    var len = g.length;
+                    for (var j = 0; j < len; j++) {
+                        var item = g[j];
+                        if (group.indexOf(item) == -1)
+                            group.push(item);
+                    }
+                } else {
+                    item = this.keyMap[key];
+                    if (item && group.indexOf(item) == -1)
+                        group.push(item);
+                }
             }
             if (group.length == 0)
                 return false;
@@ -108,7 +129,7 @@ var RES;
                     var keys = group.keys.split(",");
                     var l = keys.length;
                     for (var j = 0; j < l; j++) {
-                        var name = this.trim(keys[j]);
+                        var name = keys[j].trim();
                         item = this.keyMap[name];
                         if (item && list.indexOf(item) == -1) {
                             list.push(item);
@@ -128,6 +149,10 @@ var RES;
         ResourceConfig.prototype.getType = function (name) {
             var data = this.keyMap[name];
             return data ? data.type : "";
+        };
+
+        ResourceConfig.prototype.getRawResourceItem = function (name) {
+            return this.keyMap[name];
         };
 
         /**
@@ -150,27 +175,6 @@ var RES;
             var resItem = new RES.ResourceItem(data.name, data.url, data.type);
             resItem.data = data;
             return resItem;
-        };
-
-        /**
-        * 去掉字符串两端所有连续的不可见字符。
-        * 注意：若目标字符串为null或不含有任何可见字符,将输出空字符串""。
-        * @param str 要格式化的字符串
-        */
-        ResourceConfig.prototype.trim = function (str) {
-            if (!str)
-                return "";
-            var strChar = str.charAt(0);
-            while (str.length > 0 && (strChar == " " || strChar == "\t" || strChar == "\n" || strChar == "\r" || strChar == "\f")) {
-                str = str.substr(1);
-                strChar = str.charAt(0);
-            }
-            strChar = str.charAt(str.length - 1);
-            while (str.length > 0 && (strChar == " " || strChar == "\t" || strChar == "\n" || strChar == "\r" || strChar == "\f")) {
-                str = str.substr(0, str.length - 1);
-                strChar = str.charAt(str.length - 1);
-            }
-            return str;
         };
         return ResourceConfig;
     })();

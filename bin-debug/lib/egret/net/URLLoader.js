@@ -30,10 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../context/MainContext.ts"/>
-/// <reference path="../events/EventDispatcher.ts"/>
-/// <reference path="URLLoaderDataFormat.ts"/>
-/// <reference path="URLRequest.ts"/>
 var egret;
 (function (egret) {
     /**

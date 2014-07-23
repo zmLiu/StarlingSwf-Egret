@@ -30,15 +30,11 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="DisplayObject.ts"/>
-/// <reference path="DisplayObjectContainer.ts"/>
-/// <reference path="../events/Event.ts"/>
-/// <reference path="../geom/Matrix.ts"/>
-/// <reference path="../geom/Rectangle.ts"/>
 var egret;
 (function (egret) {
     /**
-    * @class Stage
+    * @class egret.Stage
+    * @classdesc Stage 类代表主绘图区。
     */
     var Stage = (function (_super) {
         __extends(Stage, _super);
@@ -95,6 +91,7 @@ var egret;
         });
 
         /**
+        * @member egret.Stage#hitTest
         * @see egret.DisplayObject#hitTest
         * @param x
         * @param y
@@ -128,6 +125,7 @@ var egret;
         };
 
         /**
+        * @member egret.Stage#getBounds
         * @see egret.DisplayObject#getBounds
         * @param resultRect {egret.Rectangle} 可选参数，传入用于保存结果的Rectangle对象，避免重复创建对象。
         * @returns {egret.Rectangle}

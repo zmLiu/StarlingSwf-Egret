@@ -30,11 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../components/SkinnableComponent.ts"/>
-/// <reference path="../core/IContainer.ts"/>
-/// <reference path="../core/IStateClient.ts"/>
-/// <reference path="../core/IVisualElement.ts"/>
-/// <reference path="OverrideBase.ts"/>
 var egret;
 (function (egret) {
     /**

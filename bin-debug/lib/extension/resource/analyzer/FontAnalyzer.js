@@ -30,9 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../../../egret/display/Texture.ts"/>
-/// <reference path="../../../egret/text/BitmapTextSpriteSheet.ts"/>
-/// <reference path="../core/ResourceItem.ts"/>
 var RES;
 (function (RES) {
     var FontAnalyzer = (function (_super) {
@@ -59,7 +56,7 @@ var RES;
                 config = this.sheetMap[name];
                 delete this.sheetMap[name];
                 if (texture) {
-                    var spriteSheet = new egret.BitmapTextSpriteSheet(texture._bitmapData, config);
+                    var spriteSheet = new egret.BitmapTextSpriteSheet(texture, config);
                     this.fileDic[name] = spriteSheet;
                 }
             }

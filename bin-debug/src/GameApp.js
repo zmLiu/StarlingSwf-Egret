@@ -30,9 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-///<reference path="egret.d.ts"/>
-///<reference path="LoadingUI.ts"/>
-///<reference path="starlingswf.d.ts"/>
 var GameApp = (function (_super) {
     __extends(GameApp, _super);
     function GameApp() {
@@ -49,7 +46,7 @@ var GameApp = (function (_super) {
 
         //初始化Resource资源加载库
         RES.addEventListener(RES.ResourceEvent.CONFIG_COMPLETE, this.onConfigComp, this);
-        RES.loadConfig("resources/resource.json", "resources/");
+        RES.loadConfig("resource/resource.json", "resource/");
     };
 
     /**

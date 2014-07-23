@@ -30,10 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../context/display/StageText.ts"/>
-/// <reference path="../display/DisplayObject.ts"/>
-/// <reference path="../events/TouchEvent.ts"/>
-/// <reference path="../geom/Rectangle.ts"/>
 var egret;
 (function (egret) {
     var TextInput = (function (_super) {

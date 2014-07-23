@@ -21,19 +21,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../../egret/events/EventDispatcher.ts"/>
-/// <reference path="../../egret/utils/Injector.ts"/>
-/// <reference path="analyzer/AnalyzerBase.ts"/>
-/// <reference path="analyzer/BinAnalyzer.ts"/>
-/// <reference path="analyzer/SoundAnalyzer.ts"/>
-/// <reference path="analyzer/ImageAnalyzer.ts"/>
-/// <reference path="analyzer/JsonAnalyzer.ts"/>
-/// <reference path="analyzer/TextAnalyzer.ts"/>
-/// <reference path="analyzer/XMLAnalyzer.ts"/>
-/// <reference path="core/ResourceConfig.ts"/>
-/// <reference path="core/ResourceItem.ts"/>
-/// <reference path="core/ResourceLoader.ts"/>
-/// <reference path="events/ResourceEvent.ts"/>
 var RES;
 (function (RES) {
     /**
@@ -88,7 +75,7 @@ var RES;
     * 可以监听ResourceEvent.CONFIG_COMPLETE事件来确认配置加载完成。
     * @method RES.createGroup
     * @param name {string} 要创建的加载资源组的组名
-    * @param keys {egret.Array<string>} 要包含的键名列表，key对应配置文件里的name属性或sbuKeys属性的一项。
+    * @param keys {egret.Array<string>} 要包含的键名列表，key对应配置文件里的name属性或一个资源组名。
     * @param override {boolean} 是否覆盖已经存在的同名资源组,默认false。
     * @returns {boolean}
     */
@@ -147,9 +134,9 @@ var RES;
     RES.getResByUrl = getResByUrl;
 
     /**
-    * 销毁某个资源文件的缓存数据,返回是否删除成功。
+    * 销毁单个资源文件或一组资源的缓存数据,返回是否删除成功。
     * @method RES.destroyRes
-    * @param name {string} 配置文件中加载项的name属性
+    * @param name {string} 配置文件中加载项的name属性或资源组名
     * @returns {boolean}
     */
     function destroyRes(name) {
@@ -284,7 +271,7 @@ var RES;
         * 根据组名获取组加载项列表
         * @method RES.getGroupByName
         * @param name {string}
-        * @returns {egret.ResourceItem}
+        * @returns {Array<egret.ResourceItem>}
         */
         Resource.prototype.getGroupByName = function (name) {
             return this.resConfig.getGroupByName(name);
@@ -309,11 +296,12 @@ var RES;
         };
 
         /**
-        * 创建自定义的加载资源组
-        * @method RES.createGroup
-        * @param name {string}
-        * @param keys {egret.Array<string>}
-        * @param override {boolean}
+        * 创建自定义的加载资源组,注意：此方法仅在资源配置文件加载完成后执行才有效。
+        * 可以监听ResourceEvent.CONFIG_COMPLETE事件来确认配置加载完成。
+        * @method RES.ResourceConfig#createGroup
+        * @param name {string} 要创建的加载资源组的组名
+        * @param keys {egret.Array<string>} 要包含的键名列表，key对应配置文件里的name属性或一个资源组名。
+        * @param override {boolean} 是否覆盖已经存在的同名资源组,默认false。
         * @returns {boolean}
         */
         Resource.prototype.createGroup = function (name, keys, override) {
@@ -390,23 +378,24 @@ var RES;
         * @param compFunc {Function}
         * @param thisObject {any}
         */
-        Resource.prototype.getResAsync = function (name, compFunc, thisObject) {
-            var type = this.resConfig.getType(name);
+        Resource.prototype.getResAsync = function (key, compFunc, thisObject) {
+            var type = this.resConfig.getType(key);
+            var name = key;
             if (type == "") {
-                var prefix = RES.AnalyzerBase.getStringPrefix(name);
-                type = this.resConfig.getType(prefix);
+                name = RES.AnalyzerBase.getStringPrefix(key);
+                type = this.resConfig.getType(name);
                 if (type == "") {
                     compFunc.call(thisObject, null);
                     return;
                 }
             }
             var analyzer = this.getAnalyzerByType(type);
-            var res = analyzer.getRes(name);
+            var res = analyzer.getRes(key);
             if (res) {
                 compFunc.call(thisObject, res);
                 return;
             }
-            var args = { name: name, compFunc: compFunc, thisObject: thisObject };
+            var args = { name: key, compFunc: compFunc, thisObject: thisObject };
             if (this.asyncDic[name]) {
                 this.asyncDic[name].push(args);
             } else {
@@ -496,17 +485,35 @@ var RES;
         };
 
         /**
-        * 销毁某个资源文件的缓存数据,返回是否删除成功。
+        * 销毁单个资源文件或一组资源的缓存数据,返回是否删除成功。
         * @method RES.destroyRes
-        * @param name {string} 配置文件中加载项的name属性
+        * @param name {string} 配置文件中加载项的name属性或资源组名
         * @returns {boolean}
         */
         Resource.prototype.destroyRes = function (name) {
-            var type = this.resConfig.getType(name);
-            if (type == "")
-                return false;
-            var analyzer = this.getAnalyzerByType(type);
-            return analyzer.destroyRes(name);
+            var group = this.resConfig.getRawGroupByName(name);
+            if (group) {
+                var index = this.loadedGroups.indexOf(name);
+                if (index != -1) {
+                    this.loadedGroups.splice(index, 1);
+                }
+                var length = group.length;
+                for (var i = 0; i < length; i++) {
+                    var item = group[i];
+                    item.loaded = false;
+                    var analyzer = this.getAnalyzerByType(item.type);
+                    analyzer.destroyRes(item.name);
+                }
+                return true;
+            } else {
+                var type = this.resConfig.getType(name);
+                if (type == "")
+                    return false;
+                item = this.resConfig.getRawResourceItem(name);
+                item.loaded = false;
+                analyzer = this.getAnalyzerByType(type);
+                return analyzer.destroyRes(name);
+            }
         };
         Resource.GROUP_CONFIG = "RES__CONFIG";
         return Resource;

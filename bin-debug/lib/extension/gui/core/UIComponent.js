@@ -30,21 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../../../egret/display/DisplayObject.ts"/>
-/// <reference path="../../../egret/display/DisplayObjectContainer.ts"/>
-/// <reference path="../../../egret/events/Event.ts"/>
-/// <reference path="../../../egret/utils/Logger.ts"/>
-/// <reference path="IInvalidating.ts"/>
-/// <reference path="ILayoutElement.ts"/>
-/// <reference path="IUIComponent.ts"/>
-/// <reference path="IVisualElement.ts"/>
-/// <reference path="UIGlobals.ts"/>
-/// <reference path="../events/MoveEvent.ts"/>
-/// <reference path="../events/PropertyChangeEvent.ts"/>
-/// <reference path="../events/PropertyChangeEventKind.ts"/>
-/// <reference path="../events/ResizeEvent.ts"/>
-/// <reference path="../events/UIEvent.ts"/>
-/// <reference path="../managers/ILayoutManagerClient.ts"/>
 var egret;
 (function (egret) {
     /**
@@ -1119,8 +1104,6 @@ var egret;
         * @param layoutHeight {number}
         */
         UIComponent.prototype.setLayoutBoundsSize = function (layoutWidth, layoutHeight) {
-            layoutWidth /= this.scaleX;
-            layoutHeight /= this.scaleY;
             if (isNaN(layoutWidth)) {
                 this._layoutWidthExplicitlySet = false;
                 layoutWidth = this.preferredWidth;
@@ -1134,7 +1117,7 @@ var egret;
                 this._layoutHeightExplicitlySet = true;
             }
 
-            this.setActualSize(layoutWidth, layoutHeight);
+            this.setActualSize(layoutWidth / this._scaleX, layoutHeight / this._scaleY);
         };
 
         /**
@@ -1143,6 +1126,12 @@ var egret;
         * @param y {number}
         */
         UIComponent.prototype.setLayoutBoundsPosition = function (x, y) {
+            if (this._scaleX < 0) {
+                x += this.layoutBoundsWidth;
+            }
+            if (this._scaleY < 0) {
+                y += this.layoutBoundsHeight;
+            }
             var changed = false;
             if (this._x != x) {
                 this._x = x;
@@ -1162,10 +1151,12 @@ var egret;
             * @member egret.UIComponent#preferredWidth
             */
             get: function () {
-                var w = isNaN(this._explicitWidth) ? this.measuredWidth : this._explicitWidth;
-                if (isNaN(w))
-                    return 0;
-                return w * this.scaleX;
+                var w = this._hasWidthSet ? this._explicitWidth : this._measuredWidth;
+                var scaleX = this._scaleX;
+                if (scaleX < 0) {
+                    scaleX = -scaleX;
+                }
+                return w * scaleX;
             },
             enumerable: true,
             configurable: true
@@ -1176,10 +1167,12 @@ var egret;
             * @member egret.UIComponent#preferredHeight
             */
             get: function () {
-                var h = isNaN(this._explicitHeight) ? this.measuredHeight : this._explicitHeight;
-                if (isNaN(h))
-                    return 0;
-                return h * this.scaleY;
+                var h = this._hasHeightSet ? this._explicitHeight : this._measuredHeight;
+                var scaleY = this._scaleY;
+                if (scaleY < 0) {
+                    scaleY = -scaleY;
+                }
+                return h * scaleY;
             },
             enumerable: true,
             configurable: true
@@ -1190,7 +1183,11 @@ var egret;
             * @member egret.UIComponent#preferredX
             */
             get: function () {
-                return this._x;
+                if (this._scaleX >= 0) {
+                    return this._x;
+                }
+                var w = this.preferredWidth;
+                return this._x - w;
             },
             enumerable: true,
             configurable: true
@@ -1201,7 +1198,11 @@ var egret;
             * @member egret.UIComponent#preferredY
             */
             get: function () {
-                return this._y;
+                if (this._scaleY >= 0) {
+                    return this._y;
+                }
+                var h = this.preferredHeight;
+                return this._y - h;
             },
             enumerable: true,
             configurable: true
@@ -1212,7 +1213,11 @@ var egret;
             * @member egret.UIComponent#layoutBoundsX
             */
             get: function () {
-                return this._x;
+                if (this._scaleX >= 0) {
+                    return this._x;
+                }
+                var w = this.layoutBoundsWidth;
+                return this._x - w;
             },
             enumerable: true,
             configurable: true
@@ -1223,7 +1228,11 @@ var egret;
             * @member egret.UIComponent#layoutBoundsY
             */
             get: function () {
-                return this._y;
+                if (this._scaleY >= 0) {
+                    return this._y;
+                }
+                var h = this.layoutBoundsHeight;
+                return this._y - h;
             },
             enumerable: true,
             configurable: true
@@ -1237,12 +1246,16 @@ var egret;
                 var w = 0;
                 if (this._layoutWidthExplicitlySet) {
                     w = this._width;
-                } else if (!isNaN(this.explicitWidth)) {
+                } else if (this._hasWidthSet) {
                     w = this._explicitWidth;
                 } else {
-                    w = this.measuredWidth;
+                    w = this._measuredWidth;
                 }
-                return w * this.scaleX;
+                var scaleX = this._scaleX;
+                if (scaleX < 0) {
+                    scaleX = -scaleX;
+                }
+                return w * scaleX;
             },
             enumerable: true,
             configurable: true
@@ -1258,12 +1271,16 @@ var egret;
                 var h = 0;
                 if (this._layoutHeightExplicitlySet) {
                     h = this._height;
-                } else if (!isNaN(this.explicitHeight)) {
+                } else if (this._hasHeightSet) {
                     h = this._explicitHeight;
                 } else {
-                    h = this.measuredHeight;
+                    h = this._measuredHeight;
                 }
-                return h * this.scaleY;
+                var scaleY = this.scaleY;
+                if (scaleY < 0) {
+                    scaleY = -scaleY;
+                }
+                return h * scaleY;
             },
             enumerable: true,
             configurable: true

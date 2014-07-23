@@ -30,16 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../../../egret/display/DisplayObjectContainer.ts"/>
-/// <reference path="../../../egret/events/Event.ts"/>
-/// <reference path="../components/Group.ts"/>
-/// <reference path="IContainer.ts"/>
-/// <reference path="IUIStage.ts"/>
-/// <reference path="IVisualElement.ts"/>
-/// <reference path="UIGlobals.ts"/>
-/// <reference path="UILayer.ts"/>
-/// <reference path="../layouts/BasicLayout.ts"/>
-/// <reference path="../layouts/supportClasses/LayoutBase.ts"/>
 var egret;
 (function (egret) {
     /**
@@ -59,6 +49,7 @@ var egret;
         */
         function UIStage() {
             _super.call(this);
+            this._autoResize = true;
             this._noTopMostIndex = 0;
             this._topMostIndex = 0;
             this._toolTipIndex = 0;
@@ -75,8 +66,10 @@ var egret;
                 throw new Error("UIStage是GUI根容器，只能有一个此实例在显示列表中！");
             }
             egret.UIGlobals._uiStage = this;
-            this.stage.addEventListener(egret.Event.RESIZE, this.onResize, this);
-            this.onResize();
+            if (this._autoResize) {
+                this.stage.addEventListener(egret.Event.RESIZE, this.onResize, this);
+                this.onResize();
+            }
         };
 
         /**
@@ -84,7 +77,9 @@ var egret;
         */
         UIStage.prototype.onRemoveFromStage = function (event) {
             egret.UIGlobals._uiStage = null;
-            this.stage.removeEventListener(egret.Event.RESIZE, this.onResize, this);
+            if (this._autoResize) {
+                this.stage.removeEventListener(egret.Event.RESIZE, this.onResize, this);
+            }
         };
 
         /**
@@ -95,6 +90,33 @@ var egret;
             this._setWidth(this.stage.stageWidth);
             this._setHeight(this.stage.stageHeight);
         };
+
+        Object.defineProperty(UIStage.prototype, "autoResize", {
+            /**
+            * 是否自动跟随舞台缩放。当此属性为true时，将强制让UIState始终与舞台保持相同大小。
+            * 反之需要外部手动同步大小。默认值为true。
+            * @member egret.UIStage#autoResize
+            */
+            get: function () {
+                return this._autoResize;
+            },
+            set: function (value) {
+                if (this._autoResize == value)
+                    return;
+                this._autoResize = value;
+                if (!this.stage)
+                    return;
+                if (this._autoResize) {
+                    this.stage.addEventListener(egret.Event.RESIZE, this.onResize, this);
+                    this.onResize();
+                } else {
+                    this.stage.removeEventListener(egret.Event.RESIZE, this.onResize, this);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+
 
         Object.defineProperty(UIStage.prototype, "x", {
             //==========================================================================
@@ -110,6 +132,9 @@ var egret;
             * @inheritDoc
             */
             set: function (value) {
+                if (this._autoResize)
+                    return;
+                this._x = value;
             },
             enumerable: true,
             configurable: true
@@ -127,6 +152,9 @@ var egret;
             * @inheritDoc
             */
             set: function (value) {
+                if (this._autoResize)
+                    return;
+                this._y = value;
             },
             enumerable: true,
             configurable: true
@@ -144,6 +172,9 @@ var egret;
             * @inheritDoc
             */
             set: function (value) {
+                if (this._autoResize)
+                    return;
+                this._setWidth(value);
             },
             enumerable: true,
             configurable: true
@@ -161,6 +192,9 @@ var egret;
             * @inheritDoc
             */
             set: function (value) {
+                if (this._autoResize)
+                    return;
+                this._setHeight(value);
             },
             enumerable: true,
             configurable: true
@@ -178,6 +212,9 @@ var egret;
             * @inheritDoc
             */
             set: function (value) {
+                if (this._autoResize)
+                    return;
+                this._setScaleX(value);
             },
             enumerable: true,
             configurable: true
@@ -195,6 +232,9 @@ var egret;
             * @inheritDoc
             */
             set: function (value) {
+                if (this._autoResize)
+                    return;
+                this._setScaleY(value);
             },
             enumerable: true,
             configurable: true
@@ -207,6 +247,9 @@ var egret;
         * @param h {number}
         */
         UIStage.prototype.setActualSize = function (w, h) {
+            if (this._autoResize)
+                return;
+            _super.prototype.setActualSize.call(this, w, h);
         };
 
         /**
@@ -215,6 +258,9 @@ var egret;
         * @param y {number}
         */
         UIStage.prototype.setLayoutBoundsPosition = function (x, y) {
+            if (this._autoResize)
+                return;
+            _super.prototype.setLayoutBoundsPosition.call(this, x, y);
         };
 
         /**
@@ -223,6 +269,9 @@ var egret;
         * @param layoutHeight {number}
         */
         UIStage.prototype.setLayoutBoundsSize = function (layoutWidth, layoutHeight) {
+            if (this._autoResize)
+                return;
+            _super.prototype.setLayoutBoundsSize.call(this, layoutWidth, layoutHeight);
         };
 
         Object.defineProperty(UIStage.prototype, "layout", {

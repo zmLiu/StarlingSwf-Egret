@@ -30,11 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="Event.ts"/>
-/// <reference path="IEventDispatcher.ts"/>
-/// <reference path="../utils/HashObject.ts"/>
-/// <reference path="../utils/Recycler.ts"/>
-/// <reference path="../../jslib/DEBUG.d.ts"/>
 var egret;
 (function (egret) {
     /**
@@ -56,11 +51,6 @@ var egret;
         function EventDispatcher(target) {
             if (typeof target === "undefined") { target = null; }
             _super.call(this);
-            /**
-            * 引擎内部调用
-            * @private
-            */
-            this._isUseCapture = false;
             if (target) {
                 this._eventTarget = target;
             } else {
@@ -83,8 +73,14 @@ var egret;
         EventDispatcher.prototype.addEventListener = function (type, listener, thisObject, useCapture, priority) {
             if (typeof useCapture === "undefined") { useCapture = false; }
             if (typeof priority === "undefined") { priority = 0; }
-            if (egret.DEBUG && egret.DEBUG.ADD_EVENT_LISTENER) {
-                egret.DEBUG.checkAddEventListener(type, listener, thisObject, useCapture, priority);
+            if (typeof useCapture === "undefined") {
+                useCapture = false;
+            }
+            if (typeof priority === "undefined") {
+                priority = 0;
+            }
+            if (!listener) {
+                egret.Logger.fatal("addEventListener侦听函数不能为空");
             }
             var eventMap;
             if (useCapture) {
@@ -233,7 +229,6 @@ var egret;
             if (typeof bubbles === "undefined") { bubbles = false; }
             egret.Event.dispatchEvent(this, type, bubbles, data);
         };
-        EventDispatcher.eventRecycler = new egret.Recycler();
         return EventDispatcher;
     })(egret.HashObject);
     egret.EventDispatcher = EventDispatcher;

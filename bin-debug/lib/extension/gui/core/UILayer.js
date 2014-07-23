@@ -24,10 +24,6 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-/// <reference path="../../../egret/display/DisplayObjectContainer.ts"/>
-/// <reference path="IContainer.ts"/>
-/// <reference path="IUIStage.ts"/>
-/// <reference path="IVisualElement.ts"/>
 var egret;
 (function (egret) {
     /**

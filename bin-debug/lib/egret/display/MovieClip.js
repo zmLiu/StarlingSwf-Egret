@@ -39,40 +39,25 @@ var __extends = this.__extends || function (d, b) {
 /// <reference path="../utils/Logger.ts"/>
 var egret;
 (function (egret) {
-    /**
-    * MovieClip是位图动画序列类，由FlashPro + egret插件生成配置文件
-    */
     var MovieClip = (function (_super) {
         __extends(MovieClip, _super);
         function MovieClip(data, texture) {
             _super.call(this);
-            this.data = data;
-            this._resPool = {};
-            this._currentFrameIndex = 0;
-            this._totalFrame = 0;
-            this._interval = 0;
-            this._currentInterval = 0;
-            this._isPlaying = false;
-            this._passTime = 0;
-            this._oneFrameTime = 1000 / 60;
-            this._frameData = data;
-            this._spriteSheet = new egret.SpriteSheet(texture._bitmapData);
-            this._oneFrameTime = 1000 / egret.MainContext.instance.deviceContext.frameRate;
+            this.frameRate = 60;
+            if (texture != null && texture instanceof egret.Texture) {
+                egret.Logger.warning("MovieClip#constructor接口参数已经变更，请尽快调整用法为 new MovieClip(new DefaultMovieClipDelegate(data,texture))");
+                this.delegate = new DefaultMovieClipDelegate(data, texture);
+            } else {
+                this.delegate = data;
+            }
+            this.delegate.setMovieClip(this);
         }
         /**
         * 播放指定动画
         * @param frameName
         */
         MovieClip.prototype.gotoAndPlay = function (frameName) {
-            this.checkHasFrame(frameName);
-            this._isPlaying = true;
-            this._currentFrameIndex = 0;
-            this._currentInterval = 0;
-            this._currentFrameName = frameName;
-            this._totalFrame = this._frameData.frames[frameName].totalFrame;
-            this.playNextFrame();
-            this._passTime = 0;
-            egret.Ticker.getInstance().register(this.update, this);
+            this.delegate.gotoAndPlay(frameName);
         };
 
         /**
@@ -80,37 +65,120 @@ var egret;
         * @param frameName
         */
         MovieClip.prototype.gotoAndStop = function (frameName) {
-            this.checkHasFrame(frameName);
-            this.stop();
-            this._currentFrameIndex = 0;
-            this._currentInterval = 0;
-            this._currentFrameName = frameName;
-            this._totalFrame = this._frameData.frames[frameName].totalFrame;
-            this.playNextFrame();
-        };
-
-        MovieClip.prototype.checkHasFrame = function (name) {
-            if (this._frameData.frames[name] == undefined) {
-                egret.Logger.fatal("MovieClip没有对应的frame：", name);
-            }
+            this.delegate.gotoAndStop(frameName);
         };
 
         /**
         * 暂停动画
         */
         MovieClip.prototype.stop = function () {
+            this.delegate.stop();
+        };
+
+        MovieClip.prototype.dispose = function () {
+            this.delegate.dispose();
+        };
+
+        /**
+        * 方法名改为 dispose
+        * @deprecated
+        */
+        MovieClip.prototype.release = function () {
+            egret.Logger.warning("MovieClip#release方法即将废弃");
+            this.dispose();
+        };
+
+        /**
+        * @deprecated
+        */
+        MovieClip.prototype.getCurrentFrameIndex = function () {
+            egret.Logger.warning("MovieClip#getCurrentFrameIndex方法即将废弃");
+            return this.delegate["_currentFrameIndex"];
+        };
+
+        /**
+        * @deprecated
+        */
+        MovieClip.prototype.getTotalFrame = function () {
+            egret.Logger.warning("MovieClip#getTotalFrame方法即将废弃");
+            return this.delegate["_totalFrame"];
+        };
+
+        /**
+        * @deprecated
+        */
+        MovieClip.prototype.setInterval = function (value) {
+            egret.Logger.warning("MovieClip#setInterval方法即将废弃,请使用MovieClip#frameRate代替");
+            this.frameRate = 60 / value;
+        };
+
+        /**
+        * @deprecated
+        */
+        MovieClip.prototype.getIsPlaying = function () {
+            egret.Logger.warning("MovieClip#getIsPlaying方法即将废弃");
+            return this.delegate["isPlaying"];
+        };
+        return MovieClip;
+    })(egret.DisplayObjectContainer);
+    egret.MovieClip = MovieClip;
+
+    var DefaultMovieClipDelegate = (function () {
+        function DefaultMovieClipDelegate(data, texture) {
+            this.data = data;
+            this._totalFrame = 0;
+            this._passTime = 0;
+            this._currentFrameIndex = 0;
+            this._isPlaying = false;
+            this._frameData = data;
+            this._spriteSheet = new egret.SpriteSheet(texture);
+        }
+        DefaultMovieClipDelegate.prototype.setMovieClip = function (movieClip) {
+            this.movieClip = movieClip;
+            this.bitmap = new egret.Bitmap();
+            this.movieClip.addChild(this.bitmap);
+        };
+
+        DefaultMovieClipDelegate.prototype.gotoAndPlay = function (frameName) {
+            this.checkHasFrame(frameName);
+            this._isPlaying = true;
+            this._currentFrameIndex = 0;
+            this._currentFrameName = frameName;
+
+            this.playNextFrame();
+            this._passTime = 0;
+            egret.Ticker.getInstance().register(this.update, this);
+            this._totalFrame = this._frameData.frames[frameName].totalFrame;
+        };
+
+        DefaultMovieClipDelegate.prototype.gotoAndStop = function (frameName) {
+            this.checkHasFrame(frameName);
+            this.stop();
+            this._passTime = 0;
+            this._currentFrameIndex = 0;
+            this._currentFrameName = frameName;
+            this._totalFrame = this._frameData.frames[frameName].totalFrame;
+            this.playNextFrame();
+        };
+
+        DefaultMovieClipDelegate.prototype.stop = function () {
             this._isPlaying = false;
             egret.Ticker.getInstance().unregister(this.update, this);
         };
 
-        MovieClip.prototype.update = function (frameTime) {
-            //设置间隔之后，间隔不到则不处理
-            if (this._interval != this._currentInterval) {
-                this._currentInterval++;
-                return;
+        DefaultMovieClipDelegate.prototype.dispose = function () {
+        };
+
+        DefaultMovieClipDelegate.prototype.checkHasFrame = function (name) {
+            if (this._frameData.frames[name] == undefined) {
+                egret.Logger.fatal("MovieClip没有对应的frame：", name);
             }
-            var last = this._passTime % this._oneFrameTime;
-            var num = Math.floor((last + frameTime) / this._oneFrameTime);
+        };
+
+        DefaultMovieClipDelegate.prototype.update = function (advancedTime) {
+            var oneFrameTime = 1000 / this.movieClip.frameRate;
+            var last = this._passTime % oneFrameTime;
+            var num = Math.floor((last + advancedTime) / oneFrameTime);
             while (num >= 1) {
                 if (num == 1) {
                     this.playNextFrame();
@@ -119,23 +187,22 @@ var egret;
                 }
                 num--;
             }
-            this._passTime += frameTime;
+            this._passTime += advancedTime;
         };
 
-        MovieClip.prototype.playNextFrame = function (needShow) {
+        DefaultMovieClipDelegate.prototype.playNextFrame = function (needShow) {
             if (typeof needShow === "undefined") { needShow = true; }
-            this._currentInterval = 0;
             var frameData = this._frameData.frames[this._currentFrameName].childrenFrame[this._currentFrameIndex];
             if (needShow) {
-                var bitmap = this.getBitmap(frameData.res);
+                var texture = this.getTexture(frameData.res);
+                var bitmap = this.bitmap;
                 bitmap.x = frameData.x;
                 bitmap.y = frameData.y;
-                this.removeChildren();
-                this.addChild(bitmap);
+                bitmap.texture = texture;
             }
 
             if (frameData.action != null) {
-                this.dispatchEventWith(frameData.action);
+                this.movieClip.dispatchEventWith(frameData.action);
             }
 
             this._currentFrameIndex++;
@@ -144,54 +211,15 @@ var egret;
             }
         };
 
-        MovieClip.prototype.getBitmap = function (name) {
-            var result;
-            if (this._resPool[name] != null) {
-                result = this._resPool[name];
-            } else {
-                var resData = this._frameData.res[name];
-                result = new egret.Bitmap();
-                var texture = this._spriteSheet.getTexture(name);
-                if (!texture) {
-                    texture = this._spriteSheet.createTexture(name, resData.x, resData.y, resData.w, resData.h);
-                }
-                result.texture = texture;
-                this._resPool[name] = result;
+        DefaultMovieClipDelegate.prototype.getTexture = function (name) {
+            var resData = this._frameData.res[name];
+            var texture = this._spriteSheet.getTexture(name);
+            if (!texture) {
+                texture = this._spriteSheet.createTexture(name, resData.x, resData.y, resData.w, resData.h);
             }
-            return result;
+            return texture;
         };
-
-        MovieClip.prototype.release = function () {
-            for (var key in this._resPool) {
-                delete this._resPool[key];
-            }
-        };
-
-        MovieClip.prototype.getCurrentFrameIndex = function () {
-            return this._currentFrameIndex;
-        };
-
-        MovieClip.prototype.getTotalFrame = function () {
-            return this._totalFrame;
-        };
-
-        /**
-        * 设置间隔
-        * @param value
-        */
-        MovieClip.prototype.setInterval = function (value) {
-            this._interval = value;
-        };
-
-        /**
-        * 判断当前动画是否正在播放
-        * @stable D 这个API需要改为 isPlaying()
-        * @returns {Boolean}
-        */
-        MovieClip.prototype.getIsPlaying = function () {
-            return this._isPlaying;
-        };
-        return MovieClip;
-    })(egret.DisplayObjectContainer);
-    egret.MovieClip = MovieClip;
+        return DefaultMovieClipDelegate;
+    })();
+    egret.DefaultMovieClipDelegate = DefaultMovieClipDelegate;
 })(egret || (egret = {}));

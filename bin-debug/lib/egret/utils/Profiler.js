@@ -24,11 +24,6 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-/// <reference path="../context/MainContext.ts"/>
-/// <reference path="../context/Ticker.ts"/>
-/// <reference path="../events/Event.ts"/>
-/// <reference path="../text/TextField.ts"/>
-/// <reference path="getTimer.ts"/>
 var egret;
 (function (egret) {
     /**
@@ -117,7 +112,7 @@ var egret;
                 var timeStr = Math.ceil(this._logicPerformanceCost).toString() + "," + Math.ceil(this._updateTransformPerformanceCost).toString() + "," + Math.ceil(this._renderPerformanceCost).toString() + "," + Math.ceil(egret.MainContext.instance.rendererContext.renderCost).toString();
                 var frameStr = Math.floor(this._tick * 1000 / this._totalDeltaTime).toString();
 
-                this._txt.text = drawStr + "\n" + timeStr + "\n" + frameStr;
+                this._txt.text = "draw:" + drawStr + "\n" + "cost:" + timeStr + "\n" + "FPS:" + frameStr;
 
                 this._totalDeltaTime = 0;
                 this._tick = 0;

@@ -30,9 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../context/Ticker.ts"/>
-/// <reference path="../events/EventDispatcher.ts"/>
-/// <reference path="../utils/Logger.ts"/>
 var egret;
 (function (egret) {
     var Tween = (function (_super) {
@@ -67,7 +64,6 @@ var egret;
 
         Tween.removeTweens = function (target) {
             if (!target.tween_count) {
-                egret.Logger.warning("target没有正在执行tween");
                 return;
             }
             var tweens = Tween._tweens;

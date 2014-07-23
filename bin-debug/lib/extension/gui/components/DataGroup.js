@@ -30,29 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../../../egret/display/DisplayObject.ts"/>
-/// <reference path="../../../egret/events/Event.ts"/>
-/// <reference path="../../../egret/events/TimerEvent.ts"/>
-/// <reference path="../../../egret/geom/Rectangle.ts"/>
-/// <reference path="../../../egret/layout/HorizontalAlign.ts"/>
-/// <reference path="../../../egret/utils/Recycler.ts"/>
-/// <reference path="../../../egret/utils/Timer.ts"/>
-/// <reference path="../collections/ICollection.ts"/>
-/// <reference path="IItemRenderer.ts"/>
-/// <reference path="IItemRendererOwner.ts"/>
-/// <reference path="SkinnableComponent.ts"/>
-/// <reference path="supportClasses/GroupBase.ts"/>
-/// <reference path="supportClasses/ItemRenderer.ts"/>
-/// <reference path="../core/ClassFactory.ts"/>
-/// <reference path="../core/IFactory.ts"/>
-/// <reference path="../core/IInvalidating.ts"/>
-/// <reference path="../core/ISkinnableClient.ts"/>
-/// <reference path="../core/IVisualElement.ts"/>
-/// <reference path="../events/CollectionEvent.ts"/>
-/// <reference path="../events/CollectionEventKind.ts"/>
-/// <reference path="../events/RendererExistenceEvent.ts"/>
-/// <reference path="../layouts/VerticalLayout.ts"/>
-/// <reference path="../layouts/supportClasses/LayoutBase.ts"/>
 var egret;
 (function (egret) {
     /**
@@ -505,7 +482,6 @@ var egret;
 
             if (oldRenderer && oldRenderer instanceof egret.DisplayObject) {
                 this.recycle(oldRenderer);
-                egret.RendererExistenceEvent.dispatchRendererExistenceEvent(this, egret.RendererExistenceEvent.RENDERER_REMOVE, oldRenderer, oldRenderer.itemIndex, oldRenderer.data);
             }
         };
 
@@ -707,8 +683,6 @@ var egret;
             if (this.itemRendererSkinNameChange) {
                 this.itemRendererSkinNameChange = false;
                 var length = this.indexToRenderer.length;
-                var client;
-                var comp;
                 for (var i = 0; i < length; i++) {
                     this.setItemRenderSkinName(this.indexToRenderer[i]);
                 }

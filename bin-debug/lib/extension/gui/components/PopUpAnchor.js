@@ -30,18 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../../../egret/display/DisplayObject.ts"/>
-/// <reference path="../../../egret/events/Event.ts"/>
-/// <reference path="../../../egret/geom/Point.ts"/>
-/// <reference path="../../../egret/geom/Rectangle.ts"/>
-/// <reference path="../../../egret/utils/callLater.ts"/>
-/// <reference path="supportClasses/Animation.ts"/>
-/// <reference path="../core/IInvalidating.ts"/>
-/// <reference path="../core/IUIComponent.ts"/>
-/// <reference path="../core/IVisualElement.ts"/>
-/// <reference path="../core/PopUpPosition.ts"/>
-/// <reference path="../core/UIComponent.ts"/>
-/// <reference path="../managers/PopUpManager.ts"/>
 var egret;
 (function (egret) {
     /**

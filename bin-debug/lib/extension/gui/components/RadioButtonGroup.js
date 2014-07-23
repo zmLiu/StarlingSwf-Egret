@@ -30,15 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../../../egret/display/DisplayObject.ts"/>
-/// <reference path="../../../egret/display/DisplayObjectContainer.ts"/>
-/// <reference path="../../../egret/events/Event.ts"/>
-/// <reference path="../../../egret/events/EventDispatcher.ts"/>
-/// <reference path="RadioButton.ts"/>
-/// <reference path="../core/IVisualElement.ts"/>
-/// <reference path="../core/IVisualElementContainer.ts"/>
-/// <reference path="../core/UIComponent.ts"/>
-/// <reference path="../events/UIEvent.ts"/>
 var egret;
 (function (egret) {
     /**
@@ -167,7 +158,7 @@ var egret;
             instance.addEventListener(egret.Event.REMOVED, this.radioButton_removedHandler, this);
 
             this.radioButtons.push(instance);
-            this.radioButtons.sort(this.breadthOrderCompare);
+            this.radioButtons.sort(breadthOrderCompare);
             for (var i = 0; i < this.radioButtons.length; i++)
                 this.radioButtons[i]._indexNumber = i;
             if (this._selectedValue)
@@ -179,6 +170,41 @@ var egret;
             instance.invalidateSkinState();
 
             this.dispatchEventWith("numRadioButtonsChanged");
+
+            function breadthOrderCompare(a, b) {
+                var aParent = a.parent;
+                var bParent = b.parent;
+
+                if (!aParent || !bParent)
+                    return 0;
+
+                var aNestLevel = (a instanceof egret.UIComponent) ? a.nestLevel : -1;
+                var bNestLevel = (b instanceof egret.UIComponent) ? b.nestLevel : -1;
+
+                var aIndex = 0;
+                var bIndex = 0;
+
+                if (aParent == bParent) {
+                    if ("getElementIndex" in aParent && "ownerChanged" in a)
+                        aIndex = aParent.getElementIndex(a);
+                    else
+                        aIndex = aParent.getChildIndex(a);
+
+                    if ("getElementIndex" in bParent && "ownerChanged" in b)
+                        bIndex = bParent.getElementIndex(b);
+                    else
+                        bIndex = bParent.getChildIndex(b);
+                }
+
+                if (aNestLevel > bNestLevel || aIndex > bIndex)
+                    return 1;
+                else if (aNestLevel < bNestLevel || bIndex > aIndex)
+                    return -1;
+                else if (a == b)
+                    return 0;
+                else
+                    return breadthOrderCompare(aParent, bParent);
+            }
         };
 
         /**
@@ -265,44 +291,6 @@ var egret;
                 if (fireChange)
                     this.dispatchEventWith(egret.Event.CHANGE);
             }
-        };
-
-        /**
-        * 显示对象深度排序
-        */
-        RadioButtonGroup.prototype.breadthOrderCompare = function (a, b) {
-            var aParent = a.parent;
-            var bParent = b.parent;
-
-            if (!aParent || !bParent)
-                return 0;
-
-            var aNestLevel = (a instanceof egret.UIComponent) ? a.nestLevel : -1;
-            var bNestLevel = (b instanceof egret.UIComponent) ? b.nestLevel : -1;
-
-            var aIndex = 0;
-            var bIndex = 0;
-
-            if (aParent == bParent) {
-                if ("getElementIndex" in aParent && "ownerChanged" in a)
-                    aIndex = aParent.getElementIndex(a);
-                else
-                    aIndex = aParent.getChildIndex(a);
-
-                if ("getElementIndex" in bParent && "ownerChanged" in b)
-                    bIndex = bParent.getElementIndex(b);
-                else
-                    bIndex = bParent.getChildIndex(b);
-            }
-
-            if (aNestLevel > bNestLevel || aIndex > bIndex)
-                return 1;
-            else if (aNestLevel < bNestLevel || bIndex > aIndex)
-                return -1;
-            else if (a == b)
-                return 0;
-            else
-                return this.breadthOrderCompare(aParent, bParent);
         };
 
         /**

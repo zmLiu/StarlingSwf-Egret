@@ -30,11 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../../../egret/context/MainContext.ts"/>
-/// <reference path="../../../egret/context/renderer/RendererContext.ts"/>
-/// <reference path="../../../egret/display/Graphics.ts"/>
-/// <reference path="../../../egret/geom/Rectangle.ts"/>
-/// <reference path="../core/UIComponent.ts"/>
 var egret;
 (function (egret) {
     /**
@@ -71,7 +66,7 @@ var egret;
 
         Rect.prototype._render = function (renderContext) {
             if (this._graphics)
-                this._graphics._draw();
+                this._graphics._draw(renderContext);
             _super.prototype._render.call(this, renderContext);
         };
 

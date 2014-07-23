@@ -11,7 +11,7 @@
 *       documentation and/or other materials provided with the distribution.
 *     * Neither the name of the Egret-Labs.org nor the
 *       names of its contributors may be used to endorse or promote products
-*       derived from this software without specific prior written permission.
+*       derived from this software without specific prior written pemission.
 *
 * THIS SOFTWARE IS PROVIDED BY EGRET-LABS.ORG AND CONTRIBUTORS "AS IS" AND ANY
 * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -30,19 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../context/MainContext.ts"/>
-/// <reference path="../context/renderer/RenderFilter.ts"/>
-/// <reference path="../context/renderer/RendererContext.ts"/>
-/// <reference path="DisplayObjectContainer.ts"/>
-/// <reference path="RenderTexture.ts"/>
-/// <reference path="Stage.ts"/>
-/// <reference path="Texture.ts"/>
-/// <reference path="../events/Event.ts"/>
-/// <reference path="../events/EventDispatcher.ts"/>
-/// <reference path="../geom/Matrix.ts"/>
-/// <reference path="../geom/Point.ts"/>
-/// <reference path="../geom/Rectangle.ts"/>
-/// <reference path="../../jslib/NumberUtils.ts"/>
 var egret;
 (function (egret) {
     /**
@@ -71,12 +58,16 @@ var egret;
         function DisplayObject() {
             _super.call(this);
             this._parent = null;
-            /**
-            * 11111
-            * @event egret.Event.event:ADDED_TO_STAGE
-            */
             this._cacheAsBitmap = false;
+            /**
+            * 表示 DisplayObject 实例相对于父级 DisplayObjectContainer 本地坐标的 x 坐标。
+            * @member {number} egret.DisplayObject#x
+            */
             this._x = 0;
+            /**
+            * 表示 DisplayObject 实例相对于父级 DisplayObjectContainer 本地坐标的 y 坐标。
+            * @member {number} egret.DisplayObject#y
+            */
             this._y = 0;
             /**
             * 表示从注册点开始应用的对象的水平缩放比例（百分比）。
@@ -146,8 +137,9 @@ var egret;
             this._hasWidthSet = false;
             this._hasHeightSet = false;
             this.worldAlpha = 1;
-            this.worldTransform = new egret.Matrix();
-            this.worldBounds = new egret.Rectangle(0, 0, 0, 0);
+            this._worldTransform = new egret.Matrix();
+
+            //            this._worldBounds = new egret.Rectangle(0, 0, 0, 0);
             this._cacheBounds = new egret.Rectangle(0, 0, 0, 0);
         }
         Object.defineProperty(DisplayObject.prototype, "parent", {
@@ -162,18 +154,11 @@ var egret;
             configurable: true
         });
 
-        /**
-        * 仅供框架内部调用。
-        */
         DisplayObject.prototype._parentChanged = function (parent) {
             this._parent = parent;
         };
 
         Object.defineProperty(DisplayObject.prototype, "x", {
-            /**
-            * 表示 DisplayObject 实例相对于父级 DisplayObjectContainer 本地坐标的 x 坐标。
-            * @member {number} egret.DisplayObject#x
-            */
             get: function () {
                 return this._x;
             },
@@ -188,10 +173,6 @@ var egret;
 
 
         Object.defineProperty(DisplayObject.prototype, "y", {
-            /**
-            * 表示 DisplayObject 实例相对于父级 DisplayObjectContainer 本地坐标的 y 坐标。
-            * @member {number} egret.DisplayObject#y
-            */
             get: function () {
                 return this._y;
             },
@@ -346,11 +327,6 @@ var egret;
 
 
         Object.defineProperty(DisplayObject.prototype, "touchEnabled", {
-            /**
-            * 指定此对象是否接收鼠标/触摸事件
-            * @member {boolean} egret.DisplayObject#touchEnabled
-            * @default true
-            */
             get: function () {
                 return this._touchEnabled;
             },
@@ -363,10 +339,6 @@ var egret;
 
 
         Object.defineProperty(DisplayObject.prototype, "scrollRect", {
-            /**
-            * 显示对象的滚动矩形范围。显示对象被裁切为矩形定义的大小，当您更改 scrollRect 对象的 x 和 y 属性时，它会在矩形内滚动。
-            *  @member {egret.Rectangle} egret.DisplayObject#scrollRect
-            */
             get: function () {
                 return this._scrollRect;
             },
@@ -403,10 +375,6 @@ var egret;
         });
 
         Object.defineProperty(DisplayObject.prototype, "explicitWidth", {
-            /**
-            * 显式设置宽度
-            * @returns {number}
-            */
             get: function () {
                 return this._explicitWidth;
             },
@@ -415,10 +383,6 @@ var egret;
         });
 
         Object.defineProperty(DisplayObject.prototype, "explicitHeight", {
-            /**
-            * 显式设置高度
-            * @returns {number}
-            */
             get: function () {
                 return this._explicitHeight;
             },
@@ -429,6 +393,7 @@ var egret;
         Object.defineProperty(DisplayObject.prototype, "width", {
             /**
             * 宽度，优先顺序为 显式设置宽度 > 测量宽度
+            * @member {number} egret.DisplayObject#width
             * @returns {number}
             */
             get: function () {
@@ -448,6 +413,7 @@ var egret;
         Object.defineProperty(DisplayObject.prototype, "height", {
             /**
             * 高度，优先顺序为 显式设置高度 > 测量高度
+            * @member {number} egret.DisplayObject#height
             * @returns {number}
             */
             get: function () {
@@ -498,18 +464,14 @@ var egret;
             }
             var o = this;
             renderContext.setAlpha(o.worldAlpha, o.blendMode);
-            renderContext.setTransform(o.worldTransform);
-            if (o.mask || o._scrollRect) {
-                renderContext.save();
-                if (o._scrollRect) {
-                    renderContext.clip(o._scrollRect.x, o._scrollRect.y, o._scrollRect.width, o._scrollRect.height);
-                } else {
-                    renderContext.clip(o.mask.x, o.mask.y, o.mask.width, o.mask.height);
-                }
+            renderContext.setTransform(o._worldTransform);
+            var mask = o.mask || o._scrollRect;
+            if (mask) {
+                renderContext.pushMask(mask);
             }
             this._render(renderContext);
-            if (o.mask || o._scrollRect) {
-                renderContext.restore();
+            if (mask) {
+                renderContext.popMask();
             }
             this.destroyCacheBounds();
         };
@@ -524,17 +486,10 @@ var egret;
                 var height = renderTexture._textureHeight;
                 display._updateTransform();
                 renderContext.setAlpha(display.worldAlpha, display.blendMode);
-                renderContext.setTransform(display.worldTransform);
-                if (display.mask) {
-                    renderContext.save();
-                    renderContext.clip(display.mask.x, display.mask.y, display.mask.width, display.mask.height);
-                }
+                renderContext.setTransform(display._worldTransform);
                 var scale_factor = egret.MainContext.instance.rendererContext.texture_scale_factor;
                 var renderFilter = egret.RenderFilter.getInstance();
                 renderFilter.drawImage(renderContext, display, 0, 0, width * scale_factor, height * scale_factor, offsetX, offsetY, width, height);
-                if (display.mask) {
-                    renderContext.restore();
-                }
                 return true;
             } else {
                 return false;
@@ -547,23 +502,19 @@ var egret;
         */
         DisplayObject.prototype._updateTransform = function () {
             var o = this;
-            o.worldTransform.identity();
-            o.worldTransform = o.worldTransform.appendMatrix(o._parent.worldTransform);
+            o._worldTransform.identity().appendMatrix(o._parent._worldTransform);
             var anchorX, anchorY;
-            if (o._anchorX != 0 || o._anchorY != 0) {
-                var bounds = o.getBounds(egret.Rectangle.identity);
-                anchorX = bounds.width * o._anchorX;
-                anchorY = bounds.height * o._anchorY;
-            } else {
-                anchorX = o._anchorOffsetX;
-                anchorY = o._anchorOffsetY;
-            }
-            o.worldTransform.appendTransform(o._x, o._y, o._scaleX, o._scaleY, o._rotation, o._skewX, o._skewY, anchorX, anchorY);
+            var resultPoint = o._getOffsetPoint();
+            anchorX = resultPoint.x;
+            anchorY = resultPoint.y;
+            o._worldTransform.appendTransform(o._x, o._y, o._scaleX, o._scaleY, o._rotation, o._skewX, o._skewY, anchorX, anchorY);
             if (o._scrollRect) {
-                o.worldTransform.append(1, 0, 0, 1, -o._scrollRect.x, -o._scrollRect.y);
+                o._worldTransform.append(1, 0, 0, 1, -o._scrollRect.x, -o._scrollRect.y);
             }
-            var bounds = DisplayObject.getTransformBounds(o.getBounds(egret.Rectangle.identity), o.worldTransform);
-            o.worldBounds.initialize(bounds.x, bounds.y, bounds.width, bounds.height);
+            if (false) {
+                var bounds = DisplayObject.getTransformBounds(o._getSize(egret.Rectangle.identity), o._worldTransform);
+                o._worldBounds.initialize(bounds.x, bounds.y, bounds.width, bounds.height);
+            }
             o.worldAlpha = o._parent.worldAlpha * o._alpha;
         };
 
@@ -615,13 +566,13 @@ var egret;
             var matrix = DisplayObject.identityMatrixForGetConcatenated.identity();
             var o = this;
             while (o != null) {
-                if (o.anchorX != 0 || o.anchorY != 0) {
-                    var bounds = o.getBounds(egret.Rectangle.identity);
-                    matrix.prependTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, bounds.width * o.anchorX, bounds.height * o.anchorY);
+                if (o._anchorX != 0 || o._anchorY != 0) {
+                    var bounds = o._getSize(egret.Rectangle.identity);
+                    matrix.prependTransform(o._x, o._y, o._scaleX, o._scaleY, o._rotation, o._skewX, o._skewY, bounds.width * o._anchorX, bounds.height * o._anchorY);
                 } else {
-                    matrix.prependTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.anchorOffsetX, o.anchorOffsetY);
+                    matrix.prependTransform(o._x, o._y, o._scaleX, o._scaleY, o._rotation, o._skewX, o._skewY, o._anchorOffsetX, o._anchorOffsetY);
                 }
-                o = o.parent;
+                o = o._parent;
             }
             return matrix;
         };
@@ -682,7 +633,7 @@ var egret;
             if (!this.visible || (!ignoreTouchEnabled && !this._touchEnabled)) {
                 return null;
             }
-            var bound = this.getBounds(egret.Rectangle.identity);
+            var bound = this._getSize(egret.Rectangle.identity);
             if (0 < x && x < bound.width && 0 < y && y < bound.height) {
                 if (this.mask || this._scrollRect) {
                     if (this._scrollRect && x < this._scrollRect.width && y < this._scrollRect.height) {
@@ -698,8 +649,46 @@ var egret;
             }
         };
 
+        DisplayObject.prototype.hitTestPoint = function (x, y, shapeFlag) {
+            var p = this.globalToLocal(x, y);
+            if (!shapeFlag) {
+                return !!this.hitTest(p.x, p.y, true);
+            } else {
+                if (!this._hitTestPointTexture) {
+                    this._hitTestPointTexture = new egret.RenderTexture();
+                }
+                var testTexture = this._hitTestPointTexture;
+                testTexture.drawToTexture(this);
+                var pixelData = testTexture.getPixel32(p.x - this._hitTestPointTexture._offsetX, p.y - this._hitTestPointTexture._offsetY);
+                if (pixelData[3] != 0) {
+                    return true;
+                }
+                return false;
+            }
+        };
+
         DisplayObject.prototype._getMatrix = function () {
-            return egret.Matrix.identity.identity().appendTransformFromDisplay(this);
+            var matrix = egret.Matrix.identity.identity();
+            var anchorX, anchorY;
+            var resultPoint = this._getOffsetPoint();
+            anchorX = resultPoint.x;
+            anchorY = resultPoint.y;
+            matrix.appendTransform(this._x, this._y, this._scaleX, this._scaleY, this._rotation, this._skewX, this._skewY, anchorX, anchorY);
+            return matrix;
+        };
+
+        DisplayObject.prototype._getSize = function (resultRect) {
+            if (this._hasHeightSet && this._hasWidthSet) {
+                return resultRect.initialize(NaN, NaN, this._explicitWidth, this._explicitHeight);
+            }
+            return this._measureSize(egret.Rectangle.identity);
+        };
+
+        /**
+        * 测量显示对象坐标与大小
+        */
+        DisplayObject.prototype._measureSize = function (resultRect) {
+            return this._measureBounds();
         };
 
         /**
@@ -713,12 +702,12 @@ var egret;
 
         DisplayObject.prototype._getOffsetPoint = function () {
             var o = this;
-            var regX = o.anchorOffsetX;
-            var regY = o.anchorOffsetY;
-            if (o.anchorX != 0 || o.anchorY != 0) {
-                var bounds = o.getBounds(egret.Rectangle.identity);
-                regX = o.anchorX * bounds.width;
-                regY = o.anchorY * bounds.height;
+            var regX = o._anchorOffsetX;
+            var regY = o._anchorOffsetY;
+            if (o._anchorX != 0 || o._anchorY != 0) {
+                var bounds = o._getSize(egret.Rectangle.identity);
+                regX = o._anchorX * bounds.width;
+                regY = o._anchorY * bounds.height;
             }
             var result = egret.Point.identity;
             result.x = regX;
@@ -739,6 +728,7 @@ var egret;
         Object.defineProperty(DisplayObject.prototype, "stage", {
             /**
             * 获取舞台对象。当该显示对象不在舞台上时，此属性返回 undefined
+            * @member {number} egret.DisplayObject#stage
             * @returns {egret.Stage}
             */
             get: function () {
@@ -820,17 +810,31 @@ var egret;
             return false;
         };
 
-        DisplayObject.prototype.cacheAsBitmap = function (bool) {
-            this._cacheAsBitmap = bool;
-            if (bool) {
-                var renderTexture = new egret.RenderTexture();
-                renderTexture.drawToTexture(this);
-                this._texture_to_render = renderTexture;
-            }
-        };
+        Object.defineProperty(DisplayObject.prototype, "cacheAsBitmap", {
+            get: function () {
+                return this._cacheAsBitmap;
+            },
+            set: function (bool) {
+                this._cacheAsBitmap = bool;
+                if (bool) {
+                    if (!this.renderTexture) {
+                        this.renderTexture = new egret.RenderTexture();
+                    }
+                    this.renderTexture.drawToTexture(this);
+                    this._texture_to_render = this.renderTexture;
+                } else {
+                    this._texture_to_render = null;
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+
 
         DisplayObject.getTransformBounds = function (bounds, mtx) {
-            var x = bounds.x, y = bounds.y, width = bounds.width, height = bounds.height;
+            //            var x = bounds.x, y = bounds.y;
+            var x, y;
+            var width = bounds.width, height = bounds.height;
 
             //            if (x || y) {
             //                mtx.appendTransform(0, 0, 1, 1, 0, 0, 0, -x, -y);

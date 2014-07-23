@@ -30,11 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../../../egret/layout/HorizontalAlign.ts"/>
-/// <reference path="../../../egret/layout/VerticalAlign.ts"/>
-/// <reference path="../core/ILayoutElement.ts"/>
-/// <reference path="../core/IVisualElement.ts"/>
-/// <reference path="supportClasses/LayoutBase.ts"/>
 var egret;
 (function (egret) {
     /**

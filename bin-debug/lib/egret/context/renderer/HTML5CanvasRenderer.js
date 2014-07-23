@@ -30,13 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../MainContext.ts"/>
-/// <reference path="RenderFilter.ts"/>
-/// <reference path="RendererContext.ts"/>
-/// <reference path="../../display/Texture.ts"/>
-/// <reference path="../../geom/Matrix.ts"/>
-/// <reference path="../../text/TextField.ts"/>
-/// <reference path="../../utils/getTimer.ts"/>
 var egret;
 (function (egret) {
     /**
@@ -116,17 +109,6 @@ var egret;
             }
         };
 
-        HTML5CanvasRenderer.prototype.save = function () {
-            //            return;
-            this.canvasContext.save();
-        };
-
-        HTML5CanvasRenderer.prototype.restore = function () {
-            //            return;
-            this.canvasContext.restore();
-            this.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
-        };
-
         HTML5CanvasRenderer.prototype.setAlpha = function (alpha, blendMode) {
             if (alpha != this.canvasContext.globalAlpha) {
                 this.canvasContext.globalAlpha = alpha;
@@ -170,18 +152,217 @@ var egret;
             _super.prototype.drawText.call(this, textField, text, x, y, maxWidth);
         };
 
-        HTML5CanvasRenderer.prototype.clip = function (x, y, w, h) {
+        HTML5CanvasRenderer.prototype.strokeRect = function (x, y, w, h, color) {
+            this.canvasContext.strokeStyle = color;
+            this.canvasContext.strokeRect(x, y, w, h);
+        };
+
+        HTML5CanvasRenderer.prototype.pushMask = function (mask) {
+            this.canvasContext.save();
             this.canvasContext.beginPath();
-            this.canvasContext.rect(x + this._transformTx, y + this._transformTy, w, h);
+            this.canvasContext.rect(mask.x + this._transformTx, mask.y + this._transformTy, mask.width, mask.height);
             this.canvasContext.clip();
             this.canvasContext.closePath();
         };
 
-        HTML5CanvasRenderer.prototype.strokeRect = function (x, y, w, h, color) {
-            this.canvasContext.strokeStyle = color;
-            this.canvasContext.strokeRect(x, y, w, h);
+        HTML5CanvasRenderer.prototype.popMask = function () {
+            this.canvasContext.restore();
+            this.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
         };
         return HTML5CanvasRenderer;
     })(egret.RendererContext);
     egret.HTML5CanvasRenderer = HTML5CanvasRenderer;
 })(egret || (egret = {}));
+
+var egret_h5_graphics;
+(function (egret_h5_graphics) {
+    function beginFill(color, alpha) {
+        if (typeof alpha === "undefined") { alpha = 1; }
+        var _colorBlue = color & 0x0000FF;
+        var _colorGreen = (color & 0x00ff00) >> 8;
+        var _colorRed = color >> 16;
+        var _colorStr = "rgba(" + _colorRed + "," + _colorGreen + "," + _colorBlue + "," + alpha + ")";
+        this.fillStyleColor = _colorStr;
+
+        this.commandQueue.push(new Command(this._setStyle, this, [_colorStr]));
+    }
+    egret_h5_graphics.beginFill = beginFill;
+
+    function drawRect(x, y, width, height) {
+        this.commandQueue.push(new Command(function (x, y, width, height) {
+            var rendererContext = this.renderContext;
+            this.canvasContext.beginPath();
+            this.canvasContext.rect(rendererContext._transformTx + x, rendererContext._transformTy + y, width, height);
+            this.canvasContext.closePath();
+        }, this, [x, y, width, height]));
+        this._fill();
+    }
+    egret_h5_graphics.drawRect = drawRect;
+
+    function drawCircle(x, y, r) {
+        this.commandQueue.push(new Command(function (x, y, r) {
+            var rendererContext = this.renderContext;
+            this.canvasContext.beginPath();
+            this.canvasContext.arc(rendererContext._transformTx + x, rendererContext._transformTy + y, r, 0, Math.PI * 2);
+            this.canvasContext.closePath();
+        }, this, [x, y, r]));
+        this._fill();
+    }
+    egret_h5_graphics.drawCircle = drawCircle;
+
+    function lineStyle(thickness, color, alpha, pixelHinting, scaleMode, caps, joints, miterLimit) {
+        if (typeof thickness === "undefined") { thickness = NaN; }
+        if (typeof color === "undefined") { color = 0; }
+        if (typeof alpha === "undefined") { alpha = 1.0; }
+        if (typeof pixelHinting === "undefined") { pixelHinting = false; }
+        if (typeof scaleMode === "undefined") { scaleMode = "normal"; }
+        if (typeof caps === "undefined") { caps = null; }
+        if (typeof joints === "undefined") { joints = null; }
+        if (typeof miterLimit === "undefined") { miterLimit = 3; }
+        if (this.strokeStyleColor) {
+            this.createEndLineCommand();
+            this.commandQueue.push(this.endLineCommand);
+        }
+
+        var _colorBlue = color & 0x0000FF;
+        var _colorGreen = (color & 0x00ff00) >> 8;
+        var _colorRed = color >> 16;
+        var _colorStr = "rgba(" + _colorRed + "," + _colorGreen + "," + _colorBlue + "," + alpha + ")";
+        this.strokeStyleColor = _colorStr;
+
+        this.commandQueue.push(new Command(function (lineWidth, strokeStyle) {
+            this.canvasContext.lineWidth = lineWidth;
+            this.canvasContext.strokeStyle = strokeStyle;
+            this.canvasContext.beginPath();
+        }, this, [thickness, _colorStr]));
+
+        if (typeof (this.lineX) === "undefined") {
+            this.lineX = 0;
+            this.lineY = 0;
+        }
+        this.moveTo(this.lineX, this.lineY);
+    }
+    egret_h5_graphics.lineStyle = lineStyle;
+
+    function lineTo(x, y) {
+        this.commandQueue.push(new Command(function (x, y) {
+            var rendererContext = this.renderContext;
+            var canvasContext = this.canvasContext;
+            canvasContext.lineTo(rendererContext._transformTx + x, rendererContext._transformTy + y);
+        }, this, [x, y]));
+        this.lineX = x;
+        this.lineY = y;
+    }
+    egret_h5_graphics.lineTo = lineTo;
+
+    function curveTo(controlX, controlY, anchorX, anchorY) {
+        this.commandQueue.push(new Command(function (x, y, ax, ay) {
+            var rendererContext = this.renderContext;
+            var canvasContext = this.canvasContext;
+            canvasContext.quadraticCurveTo(rendererContext._transformTx + x, rendererContext._transformTy + y, ax, ay);
+        }, this, [controlX, controlY, anchorX, anchorY]));
+        this.lineX = anchorX;
+        this.lineY = anchorY;
+    }
+    egret_h5_graphics.curveTo = curveTo;
+
+    function moveTo(x, y) {
+        this.commandQueue.push(new Command(function (x, y) {
+            var rendererContext = this.renderContext;
+            var canvasContext = this.canvasContext;
+            canvasContext.moveTo(rendererContext._transformTx + x, rendererContext._transformTy + y);
+        }, this, [x, y]));
+    }
+    egret_h5_graphics.moveTo = moveTo;
+
+    function clear() {
+        this.commandQueue.length = 0;
+        this.lineX = 0;
+        this.lineY = 0;
+        this.strokeStyleColor = null;
+        this.fillStyleColor = null;
+    }
+    egret_h5_graphics.clear = clear;
+
+    function createEndFillCommand() {
+        if (!this.endFillCommand) {
+            this.endFillCommand = new Command(function () {
+                this.canvasContext.fill();
+                this.canvasContext.closePath();
+            }, this, null);
+        }
+    }
+    egret_h5_graphics.createEndFillCommand = createEndFillCommand;
+
+    function endFill() {
+        if (this.fillStyleColor != null) {
+            this._fill();
+        }
+        this.fillStyleColor = null;
+    }
+    egret_h5_graphics.endFill = endFill;
+
+    function _fill() {
+        if (this.fillStyleColor) {
+            this.createEndFillCommand();
+            this.commandQueue.push(this.endFillCommand);
+        }
+    }
+    egret_h5_graphics._fill = _fill;
+
+    function createEndLineCommand() {
+        if (!this.endLineCommand) {
+            this.endLineCommand = new Command(function () {
+                this.canvasContext.stroke();
+                this.canvasContext.closePath();
+            }, this, null);
+        }
+    }
+    egret_h5_graphics.createEndLineCommand = createEndLineCommand;
+
+    function _draw(renderContext) {
+        this.renderContext = renderContext;
+        this.canvasContext = this.renderContext.canvasContext;
+        var canvasContext = this.canvasContext;
+
+        canvasContext.save();
+        var length = this.commandQueue.length;
+        if (this.strokeStyleColor && length > 0 && this.commandQueue[length - 1] != this.endLineCommand) {
+            this.createEndLineCommand();
+            this.commandQueue.push(this.endLineCommand);
+        }
+        for (var i = 0; i < length; i++) {
+            var command = this.commandQueue[i];
+            command.method.apply(command.thisObject, command.args);
+        }
+        canvasContext.restore();
+    }
+    egret_h5_graphics._draw = _draw;
+
+    var Command = (function () {
+        function Command(method, thisObject, args) {
+            this.method = method;
+            this.thisObject = thisObject;
+            this.args = args;
+        }
+        return Command;
+    })();
+
+    function _setStyle(colorStr) {
+        this.canvasContext.fillStyle = colorStr;
+        this.canvasContext.beginPath();
+    }
+    egret_h5_graphics._setStyle = _setStyle;
+
+    function init() {
+        for (var key in egret_h5_graphics) {
+            egret.Graphics.prototype[key] = egret_h5_graphics[key];
+        }
+        egret.RendererContext.createRendererContext = function (canvas) {
+            return new egret.HTML5CanvasRenderer(canvas);
+        };
+    }
+    egret_h5_graphics.init = init;
+})(egret_h5_graphics || (egret_h5_graphics = {}));
+
+egret_h5_graphics.init();

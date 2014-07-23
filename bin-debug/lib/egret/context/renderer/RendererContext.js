@@ -30,11 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../../display/Texture.ts"/>
-/// <reference path="../../geom/Matrix.ts"/>
-/// <reference path="../../text/TextField.ts"/>
-/// <reference path="../../utils/HashObject.ts"/>
-/// <reference path="../../utils/Profiler.ts"/>
 var egret;
 (function (egret) {
     /**
@@ -106,20 +101,6 @@ var egret;
         };
 
         /**
-        * @method egret.RendererContext#save
-        * @stable C 这个方法以后会和restore一起删除，移动到HTML5CanvasContext的具体实现中，而不是作为一个接口
-        */
-        RendererContext.prototype.save = function () {
-        };
-
-        /**
-        * @method egret.RendererContext#restore
-        * @stable C 这个方法以后会和save一起删除，移动到HTML5CanvasContext的具体实现中，而不是作为一个接口
-        */
-        RendererContext.prototype.restore = function () {
-        };
-
-        /**
         * 设置渲染alpha
         * @method egret.RendererContext#setAlpha
         * @param value {number}
@@ -160,17 +141,17 @@ var egret;
             egret.Profiler.getInstance().onDrawImage();
         };
 
-        /**
-        * 矩形遮罩
-        * @method egret.RendererContext#clip
-        * @param x {any}
-        * @param y {any}
-        * @param w {any}
-        */
-        RendererContext.prototype.clip = function (x, y, w, h) {
+        RendererContext.prototype.strokeRect = function (x, y, w, h, color) {
         };
 
-        RendererContext.prototype.strokeRect = function (x, y, w, h, color) {
+        RendererContext.prototype.pushMask = function (mask) {
+        };
+
+        RendererContext.prototype.popMask = function () {
+        };
+
+        RendererContext.createRendererContext = function (canvas) {
+            return null;
         };
         return RendererContext;
     })(egret.HashObject);

@@ -30,13 +30,11 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../context/MainContext.ts"/>
-/// <reference path="../utils/HashObject.ts"/>
 var egret;
 (function (egret) {
     /**
-    * @class Texture
-    * 纹理类是对不同平台不同的图片资源的封装
+    * @class egret.Texture
+    * @classdesc 纹理类是对不同平台不同的图片资源的封装
     * 在HTML5中，资源是一个HTMLElement对象
     * 在OpenGL / WebGL中，资源是一个提交GPU后获取的纹理id
     * Texture类封装了这些底层实现的细节，开发者只需要关心接口即可
@@ -46,13 +44,21 @@ var egret;
         function Texture() {
             _super.call(this);
             /**
-            * 表示这个纹理在原始位图上的起始位置
+            * 表示这个纹理在bitmapData上的x起始位置
             */
-            this._startX = 0;
+            this._bitmapX = 0;
             /**
-            * 表示这个纹理在原始位图上的y起始位置
+            * 表示这个纹理在bitmapData上的y起始位置
             */
-            this._startY = 0;
+            this._bitmapY = 0;
+            /**
+            * 表示这个纹理在bitmapData上的宽度
+            */
+            this._bitmapWidth = 0;
+            /**
+            * 表示这个纹理在bitmapData上的高度
+            */
+            this._bitmapHeight = 0;
             /**
             * 表示这个纹理显示了之后在x方向的渲染偏移量
             */
@@ -67,6 +73,7 @@ var egret;
         Object.defineProperty(Texture.prototype, "textureWidth", {
             /**
             * 纹理宽度
+            * @member {number} egret.Texture#textureWidth
             */
             get: function () {
                 return this._textureWidth;
@@ -78,6 +85,7 @@ var egret;
         Object.defineProperty(Texture.prototype, "textureHeight", {
             /**
             * 纹理高度
+            * @member {number} egret.Texture#textureWidth
             */
             get: function () {
                 return this._textureHeight;
@@ -87,19 +95,40 @@ var egret;
         });
 
         Object.defineProperty(Texture.prototype, "bitmapData", {
+            /**
+            * 纹理对象中得位图数据
+            * @member {any} egret.Texture#bitmapData
+            */
             get: function () {
                 return this._bitmapData;
-            },
-            set: function (value) {
-                var scale = egret.MainContext.instance.rendererContext.texture_scale_factor;
-                this._bitmapData = value;
-                this._textureWidth = value.width * scale;
-                this._textureHeight = value.height * scale;
             },
             enumerable: true,
             configurable: true
         });
 
+        Texture.prototype._setBitmapData = function (value) {
+            var scale = egret.MainContext.instance.rendererContext.texture_scale_factor;
+            this._bitmapData = value;
+            this._sourceWidth = value.width;
+            this._sourceHeight = value.height;
+            this._textureWidth = this._sourceWidth * scale;
+            this._textureHeight = this._sourceHeight * scale;
+            this._bitmapWidth = this._textureWidth;
+            this._bitmapHeight = this._textureHeight;
+            this._offsetX = this._offsetY = this._bitmapX = this._bitmapY = 0;
+        };
+
+        /**
+        * 获取某一点像素的颜色值
+        * @method egret.Texture#getPixel32
+        * @param x 像素点的X轴坐标
+        * @param y 像素点的Y轴坐标
+        * @returns {number} 指定像素点的颜色值
+        */
+        Texture.prototype.getPixel32 = function (x, y) {
+            var result = this._bitmapData.getContext("2d").getImageData(x, y, 1, 1);
+            return result.data;
+        };
         return Texture;
     })(egret.HashObject);
     egret.Texture = Texture;

@@ -30,10 +30,11 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="HashObject.ts"/>
-/// <reference path="Logger.ts"/>
 var egret;
 (function (egret) {
+    /**
+    * @deprecated
+    */
     var SAXParser = (function (_super) {
         __extends(SAXParser, _super);
         function SAXParser() {
@@ -49,6 +50,9 @@ var egret;
                 this._isSupportDOMParser = false;
             }
         }
+        /**
+        * @deprecated
+        */
         SAXParser.getInstance = function () {
             if (!SAXParser._instance) {
                 SAXParser._instance = new SAXParser();
@@ -56,6 +60,9 @@ var egret;
             return SAXParser._instance;
         };
 
+        /**
+        * @deprecated
+        */
         SAXParser.prototype.parserXML = function (textxml) {
             var i = 0;
             while (textxml.charAt(i) == "\n" || textxml.charAt(i) == "\t" || textxml.charAt(i) == "\r" || textxml.charAt(i) == " ") {

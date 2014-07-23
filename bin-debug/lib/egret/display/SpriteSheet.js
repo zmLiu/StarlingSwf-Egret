@@ -30,33 +30,36 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="Texture.ts"/>
-/// <reference path="../utils/HashObject.ts"/>
-/// <reference path="../utils/Logger.ts"/>
 var egret;
 (function (egret) {
     /**
-    * @class SpriteSheet是一张由多个子位图拼接而成的集合位图，它包含多个Texture对象。
+    * @class egret.SpriteSheet
+    * @classdesc SpriteSheet是一张由多个子位图拼接而成的集合位图，它包含多个Texture对象。
     * 每一个Texture都共享SpriteSheet的集合位图，但是指向它的不同的区域。
     * 在WebGL / OpenGL上，这种做法可以显著提升性能
     * 同时，SpriteSheet可以很方便的进行素材整合，降低HTTP请求数量
+    * SpriteSheet 格式的具体规范可以参见此文档  https://github.com/egret-labs/egret-core/wiki/Egret-SpriteSheet-Specification
+    *
     */
     var SpriteSheet = (function (_super) {
         __extends(SpriteSheet, _super);
-        function SpriteSheet(bitmapData) {
+        function SpriteSheet(texture) {
             _super.call(this);
-            if (bitmapData.frames)
-                this._textureMap = bitmapData.frames;
-            else {
-                this.bitmapData = bitmapData;
-                this._textureMap = {};
-            }
+            var bitmapData = texture.bitmapData;
+            this.bitmapData = bitmapData;
+            this._textureMap = {};
+
+            this._sourceWidth = bitmapData.width;
+            this._sourceHeight = bitmapData.height;
+
+            this._bitmapX = texture._bitmapX;
+            this._bitmapY = texture._bitmapY;
         }
         /**
-        * 根据指定纹理名称获取一个缓存的Textrue对象
+        * 根据指定纹理名称获取一个缓存的Texture对象
         * @method egret.SpriteSheet#getTexture
-        * @param name {string} 缓存这个Texture对象所使用的名称，如果名称已存在，将会覆盖之前的Texture对象
-        * @returns {egret.Texture} 创建的Texture对象
+        * @param name {string} 缓存这个Texture对象所使用的名称
+        * @returns {egret.Texture} Texture对象
         */
         SpriteSheet.prototype.getTexture = function (name) {
             return this._textureMap[name];
@@ -66,19 +69,38 @@ var egret;
         * 为SpriteSheet上的指定区域创建一个新的Texture对象并缓存它
         * @method egret.SpriteSheet#createTexture
         * @param name {string} 缓存这个Texture对象所使用的名称，如果名称已存在，将会覆盖之前的Texture对象
-        * @param startX {number} 指定位图区域在SpriteSheet上的起始坐标x
-        * @param startY {number} 指定位图区域在SpriteSheet上的起始坐标y
-        * @param width {number} 指定位图区域在SpriteSheet上的宽度
-        * @param height {number} 指定位图区域在SpriteSheet上的高度
+        * @param bitmapX {number} 纹理区域在bitmapData上的起始坐标x
+        * @param bitmapY {number} 纹理区域在bitmapData上的起始坐标y
+        * @param bitmapWidth {number} 纹理区域在bitmapData上的宽度
+        * @param bitmapHeight {number} 纹理区域在bitmapData上的高度
+        * @param offsetX {number} 原始位图的非透明区域x起始点
+        * @param offsetY {number} 原始位图的非透明区域y起始点
+        * @param textureWidth {number} 原始位图的高度，若不传入，则使用bitmapWidth的值。
+        * @param textureHeight {number} 原始位图的宽度，若不传入，这使用bitmapHeight值。
         * @returns {egret.Texture} 创建的Texture对象
         */
-        SpriteSheet.prototype.createTexture = function (name, startX, startY, width, height) {
+        SpriteSheet.prototype.createTexture = function (name, bitmapX, bitmapY, bitmapWidth, bitmapHeight, offsetX, offsetY, textureWidth, textureHeight) {
+            if (typeof offsetX === "undefined") { offsetX = 0; }
+            if (typeof offsetY === "undefined") { offsetY = 0; }
+            if (typeof textureWidth === "undefined") {
+                textureWidth = offsetX + bitmapWidth;
+            }
+            if (typeof textureHeight === "undefined") {
+                textureHeight = offsetY + bitmapHeight;
+            }
             var texture = new egret.Texture();
+
             texture._bitmapData = this.bitmapData;
-            texture._startX = startX;
-            texture._startY = startY;
-            texture._textureWidth = width;
-            texture._textureHeight = height;
+            texture._bitmapX = this._bitmapX + bitmapX;
+            texture._bitmapY = this._bitmapY + bitmapY;
+            texture._bitmapWidth = bitmapWidth;
+            texture._bitmapHeight = bitmapHeight;
+            texture._offsetX = offsetX;
+            texture._offsetY = offsetY;
+            texture._textureWidth = textureWidth;
+            texture._textureHeight = textureHeight;
+            texture._sourceWidth = this._sourceWidth;
+            texture._sourceHeight = this._sourceHeight;
             this._textureMap[name] = texture;
             return texture;
         };

@@ -30,10 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../display/Bitmap.ts"/>
-/// <reference path="../display/DisplayObjectContainer.ts"/>
-/// <reference path="../geom/Rectangle.ts"/>
-/// <reference path="BitmapTextSpriteSheet.ts"/>
 var egret;
 (function (egret) {
     /**
@@ -61,13 +57,18 @@ var egret;
         //todo:这里对bounds的处理和TextField非常类似，以后考虑重构
         BitmapText.prototype._renderText = function (forMeasureContentSize) {
             if (typeof forMeasureContentSize === "undefined") { forMeasureContentSize = false; }
-            var rect = egret.Rectangle.identity.initialize(0, 0, 0, 0);
+            var tempW = 0;
+            var tempH = 0;
             if (!forMeasureContentSize) {
                 this.removeChildren();
             }
             for (var i = 0, l = this.text.length; i < l; i++) {
                 var character = this.text.charAt(i);
                 var texture = this.spriteSheet.getTexture(character);
+                if (texture == null) {
+                    console.log("当前没有位图文字：" + character);
+                    continue;
+                }
                 var offsetX = texture._offsetX;
                 var offsetY = texture._offsetY;
                 var characterWidth = texture._textureWidth;
@@ -75,17 +76,18 @@ var egret;
                     var bitmap = this._bitmapPool[i];
                     if (!bitmap) {
                         bitmap = new egret.Bitmap();
-                        bitmap.texture = texture;
                         this._bitmapPool.push(bitmap);
                     }
+                    bitmap.texture = texture;
                     this.addChild(bitmap);
-                    bitmap.x = rect.width;
+                    bitmap.x = tempW;
                 }
-                rect.width += characterWidth + offsetX;
-                if (offsetY + texture._textureHeight > rect.height) {
-                    rect.height = offsetY + texture._textureHeight;
+                tempW += characterWidth + offsetX;
+                if (offsetY + texture._textureHeight > tempH) {
+                    tempH = offsetY + texture._textureHeight;
                 }
             }
+            var rect = egret.Rectangle.identity.initialize(0, 0, tempW, tempH);
             return rect;
         };
 

@@ -30,8 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="DeviceContext.ts"/>
-/// <reference path="../../utils/getTimer.ts"/>
 var egret;
 (function (egret) {
     /**
@@ -51,27 +49,55 @@ var egret;
             * @member egret.HTML5DeviceContext#frameRate
             */
             this.frameRate = 60;
+            HTML5DeviceContext.instance = this;
+            this.registerListener();
         }
+        HTML5DeviceContext.prototype.enterFrame = function () {
+            var context = HTML5DeviceContext.instance;
+            var thisObject = HTML5DeviceContext._thisObject;
+            var callback = HTML5DeviceContext._callback;
+            var thisTime = egret.getTimer();
+            var advancedTime = thisTime - context._time;
+            callback.call(thisObject, advancedTime);
+            context._time = thisTime;
+            context._requestAnimationId = HTML5DeviceContext.requestAnimationFrame.call(window, HTML5DeviceContext.prototype.enterFrame);
+        };
+
         /**
         * @method egret.HTML5DeviceContext#executeMainLoop
         * @param callback {Function}
         * @param thisObject {any}
         */
         HTML5DeviceContext.prototype.executeMainLoop = function (callback, thisObject) {
-            var self = this;
+            HTML5DeviceContext._callback = callback;
+            HTML5DeviceContext._thisObject = thisObject;
+            this.enterFrame();
+        };
 
-            var enterFrame = function () {
-                var thisTime = egret.getTimer();
-                var advancedTime = thisTime - self._time;
-                callback.call(thisObject, advancedTime);
-                self._time = thisTime;
-                HTML5DeviceContext.requestAnimationFrame.call(window, enterFrame);
+        HTML5DeviceContext.prototype.reset = function () {
+            var context = HTML5DeviceContext.instance;
+            if (context._requestAnimationId) {
+                context._time = egret.getTimer();
+                HTML5DeviceContext.cancelAnimationFrame.call(window, context._requestAnimationId);
+            }
+            context.enterFrame();
+        };
+
+        HTML5DeviceContext.prototype.registerListener = function () {
+            //todo: visiblechanged pageshow
+            window.onfocus = function () {
+                var context = HTML5DeviceContext.instance;
+                context.reset();
             };
-
-            HTML5DeviceContext.requestAnimationFrame.call(window, enterFrame);
+            window.onblur = function () {
+            };
         };
         HTML5DeviceContext.requestAnimationFrame = window["requestAnimationFrame"] || window["webkitRequestAnimationFrame"] || window["mozRequestAnimationFrame"] || window["oRequestAnimationFrame"] || window["msRequestAnimationFrame"] || function (callback) {
             return window.setTimeout(callback, 1000 / 60);
+        };
+
+        HTML5DeviceContext.cancelAnimationFrame = window["cancelAnimationFrame"] || window["msCancelAnimationFrame"] || window["mozCancelAnimationFrame"] || window["webkitCancelAnimationFrame"] || window["oCancelAnimationFrame"] || window["cancelRequestAnimationFrame"] || window["msCancelRequestAnimationFrame"] || window["mozCancelRequestAnimationFrame"] || window["oCancelRequestAnimationFrame"] || window["webkitCancelRequestAnimationFrame"] || function (id) {
+            return window.clearTimeout(id);
         };
         return HTML5DeviceContext;
     })(egret.DeviceContext);

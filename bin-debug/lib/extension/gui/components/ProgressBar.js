@@ -30,16 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../../../egret/display/DisplayObject.ts"/>
-/// <reference path="../../../egret/events/Event.ts"/>
-/// <reference path="../../../egret/geom/Point.ts"/>
-/// <reference path="Label.ts"/>
-/// <reference path="ProgressBarDirection.ts"/>
-/// <reference path="supportClasses/Animation.ts"/>
-/// <reference path="supportClasses/Range.ts"/>
-/// <reference path="../core/UIComponent.ts"/>
-/// <reference path="../events/MoveEvent.ts"/>
-/// <reference path="../events/ResizeEvent.ts"/>
 var egret;
 (function (egret) {
     /**
@@ -57,6 +47,7 @@ var egret;
             _super.call(this);
             this._slideDuration = 500;
             this._direction = egret.ProgressBarDirection.LEFT_TO_RIGHT;
+            this.animationValue = 0;
             this.trackResizedOrMoved = false;
             this.hostComponentKey = "egret.ProgressBar";
         }
@@ -147,26 +138,28 @@ var egret;
             set: function (newValue) {
                 if (this._getValue() == newValue)
                     return;
-                if (this._slideDuration == 0 || !this.stage) {
-                    this._setValue(newValue);
-                } else {
+                this._setValue(newValue);
+                if (this._slideDuration > 0 && this.stage) {
                     this.validateProperties(); //最大值最小值发生改变时要立即应用，防止当前起始值不正确。
-                    this.slideToValue = this.nearestValidValue(newValue, this.snapInterval);
-                    if (this.slideToValue == this._getValue())
-                        return;
                     if (!this.animator) {
                         this.animator = new egret.Animation(this.animationUpdateHandler, this);
                     }
                     if (this.animator.isPlaying) {
-                        this.setValue(this.nearestValidValue(this.animator.motionPaths[0].valueTo, this.snapInterval));
+                        this.animationValue = this.slideToValue;
+                        this.invalidateDisplayList();
                         this.animator.stop();
                     }
-                    var duration = this._slideDuration * (Math.abs(this._getValue() - this.slideToValue) / (this.maximum - this.minimum));
+                    this.slideToValue = this.nearestValidValue(newValue, this.snapInterval);
+                    if (this.slideToValue == this.animationValue)
+                        return;
+                    var duration = this._slideDuration * (Math.abs(this.animationValue - this.slideToValue) / (this.maximum - this.minimum));
                     this.animator.duration = duration === Infinity ? 0 : duration;
                     this.animator.motionPaths = [
-                        { prop: "value", from: this._getValue(), to: this.slideToValue }
+                        { prop: "value", from: this.animationValue, to: this.slideToValue }
                     ];
                     this.animator.play();
+                } else {
+                    this.animationValue = this._getValue();
                 }
             },
             enumerable: true,
@@ -178,7 +171,9 @@ var egret;
         * 动画播放更新数值
         */
         ProgressBar.prototype.animationUpdateHandler = function (animation) {
-            this.setValue(this.nearestValidValue(animation.currentValue["value"], this.snapInterval));
+            var value = this.nearestValidValue(animation.currentValue["value"], this.snapInterval);
+            this.animationValue = Math.min(this.maximum, Math.max(this.minimum, value));
+            this.invalidateDisplayList();
         };
 
         /**
@@ -253,7 +248,15 @@ var egret;
         */
         ProgressBar.prototype.updateSkinDisplayList = function () {
             this.trackResizedOrMoved = false;
-            var currentValue = isNaN(this.value) ? 0 : this.value;
+            var currentValue = this.value;
+            if (this.animator && this.animator.isPlaying) {
+                currentValue = this.animationValue;
+            } else {
+                currentValue = this.value;
+                if (isNaN(currentValue)) {
+                    currentValue = 0;
+                }
+            }
             var maxValue = isNaN(this.maximum) ? 0 : this.maximum;
             if (this.thumb && this.track) {
                 var trackWidth = isNaN(this.track.width) ? 0 : this.track.width;

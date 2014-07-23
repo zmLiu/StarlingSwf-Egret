@@ -30,13 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../../../egret/display/DisplayObject.ts"/>
-/// <reference path="../../../egret/display/DisplayObjectContainer.ts"/>
-/// <reference path="supportClasses/GroupBase.ts"/>
-/// <reference path="../core/IContainer.ts"/>
-/// <reference path="../core/IVisualElement.ts"/>
-/// <reference path="../core/IVisualElementContainer.ts"/>
-/// <reference path="../events/ElementExistenceEvent.ts"/>
 var egret;
 (function (egret) {
     /**
@@ -189,13 +182,11 @@ var egret;
 
             this.checkForRangeError(index, true);
 
-            var host = element.parent;
-            if (host == this) {
+            var host = element.owner;
+            if (host == this || element.parent == this) {
                 this.setElementIndex(element, index);
                 return element;
             } else if (host && "removeElement" in host) {
-                host.removeElement(element);
-            } else if (element.owner && "removeElement" in element.owner) {
                 (element.owner).removeElement(element);
             }
 

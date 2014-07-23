@@ -21,12 +21,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../../../egret/events/EventDispatcher.ts"/>
-/// <reference path="../../../egret/utils/Injector.ts"/>
-/// <reference path="../Resource.ts"/>
-/// <reference path="../analyzer/AnalyzerBase.ts"/>
-/// <reference path="ResourceItem.ts"/>
-/// <reference path="../events/ResourceEvent.ts"/>
 var RES;
 (function (RES) {
     /**

@@ -30,15 +30,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-/// <reference path="../../../../egret/context/interactive/InteractionMode.ts"/>
-/// <reference path="../../../../egret/events/Event.ts"/>
-/// <reference path="../../../../egret/events/TimerEvent.ts"/>
-/// <reference path="../../../../egret/events/TouchEvent.ts"/>
-/// <reference path="../../../../egret/utils/Timer.ts"/>
-/// <reference path="../SkinnableComponent.ts"/>
-/// <reference path="../../core/IDisplayText.ts"/>
-/// <reference path="../../core/UIGlobals.ts"/>
-/// <reference path="../../events/UIEvent.ts"/>
 var egret;
 (function (egret) {
     /**
