@@ -38,6 +38,9 @@ class GameApp extends egret.DisplayObjectContainer{
 
     public constructor() {
         super();
+
+        egret.Injector.mapClass(RES.AnalyzerBase,starlingswf.StarlingSwfSheetAnalyzer,"starlingswf_sheet");
+
         this.addEventListener(egret.Event.ADDED_TO_STAGE,this.onAddToStage,this);
     }
 
@@ -92,7 +95,7 @@ class GameApp extends egret.DisplayObjectContainer{
 
         this.swf = new starlingswf.Swf(swfData,assetsManager,60);
 
-        this.test3();
+        this.test1();
 
         egret.Profiler.getInstance().run();
 

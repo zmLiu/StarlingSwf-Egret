@@ -28,6 +28,9 @@ var game_file_list = [
     "GameApp.js",
     "LoadingUI.js",
 
+    //sheet
+    "starlingswf/sheet/StarlingSwfSheetAnalyzer.js",
+
     //display
     "starlingswf/display/ISwfAnimation.js",
     "starlingswf/display/SwfSprite.js",

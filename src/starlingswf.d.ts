@@ -8,3 +8,4 @@
 ///<reference path="starlingswf/display/ISwfAnimation.ts"/>
 ///<reference path="starlingswf/display/SwfMovieClip.ts"/>
 ///<reference path="starlingswf/display/SwfSprite.ts"/>
+///<reference path="starlingswf/sheet/StarlingSwfSheetAnalyzer.ts"/>

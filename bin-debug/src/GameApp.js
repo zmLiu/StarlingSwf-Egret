@@ -37,6 +37,9 @@ var GameApp = (function (_super) {
     __extends(GameApp, _super);
     function GameApp() {
         _super.call(this);
+
+        egret.Injector.mapClass(RES.AnalyzerBase, starlingswf.StarlingSwfSheetAnalyzer, "starlingswf_sheet");
+
         this.addEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
     }
     GameApp.prototype.onAddToStage = function (event) {
@@ -92,7 +95,7 @@ var GameApp = (function (_super) {
 
         this.swf = new starlingswf.Swf(swfData, assetsManager, 60);
 
-        this.test3();
+        this.test1();
 
         egret.Profiler.getInstance().run();
     };
