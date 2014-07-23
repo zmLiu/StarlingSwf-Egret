@@ -22,9 +22,7 @@ var starlingswf;
             var spriteSheet = new egret.SpriteSheet(texture);
             for (var name in frames) {
                 var config = frames[name];
-                var texture = spriteSheet.createTexture(name, config.x, config.y, config.w, config.h);
-                texture._offsetX = -config.offX || 0;
-                texture._offsetY = -config.offY || 0;
+                var texture = spriteSheet.createTexture(name, config.x, config.y, config.w, config.h, -config.offX, -config.offY);
             }
             return spriteSheet;
         };

@@ -11,9 +11,7 @@ module starlingswf {
             var spriteSheet:egret.SpriteSheet = new egret.SpriteSheet(texture);
             for (var name in frames) {
                 var config:any = frames[name];
-                var texture:egret.Texture = spriteSheet.createTexture(name, config.x, config.y, config.w, config.h);
-                texture._offsetX = -config.offX || 0;
-                texture._offsetY = -config.offY || 0;
+                var texture:egret.Texture = spriteSheet.createTexture(name, config.x, config.y, config.w, config.h,-config.offX,-config.offY);
             }
             return spriteSheet;
         }
