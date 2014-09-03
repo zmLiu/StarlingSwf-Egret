@@ -79,4 +79,5 @@ var starlingswf;
         return SwfUpdateManager;
     })();
     starlingswf.SwfUpdateManager = SwfUpdateManager;
+    SwfUpdateManager.prototype.__class__ = "starlingswf.SwfUpdateManager";
 })(starlingswf || (starlingswf = {}));

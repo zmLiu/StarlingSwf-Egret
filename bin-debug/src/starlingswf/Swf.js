@@ -83,7 +83,7 @@ var starlingswf;
                 displayObjects[objName] = displayObjectArray;
             }
 
-            var mc = new starlingswf.SwfMovieClip(movieClipData["frames"], movieClipData["labels"], displayObjects, this);
+            var mc = new starlingswf.SwfMovieClip(movieClipData["frames"], movieClipData["labels"], displayObjects, this, movieClipData["frameEvents"]);
             mc.loop = movieClipData["loop"];
             return mc;
         };
@@ -155,4 +155,5 @@ var starlingswf;
         return Swf;
     })();
     starlingswf.Swf = Swf;
+    Swf.prototype.__class__ = "starlingswf.Swf";
 })(starlingswf || (starlingswf = {}));

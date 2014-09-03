@@ -45,4 +45,5 @@ var starlingswf;
         return SwfAssetManager;
     })();
     starlingswf.SwfAssetManager = SwfAssetManager;
+    SwfAssetManager.prototype.__class__ = "starlingswf.SwfAssetManager";
 })(starlingswf || (starlingswf = {}));

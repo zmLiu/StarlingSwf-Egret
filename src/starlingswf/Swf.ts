@@ -98,7 +98,7 @@ module starlingswf{
                 displayObjects[objName] = displayObjectArray;
             }
 
-            var mc:starlingswf.SwfMovieClip = new starlingswf.SwfMovieClip(movieClipData["frames"],movieClipData["labels"],displayObjects,this);
+            var mc:starlingswf.SwfMovieClip = new starlingswf.SwfMovieClip(movieClipData["frames"],movieClipData["labels"],displayObjects,this,movieClipData["frameEvents"]);
             mc.loop = movieClipData["loop"];
             return mc;
 

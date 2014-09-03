@@ -29,4 +29,5 @@ var starlingswf;
         return StarlingSwfSheetAnalyzer;
     })(RES.SheetAnalyzer);
     starlingswf.StarlingSwfSheetAnalyzer = StarlingSwfSheetAnalyzer;
+    StarlingSwfSheetAnalyzer.prototype.__class__ = "starlingswf.StarlingSwfSheetAnalyzer";
 })(starlingswf || (starlingswf = {}));

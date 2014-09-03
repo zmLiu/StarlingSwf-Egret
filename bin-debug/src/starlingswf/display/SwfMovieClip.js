@@ -11,7 +11,8 @@ var starlingswf;
 (function (starlingswf) {
     var SwfMovieClip = (function (_super) {
         __extends(SwfMovieClip, _super);
-        function SwfMovieClip(frames, labels, displayObjects, ownerSwf) {
+        function SwfMovieClip(frames, labels, displayObjects, ownerSwf, frameEvents) {
+            if (typeof frameEvents === "undefined") { frameEvents = null; }
             _super.call(this);
             this._isPlay = false;
             this.loop = true;
@@ -21,6 +22,7 @@ var starlingswf;
             this._frames = frames;
             this._labels = labels;
             this._displayObjects = displayObjects;
+            this._frameEvents = frameEvents;
 
             this._startFrame = 0;
             this._endFrame = this._frames.length - 1;
@@ -113,6 +115,10 @@ var starlingswf;
                         textfield.text = data[19];
                     }
                 }
+            }
+
+            if (this._frameEvents != null && this._frameEvents[this._currentFrame] != null) {
+                this.dispatchEventWith(this._frameEvents[this._currentFrame]);
             }
         };
 
@@ -260,4 +266,5 @@ var starlingswf;
         return SwfMovieClip;
     })(starlingswf.SwfSprite);
     starlingswf.SwfMovieClip = SwfMovieClip;
+    SwfMovieClip.prototype.__class__ = "starlingswf.SwfMovieClip";
 })(starlingswf || (starlingswf = {}));

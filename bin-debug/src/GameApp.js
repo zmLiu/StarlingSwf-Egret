@@ -94,6 +94,9 @@ var GameApp = (function (_super) {
 
         this.test1();
 
+        //        this.test2();
+        //        this.test3();
+        //        this.test4();
         egret.Profiler.getInstance().run();
     };
 
@@ -134,5 +137,24 @@ var GameApp = (function (_super) {
     GameApp.prototype.mcComplete = function (e) {
         console.log("mcComplete");
     };
+
+    /**
+    * 帧事件测试
+    * */
+    GameApp.prototype.test4 = function () {
+        var mc = this.swf.createMovie("mc_frame_event");
+        mc.addEventListener("@out", this.frameEventOut, mc);
+        mc.addEventListener("@in", this.frameEventIn, mc);
+        this.addChild(mc);
+    };
+
+    GameApp.prototype.frameEventOut = function (e) {
+        console.log("@out");
+    };
+
+    GameApp.prototype.frameEventIn = function (e) {
+        console.log("@in");
+    };
     return GameApp;
 })(egret.DisplayObjectContainer);
+GameApp.prototype.__class__ = "GameApp";

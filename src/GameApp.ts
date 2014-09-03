@@ -92,6 +92,9 @@ class GameApp extends egret.DisplayObjectContainer{
         this.swf = new starlingswf.Swf(swfData,assetsManager,60);
 
         this.test1();
+//        this.test2();
+//        this.test3();
+//        this.test4();
 
         egret.Profiler.getInstance().run();
 
@@ -135,6 +138,24 @@ class GameApp extends egret.DisplayObjectContainer{
 
     private mcComplete(e:egret.Event):void{
         console.log("mcComplete");
+    }
+
+    /**
+     * 帧事件测试
+     * */
+    private test4():void{
+        var mc:starlingswf.SwfMovieClip = this.swf.createMovie("mc_frame_event");
+        mc.addEventListener("@out",this.frameEventOut,mc);
+        mc.addEventListener("@in",this.frameEventIn,mc);
+        this.addChild(mc);
+    }
+
+    private frameEventOut(e:egret.Event):void{
+        console.log("@out");
+    }
+
+    private frameEventIn(e:egret.Event):void{
+        console.log("@in");
     }
 
 

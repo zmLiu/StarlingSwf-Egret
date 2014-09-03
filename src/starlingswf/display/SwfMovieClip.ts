@@ -8,6 +8,7 @@ module starlingswf{
 
         private _frames:any[];
         private _labels:any[];
+        private _frameEvents:Object;
         private _displayObjects:Object;
 
         private _startFrame:number;
@@ -21,12 +22,13 @@ module starlingswf{
         private _completeFunction:Function = null;//播放完毕的回调
         private _hasCompleteListener:Boolean = false;//是否监听过播放完毕的事件
 
-        constructor(frames:any[],labels:any[],displayObjects:Object,ownerSwf:starlingswf.Swf){
+        constructor(frames:any[],labels:any[],displayObjects:Object,ownerSwf:starlingswf.Swf,frameEvents:Object = null){
             super();
 
             this._frames = frames;
             this._labels = labels;
             this._displayObjects = displayObjects;
+            this._frameEvents = frameEvents;
 
             this._startFrame = 0;
             this._endFrame = this._frames.length - 1;
@@ -117,6 +119,11 @@ module starlingswf{
                     }
                 }
             }
+
+            if(this._frameEvents != null && this._frameEvents[this._currentFrame] != null){
+                this.dispatchEventWith(this._frameEvents[this._currentFrame]);
+            }
+
         }
 
         public getCurrentFrame():number{

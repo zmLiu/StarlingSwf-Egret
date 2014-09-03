@@ -33,4 +33,5 @@ var starlingswf;
         return SwfSprite;
     })(egret.DisplayObjectContainer);
     starlingswf.SwfSprite = SwfSprite;
+    SwfSprite.prototype.__class__ = "starlingswf.SwfSprite";
 })(starlingswf || (starlingswf = {}));
