@@ -71,6 +71,11 @@ module starlingswf{
                 display.alpha = objData[8];
                 sprite.addChild(display);
             }
+
+            if(data != null){
+                starlingswf.SwfBlendMode.setBlendMode(sprite,<string>data[11]);
+            }
+
             return sprite;
         }
 
@@ -100,6 +105,11 @@ module starlingswf{
 
             var mc:starlingswf.SwfMovieClip = new starlingswf.SwfMovieClip(movieClipData["frames"],movieClipData["labels"],displayObjects,this,movieClipData["frameEvents"]);
             mc.loop = movieClipData["loop"];
+
+            if(data != null){
+                starlingswf.SwfBlendMode.setBlendMode(mc,<string>data[11]);
+            }
+
             return mc;
 
         }
@@ -111,6 +121,10 @@ module starlingswf{
 
             bitmap.anchorOffsetX = imageData[0];
             bitmap.anchorOffsetY = imageData[1];
+
+            if(data != null){
+                starlingswf.SwfBlendMode.setBlendMode(bitmap,<string>data[11]);
+            }
 
             return bitmap;
         }
@@ -124,6 +138,7 @@ module starlingswf{
             if(data != null){
                 bitmap.width = <number>data[10];
                 bitmap.height = <number>data[11];
+                starlingswf.SwfBlendMode.setBlendMode(bitmap,<string>data[13]);
             }
 
             return bitmap;
@@ -135,6 +150,7 @@ module starlingswf{
             if(data != null){
                 bitmap.width = <number>data[10];
                 bitmap.height = <number>data[11];
+                starlingswf.SwfBlendMode.setBlendMode(bitmap,<string>data[13]);
             }
             return bitmap;
         }
@@ -151,6 +167,7 @@ module starlingswf{
                 //textfield.italic = data[16];
                 //textfield.bold = data[17];
                 textfield.text = <string>data[18];
+                starlingswf.SwfBlendMode.setBlendMode(textfield,<string>data[20]);
             }
             return textfield;
         }

@@ -92,11 +92,12 @@ var GameApp = (function (_super) {
 
         this.swf = new starlingswf.Swf(swfData, assetsManager, 60);
 
-        this.test1();
-
+        //        this.test1();
         //        this.test2();
         //        this.test3();
         //        this.test4();
+        this.test5();
+
         egret.Profiler.getInstance().run();
     };
 
@@ -154,6 +155,14 @@ var GameApp = (function (_super) {
 
     GameApp.prototype.frameEventIn = function (e) {
         console.log("@in");
+    };
+
+    /**
+    * blendMode
+    * */
+    GameApp.prototype.test5 = function () {
+        var spr = this.swf.createSprite("spr_blendmode");
+        this.addChild(spr);
     };
     return GameApp;
 })(egret.DisplayObjectContainer);

@@ -54,6 +54,11 @@ var starlingswf;
                 display.alpha = objData[8];
                 sprite.addChild(display);
             }
+
+            if (data != null) {
+                starlingswf.SwfBlendMode.setBlendMode(sprite, data[11]);
+            }
+
             return sprite;
         };
 
@@ -85,6 +90,11 @@ var starlingswf;
 
             var mc = new starlingswf.SwfMovieClip(movieClipData["frames"], movieClipData["labels"], displayObjects, this, movieClipData["frameEvents"]);
             mc.loop = movieClipData["loop"];
+
+            if (data != null) {
+                starlingswf.SwfBlendMode.setBlendMode(mc, data[11]);
+            }
+
             return mc;
         };
 
@@ -96,6 +106,10 @@ var starlingswf;
 
             bitmap.anchorOffsetX = imageData[0];
             bitmap.anchorOffsetY = imageData[1];
+
+            if (data != null) {
+                starlingswf.SwfBlendMode.setBlendMode(bitmap, data[11]);
+            }
 
             return bitmap;
         };
@@ -110,6 +124,7 @@ var starlingswf;
             if (data != null) {
                 bitmap.width = data[10];
                 bitmap.height = data[11];
+                starlingswf.SwfBlendMode.setBlendMode(bitmap, data[13]);
             }
 
             return bitmap;
@@ -122,6 +137,7 @@ var starlingswf;
             if (data != null) {
                 bitmap.width = data[10];
                 bitmap.height = data[11];
+                starlingswf.SwfBlendMode.setBlendMode(bitmap, data[13]);
             }
             return bitmap;
         };
@@ -140,6 +156,7 @@ var starlingswf;
                 //textfield.italic = data[16];
                 //textfield.bold = data[17];
                 textfield.text = data[18];
+                starlingswf.SwfBlendMode.setBlendMode(textfield, data[20]);
             }
             return textfield;
         };

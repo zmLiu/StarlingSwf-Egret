@@ -91,10 +91,11 @@ class GameApp extends egret.DisplayObjectContainer{
 
         this.swf = new starlingswf.Swf(swfData,assetsManager,60);
 
-        this.test1();
+//        this.test1();
 //        this.test2();
 //        this.test3();
 //        this.test4();
+        this.test5();
 
         egret.Profiler.getInstance().run();
 
@@ -156,6 +157,14 @@ class GameApp extends egret.DisplayObjectContainer{
 
     private frameEventIn(e:egret.Event):void{
         console.log("@in");
+    }
+
+    /**
+     * blendMode
+     * */
+    private test5(){
+        var spr:starlingswf.SwfSprite = this.swf.createSprite("spr_blendmode");
+        this.addChild(spr);
     }
 
 
