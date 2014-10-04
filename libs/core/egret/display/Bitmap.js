@@ -147,7 +147,7 @@ var egret;
                 for (var y = destY; y < destHeight; y += textureHeight) {
                     var destW = Math.min(sourceWidth, destWidth - x);
                     var destH = Math.min(sourceHeight, destHeight - y);
-                    renderFilter.drawImage(renderContext, data, sourceX, sourceY, sourceWidth, sourceHeight, x, y, destW, destH);
+                    renderFilter.drawImage(renderContext, data, sourceX, sourceY, destW, destH, x, y, destW, destH);
                 }
             }
         };

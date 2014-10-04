@@ -74,11 +74,11 @@ var egret;
                 var measureW = 0;
                 var measureH = 0;
 
-                var skin = this._target.skin;
-                var count = this.target.numChildren;
+                var target = this._target;
+                var count = target.numElements;
                 for (var i = 0; i < count; i++) {
-                    var layoutElement = this.target.getChildAt(i);
-                    if (!layoutElement || layoutElement == skin || !layoutElement.includeInLayout)
+                    var layoutElement = target.getElementAt(i);
+                    if (!layoutElement || !layoutElement.includeInLayout)
                         continue;
 
                     var hCenter = layoutElement.horizontalCenter;
@@ -120,8 +120,8 @@ var egret;
                     measureH = Math.ceil(Math.max(measureH, extY + preferredHeight));
                 }
 
-                this.target.measuredWidth = Math.max(measureW, this.target.measuredWidth);
-                this.target.measuredHeight = Math.max(measureH, this.target.measuredHeight);
+                this.target.measuredWidth = measureW;
+                this.target.measuredHeight = measureH;
             };
 
             /**
@@ -134,11 +134,10 @@ var egret;
                 if (this.target == null)
                     return;
 
-                var count = this.target.numChildren;
-                var skin = this._target.skin;
+                var count = this.target.numElements;
                 for (var i = 0; i < count; i++) {
-                    var layoutElement = this.target.getChildAt(i);
-                    if (layoutElement == null || layoutElement == skin || !layoutElement.includeInLayout)
+                    var layoutElement = this.target.getElementAt(i);
+                    if (layoutElement == null || !layoutElement.includeInLayout)
                         continue;
 
                     var hCenter = layoutElement.horizontalCenter;

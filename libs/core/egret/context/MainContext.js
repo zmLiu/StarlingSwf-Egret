@@ -68,7 +68,10 @@ var egret;
                 egret.__callLaterArgsList = [];
             }
 
-            this.dispatchEventWith(egret.Event.RENDER);
+            var stage = this.stage;
+            var event = MainContext.cachedEvent;
+            event._type = egret.Event.RENDER;
+            this.dispatchEvent(event);
             if (egret.Stage._invalidateRenderFlag) {
                 this.broadcastRender();
                 egret.Stage._invalidateRenderFlag = false;
@@ -77,11 +80,17 @@ var egret;
                 this.doCallLaterList(functionList, thisList, argsList);
             }
             var context = this.rendererContext;
+            context.onRenderStart();
             context.clearScreen();
-            this.stage._updateTransform();
-            this.dispatchEventWith(egret.Event.FINISH_UPDATE_TRANSFORM);
-            this.stage._draw(context);
-            this.dispatchEventWith(egret.Event.FINISH_RENDER);
+
+            stage._updateTransform();
+            event._type = egret.Event.FINISH_UPDATE_TRANSFORM;
+            this.dispatchEvent(event);
+
+            stage._draw(context);
+            event._type = egret.Event.FINISH_RENDER;
+            this.dispatchEvent(event);
+            context.onRenderFinish();
         };
 
         /**
@@ -96,7 +105,7 @@ var egret;
             for (var i = 0; i < length; i++) {
                 var eventBin = list[i];
                 event._target = eventBin.display;
-                event._setCurrentTarget(eventBin.display);
+                event._currentTarget = eventBin.display;
                 eventBin.listener.call(eventBin.thisObject, event);
             }
 
@@ -116,8 +125,9 @@ var egret;
             var length = list.length;
             for (var i = 0; i < length; i++) {
                 var eventBin = list[i];
-                event._target = eventBin.display;
-                event._setCurrentTarget(eventBin.display);
+                var target = eventBin.display;
+                event._target = target;
+                event._currentTarget = target;
                 eventBin.listener.call(eventBin.thisObject, event);
             }
         };
@@ -136,6 +146,11 @@ var egret;
         };
         MainContext.DEVICE_PC = "web";
         MainContext.DEVICE_MOBILE = "native";
+
+        MainContext.RUNTIME_HTML5 = "runtime_html5";
+        MainContext.RUNTIME_NATIVE = "runtime_native";
+
+        MainContext.cachedEvent = new egret.Event("");
         return MainContext;
     })(egret.EventDispatcher);
     egret.MainContext = MainContext;
@@ -150,5 +165,13 @@ var testDeviceType = function () {
     return (ua.indexOf('mobile') != -1 || ua.indexOf('android') != -1);
 };
 
+var testRuntimeType = function () {
+    if (this["navigator"]) {
+        return true;
+    }
+    return false;
+};
+
 egret.MainContext.instance = new egret.MainContext();
 egret.MainContext.deviceType = testDeviceType() ? egret.MainContext.DEVICE_MOBILE : egret.MainContext.DEVICE_PC;
+egret.MainContext.runtimeType = testRuntimeType() ? egret.MainContext.RUNTIME_HTML5 : egret.MainContext.RUNTIME_NATIVE;

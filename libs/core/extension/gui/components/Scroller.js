@@ -157,22 +157,7 @@ var egret;
                 if (!this.delayTouchBeginEvent) {
                     return;
                 }
-                event.stopPropagation();
-                var evt = this.cloneTouchEvent(event);
-                this.delayTouchEndEvent = evt;
                 this.onTouchBeginTimer();
-                if (!this.touchEndTimer) {
-                    this.touchEndTimer = new egret.Timer(100, 1);
-                    this.touchEndTimer.addEventListener(egret.TimerEvent.TIMER_COMPLETE, this.onTouchEndTimer, this);
-                }
-                this.touchEndTimer.start();
-            };
-
-            Scroller.prototype.onTouchEndTimer = function (e) {
-                this.touchEndTimer.stop();
-                var event = this.delayTouchEndEvent;
-                this.delayTouchEndEvent = null;
-                this.dispatchPropagationEvent(event);
             };
 
             Scroller.prototype.dispatchPropagationEvent = function (event) {
@@ -192,8 +177,27 @@ var egret;
                     }
                     list.unshift(target);
                 }
-                var targetIndex = list.indexOf(event._target);
-                this._dispatchPropagationEvent(event, list, targetIndex);
+                this._dispatchPropagationEvent(event, list);
+            };
+
+            //todo 此处代码是为了兼容之前的实现，应该尽快更优化的实现后删除
+            Scroller.prototype._dispatchPropagationEvent = function (event, list, targetIndex) {
+                var length = list.length;
+                for (var i = 0; i < length; i++) {
+                    var currentTarget = list[i];
+                    event._currentTarget = currentTarget;
+                    event._target = this;
+                    if (i < targetIndex)
+                        event._eventPhase = 1;
+                    else if (i == targetIndex)
+                        event._eventPhase = 2;
+                    else
+                        event._eventPhase = 3;
+                    currentTarget._notifyListener(event);
+                    if (event._isPropagationStopped || event._isPropagationImmediateStopped) {
+                        break;
+                    }
+                }
             };
 
             /**
@@ -214,10 +218,6 @@ var egret;
                         }
                     }
                     target = target.parent;
-                }
-                if (this.delayTouchEndEvent) {
-                    this.delayTouchEndEvent = null;
-                    this.touchEndTimer.stop();
                 }
                 event.stopPropagation();
                 var evt = this.cloneTouchEvent(event);
@@ -295,7 +295,7 @@ var egret;
             };
 
             Scroller.prototype.onTouchBegin = function (event) {
-                if (event.isDefaultPrevented()) {
+                if (event._isDefaultPrevented) {
                     return;
                 }
                 var canScroll = this.checkScrollPolicy();
@@ -330,6 +330,9 @@ var egret;
             };
 
             Scroller.prototype.onTouchMove = function (event) {
+                if (this._currentTouchX == event.stageX && this._currentTouchY == event.stageY) {
+                    return;
+                }
                 this._currentTouchX = event.stageX;
                 this._currentTouchY = event.stageY;
                 if (this.delayTouchBeginEvent) {

@@ -85,10 +85,7 @@ var egret;
                 return this._text;
             },
             set: function (value) {
-                if (this._text != value) {
-                    this._setTextDirty();
-                    this._text = value;
-                }
+                this._setText(value);
             },
             enumerable: true,
             configurable: true
@@ -99,65 +96,88 @@ var egret;
         };
 
 
+        TextField.prototype._setText = function (value) {
+            if (this._text != value) {
+                this._setTextDirty();
+                this._text = value;
+            }
+        };
+
         Object.defineProperty(TextField.prototype, "fontFamily", {
             get: function () {
                 return this._fontFamily;
             },
             set: function (value) {
-                if (this._fontFamily != value) {
-                    this._setTextDirty();
-                    this._fontFamily = value;
-                }
+                this._setFontFamily(value);
             },
             enumerable: true,
             configurable: true
         });
 
+
+        TextField.prototype._setFontFamily = function (value) {
+            if (this._fontFamily != value) {
+                this._setTextDirty();
+                this._fontFamily = value;
+            }
+        };
 
         Object.defineProperty(TextField.prototype, "size", {
             get: function () {
                 return this._size;
             },
             set: function (value) {
-                if (this._size != value) {
-                    this._setTextDirty();
-                    this._size = value;
-                }
+                this._setSize(value);
             },
             enumerable: true,
             configurable: true
         });
 
+
+        TextField.prototype._setSize = function (value) {
+            if (this._size != value) {
+                this._setTextDirty();
+                this._size = value;
+            }
+        };
 
         Object.defineProperty(TextField.prototype, "italic", {
             get: function () {
                 return this._italic;
             },
             set: function (value) {
-                if (this._italic != value) {
-                    this._setTextDirty();
-                    this._italic = value;
-                }
+                this._setItalic(value);
             },
             enumerable: true,
             configurable: true
         });
 
+
+        TextField.prototype._setItalic = function (value) {
+            if (this._italic != value) {
+                this._setTextDirty();
+                this._italic = value;
+            }
+        };
 
         Object.defineProperty(TextField.prototype, "bold", {
             get: function () {
                 return this._bold;
             },
             set: function (value) {
-                if (this._bold != value) {
-                    this._setTextDirty();
-                    this._bold = value;
-                }
+                this._setBold(value);
             },
             enumerable: true,
             configurable: true
         });
 
+
+        TextField.prototype._setBold = function (value) {
+            if (this._bold != value) {
+                this._setTextDirty();
+                this._bold = value;
+            }
+        };
 
         Object.defineProperty(TextField.prototype, "textColor", {
             /**
@@ -168,16 +188,20 @@ var egret;
                 return this._textColor;
             },
             set: function (value) {
-                if (this._textColor != value) {
-                    this._setTextDirty();
-                    this._textColor = value;
-                    this._textColorString = egret.toColorString(value);
-                }
+                this._setTextColor(value);
             },
             enumerable: true,
             configurable: true
         });
 
+
+        TextField.prototype._setTextColor = function (value) {
+            if (this._textColor != value) {
+                this._setTextDirty();
+                this._textColor = value;
+                this._textColorString = egret.toColorString(value);
+            }
+        };
 
         Object.defineProperty(TextField.prototype, "strokeColor", {
             /**
@@ -188,76 +212,96 @@ var egret;
                 return this._strokeColor;
             },
             set: function (value) {
-                if (this._strokeColor != value) {
-                    this._setTextDirty();
-                    this._strokeColor = value;
-                    this._strokeColorString = egret.toColorString(value);
-                }
+                this._setStrokeColor(value);
             },
             enumerable: true,
             configurable: true
         });
 
+
+        TextField.prototype._setStrokeColor = function (value) {
+            if (this._strokeColor != value) {
+                this._setTextDirty();
+                this._strokeColor = value;
+                this._strokeColorString = egret.toColorString(value);
+            }
+        };
 
         Object.defineProperty(TextField.prototype, "stroke", {
             get: function () {
                 return this._stroke;
             },
             set: function (value) {
-                if (this._stroke != value) {
-                    this._setTextDirty();
-                    this._stroke = value;
-                }
+                this._setStroke(value);
             },
             enumerable: true,
             configurable: true
         });
 
+
+        TextField.prototype._setStroke = function (value) {
+            if (this._stroke != value) {
+                this._setTextDirty();
+                this._stroke = value;
+            }
+        };
 
         Object.defineProperty(TextField.prototype, "textAlign", {
             get: function () {
                 return this._textAlign;
             },
             set: function (value) {
-                if (this._textAlign != value) {
-                    this._setTextDirty();
-                    this._textAlign = value;
-                }
+                this._setTextAlign(value);
             },
             enumerable: true,
             configurable: true
         });
 
+
+        TextField.prototype._setTextAlign = function (value) {
+            if (this._textAlign != value) {
+                this._setTextDirty();
+                this._textAlign = value;
+            }
+        };
 
         Object.defineProperty(TextField.prototype, "verticalAlign", {
             get: function () {
                 return this._verticalAlign;
             },
             set: function (value) {
-                if (this._verticalAlign != value) {
-                    this._setTextDirty();
-                    this._verticalAlign = value;
-                }
+                this._setVerticalAlign(value);
             },
             enumerable: true,
             configurable: true
         });
 
+
+        TextField.prototype._setVerticalAlign = function (value) {
+            if (this._verticalAlign != value) {
+                this._setTextDirty();
+                this._verticalAlign = value;
+            }
+        };
 
         Object.defineProperty(TextField.prototype, "lineSpacing", {
             get: function () {
                 return this._lineSpacing;
             },
             set: function (value) {
-                if (this._lineSpacing != value) {
-                    this._setTextDirty();
-                    this._lineSpacing = value;
-                }
+                this._setLineSpacing(value);
             },
             enumerable: true,
             configurable: true
         });
 
+
+        TextField.prototype._setLineSpacing = function (value) {
+            if (this._lineSpacing != value) {
+                this._setTextDirty();
+                this._lineSpacing = value;
+            }
+        };
 
         Object.defineProperty(TextField.prototype, "numLines", {
             /**
@@ -345,7 +389,7 @@ var egret;
         };
 
         TextField.prototype.getTextLines = function (renderContext) {
-            var text = this.text ? this.text.toString() : "";
+            var text = this._text ? this._text.toString() : "";
             if (!text) {
                 return null;
             }

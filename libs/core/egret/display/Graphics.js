@@ -32,6 +32,12 @@ var egret;
     */
     var Graphics = (function () {
         function Graphics() {
+            this._minX = 0;
+            this._minY = 0;
+            this._maxX = 0;
+            this._maxY = 0;
+            this._lastX = 0;
+            this._lastY = 0;
             this.commandQueue = [];
         }
         /**
@@ -57,6 +63,7 @@ var egret;
         * @param r? {number} 圆的半径（以像素为单位）,不设置就为直角矩形。
         */
         Graphics.prototype.drawRect = function (x, y, width, height) {
+            this.checkRect(x, y, width, height);
         };
 
         /**
@@ -67,6 +74,7 @@ var egret;
         * @param r {number} 圆的半径（以像素为单位）。
         */
         Graphics.prototype.drawCircle = function (x, y, r) {
+            this.checkRect(x - r, y - r, 2 * r, 2 * r);
         };
 
         /**
@@ -80,6 +88,7 @@ var egret;
         * @param ellipseHeight {number} 用于绘制圆角的椭圆的高度（以像素为单位）。 （可选）如果未指定值，则默认值与为 ellipseWidth 参数提供的值相匹配。
         */
         Graphics.prototype.drawRoundRect = function (x, y, width, height, ellipseWidth, ellipseHeight) {
+            this.checkRect(x, y, width, height);
         };
 
         /**
@@ -91,6 +100,7 @@ var egret;
         * @param height {number} 矩形的高度（以像素为单位）。
         */
         Graphics.prototype.drawEllipse = function (x, y, width, height) {
+            this.checkRect(x - width, y - height, 2 * width, 2 * height);
         };
 
         /**
@@ -123,6 +133,7 @@ var egret;
         * @param y {number} 一个表示相对于父显示对象注册点的垂直位置的数字（以像素为单位）。
         */
         Graphics.prototype.lineTo = function (x, y) {
+            this.checkPoint(x, y);
         };
 
         /**
@@ -136,6 +147,8 @@ var egret;
         * @param anchorY {number} 一个数字，指定下一个锚点相对于父显示对象注册点的垂直位置。
         */
         Graphics.prototype.curveTo = function (controlX, controlY, anchorX, anchorY) {
+            this.checkPoint(controlX, controlY);
+            this.checkPoint(anchorX, anchorY);
         };
 
         /**
@@ -145,6 +158,7 @@ var egret;
         * @param y {number} 一个表示相对于父显示对象注册点的垂直位置的数字（以像素为单位）。
         */
         Graphics.prototype.moveTo = function (x, y) {
+            this.checkPoint(x, y);
         };
 
         /**
@@ -152,6 +166,10 @@ var egret;
         * @method egret.Graphics#clear
         */
         Graphics.prototype.clear = function () {
+            this._minX = 0;
+            this._minY = 0;
+            this._maxX = 0;
+            this._maxY = 0;
         };
 
         /**
@@ -162,6 +180,25 @@ var egret;
         };
 
         Graphics.prototype._draw = function (renderContext) {
+        };
+
+        Graphics.prototype.checkRect = function (x, y, w, h) {
+            this._minX = Math.min(this._minX, x);
+            this._minY = Math.min(this._minY, y);
+
+            this._maxX = Math.max(this._maxX, x + w);
+            this._maxY = Math.max(this._maxY, y + h);
+        };
+
+        Graphics.prototype.checkPoint = function (x, y) {
+            this._minX = Math.min(this._minX, x);
+            this._minY = Math.min(this._minY, y);
+
+            this._maxX = Math.max(this._maxX, x);
+            this._maxY = Math.max(this._maxY, y);
+
+            this._lastX = x;
+            this._lastY = y;
         };
         return Graphics;
     })();

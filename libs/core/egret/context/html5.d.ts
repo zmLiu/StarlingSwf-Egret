@@ -54,6 +54,13 @@ declare module egret {
         private registerListener();
     }
 }
+declare module egret_html5_localStorage {
+    function getItem(key: string): string;
+    function setItem(key: string, value: string): void;
+    function removeItem(key: string): void;
+    function clear(): void;
+    function init(): void;
+}
 /**
 * Copyright (c) 2014,Egret-Labs.org
 * All rights reserved.
@@ -101,7 +108,9 @@ declare module egret {
         public _transformTx: number;
         public _transformTy: number;
         private blendValue;
-        constructor(canvas: any);
+        private globalAlpha;
+        constructor(canvas?: HTMLCanvasElement);
+        private createCanvas();
         public clearScreen(): void;
         public clearRect(x: number, y: number, w: number, h: number): void;
         public drawImage(texture: Texture, sourceX: any, sourceY: any, sourceWidth: any, sourceHeight: any, destX: any, destY: any, destWidth: any, destHeight: any): void;
@@ -113,6 +122,8 @@ declare module egret {
         public strokeRect(x: any, y: any, w: any, h: any, color: any): void;
         public pushMask(mask: Rectangle): void;
         public popMask(): void;
+        public onRenderStart(): void;
+        public onRenderFinish(): void;
     }
 }
 declare module egret_h5_graphics {
@@ -177,7 +188,8 @@ declare module egret {
         private projectionX;
         private projectionY;
         private shaderManager;
-        constructor(canvas: any);
+        constructor(canvas?: HTMLCanvasElement);
+        private createCanvas();
         private contextLost;
         private handleContextLost();
         private handleContextRestored();
@@ -393,9 +405,10 @@ declare module egret {
 */
 declare module egret {
     class HTML5TouchContext extends TouchContext {
-        private canvas;
         private _isTouchDown;
-        constructor(canvas: HTMLCanvasElement);
+        private rootDiv;
+        constructor();
+        private prevent(event);
         public run(): void;
         private addMouseListener();
         private addTouchListener();
@@ -404,6 +417,105 @@ declare module egret {
         private _onTouchBegin(event);
         private _onTouchMove(event);
         private _onTouchEnd(event);
-        private getLocation(canvas, event);
+        private getLocation(rootDiv, event);
+    }
+}
+/**
+* Copyright (c) 2014,Egret-Labs.org
+* All rights reserved.
+* Redistribution and use in source and binary forms, with or without
+* modification, are permitted provided that the following conditions are met:
+*
+*     * Redistributions of source code must retain the above copyright
+*       notice, this list of conditions and the following disclaimer.
+*     * Redistributions in binary form must reproduce the above copyright
+*       notice, this list of conditions and the following disclaimer in the
+*       documentation and/or other materials provided with the distribution.
+*     * Neither the name of the Egret-Labs.org nor the
+*       names of its contributors may be used to endorse or promote products
+*       derived from this software without specific prior written permission.
+*
+* THIS SOFTWARE IS PROVIDED BY EGRET-LABS.ORG AND CONTRIBUTORS "AS IS" AND ANY
+* EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+* WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+* DISCLAIMED. IN NO EVENT SHALL EGRET-LABS.ORG AND CONTRIBUTORS BE LIABLE FOR ANY
+* DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+* LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+* ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+declare module egret {
+    /**
+    * @class egret.StageText
+    * @classdesc
+    * @extends egret.HashObject
+    */
+    class HTML5StageText extends StageText {
+        private div;
+        private inputElement;
+        private _size;
+        private _call;
+        constructor();
+        private _isShow;
+        private _text;
+        /**
+        * @method egret.StageText#getText
+        * @returns {string}
+        */
+        public _getText(): string;
+        /**
+        * @method egret.StageText#setText
+        * @param value {string}
+        */
+        public _setText(value: string): void;
+        /**
+        * @method egret.StageText#setTextType
+        * @param type {string}
+        */
+        public _setTextType(type: string): void;
+        /**
+        * @method egret.StageText#getTextType
+        * @returns {string}
+        */
+        public _getTextType(): string;
+        public _setMultiline(value: boolean): void;
+        /**
+        * @method egret.StageText#open
+        * @param x {number}
+        * @param y {number}
+        * @param width {number}
+        * @param height {number}
+        */
+        public _open(x: number, y: number, width?: number, height?: number): void;
+        private _inputType;
+        private _createInput();
+        public _addListeners(): void;
+        public _removeListeners(): void;
+        private addListener(type);
+        private removeListener(type);
+        private onHandler(e);
+        private _canUse;
+        /**
+        * @method egret.StageText#add
+        */
+        public _show(): void;
+        public _hide(): void;
+        private _openInput();
+        private _closeInput();
+        private closeKeyboard();
+        private getStageDelegateDiv();
+        /**
+        * @method egret.StageText#remove
+        */
+        public _remove(): void;
+        public changePosition(x: number, y: number): void;
+        public changeSize(width: number, height: number): void;
+        public setSize(value: number): void;
+        public setTextColor(value: string): void;
+        public setTextFontFamily(value: string): void;
+        public setWidth(value: number): void;
+        public setHeight(value: number): void;
     }
 }

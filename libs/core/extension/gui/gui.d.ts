@@ -3602,6 +3602,7 @@ declare module egret.gui {
         * 设置皮肤
         */
         public _setSkin(skin: any): void;
+        private skinLayoutEnabled;
         /**
         * 附加皮肤
         * @method egret.gui.SkinnableComponent#attachSkin
@@ -3691,11 +3692,6 @@ declare module egret.gui {
         * @method egret.gui.SkinnableComponent#commitProperties
         */
         public commitProperties(): void;
-        private skinLayout;
-        /**
-        * 启用或禁用组件自身的布局。通常用在当组件的皮肤不是ISkinPartHost，又需要自己创建子项并布局时。
-        */ 
-        public _setSkinLayoutEnabled(value: boolean): void;
         public _childXYChanged(): void;
         public measure(): void;
         /**
@@ -3945,7 +3941,7 @@ declare module egret.gui {
         * 目标布局对象
         * @member egret.gui.SkinBasicLayout#target
         */
-        public target : SkinnableComponent;
+        public target : Skin;
         /**
         * 测量组件尺寸大小
         * @method egret.gui.SkinBasicLayout#measure
@@ -5376,6 +5372,48 @@ declare module egret.gui {
 */
 declare module egret.gui {
     /**
+    * @class egret.gui.Spacer
+    * @classdesc
+    * 占位组件,一个布局辅助类。
+    * 自身完全不可见，但可以在父级容器的布局中分配空间，通常用于垂直和水平布局中，推挤其他组件。
+    * @extends egret.gui.UIComponent
+    */ 
+    class Spacer extends UIComponent {
+        /**
+        * 构造函数
+        * @method egret.gui.Spacer#constructor
+        */ 
+        constructor();
+    }
+}
+/**
+* Copyright (c) 2014,Egret-Labs.org
+* All rights reserved.
+* Redistribution and use in source and binary forms, with or without
+* modification, are permitted provided that the following conditions are met:
+*
+*     * Redistributions of source code must retain the above copyright
+*       notice, this list of conditions and the following disclaimer.
+*     * Redistributions in binary form must reproduce the above copyright
+*       notice, this list of conditions and the following disclaimer in the
+*       documentation and/or other materials provided with the distribution.
+*     * Neither the name of the Egret-Labs.org nor the
+*       names of its contributors may be used to endorse or promote products
+*       derived from this software without specific prior written permission.
+*
+* THIS SOFTWARE IS PROVIDED BY EGRET-LABS.ORG AND CONTRIBUTORS "AS IS" AND ANY
+* EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+* WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+* DISCLAIMED. IN NO EVENT SHALL EGRET-LABS.ORG AND CONTRIBUTORS BE LIABLE FOR ANY
+* DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+* LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+* ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+declare module egret.gui {
+    /**
     * @class egret.gui.Label
     * @classdesc
     * 一行或多行不可编辑的文本控件
@@ -5573,6 +5611,47 @@ declare module egret.gui {
     class Button extends ButtonBase {
         /**
         * @method egret.gui.Button#constructor
+        */
+        constructor();
+    }
+}
+/**
+* Copyright (c) 2014,Egret-Labs.org
+* All rights reserved.
+* Redistribution and use in source and binary forms, with or without
+* modification, are permitted provided that the following conditions are met:
+*
+*     * Redistributions of source code must retain the above copyright
+*       notice, this list of conditions and the following disclaimer.
+*     * Redistributions in binary form must reproduce the above copyright
+*       notice, this list of conditions and the following disclaimer in the
+*       documentation and/or other materials provided with the distribution.
+*     * Neither the name of the Egret-Labs.org nor the
+*       names of its contributors may be used to endorse or promote products
+*       derived from this software without specific prior written permission.
+*
+* THIS SOFTWARE IS PROVIDED BY EGRET-LABS.ORG AND CONTRIBUTORS "AS IS" AND ANY
+* EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+* WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+* DISCLAIMED. IN NO EVENT SHALL EGRET-LABS.ORG AND CONTRIBUTORS BE LIABLE FOR ANY
+* DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+* LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+* ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+declare module egret.gui {
+    /**
+    * @class egret.gui.ToggleSwitch
+    * @classdesc
+    * 开关按钮
+    * @extends egret.gui.ToggleButtonBase
+    */
+    class ToggleSwitch extends ToggleButtonBase {
+        /**
+        * 构造函数
+        * @method egret.gui.ToggleSwitch#constructor
         */
         constructor();
     }
@@ -6245,12 +6324,12 @@ declare module egret.gui {
         /**
         * 构造函数
         * @method egret.gui.Skin#constructor
-        */ 
+        */
         constructor();
         /**
         * 组件的最大测量宽度,仅影响measuredWidth属性的取值范围。
         * @member egret.gui.Skin#maxWidth
-        */ 
+        */
         public maxWidth: number;
         /**
         * 组件的最小测量宽度,此属性设置为大于maxWidth的值时无效。仅影响measuredWidth属性的取值范围。
@@ -6267,16 +6346,38 @@ declare module egret.gui {
         * @member egret.gui.Skin#minHeight
         */
         public minHeight: number;
+        public _hasWidthSet: Boolean;
+        public _width: number;
         /**
-        * 组件宽度
+        * 组件宽度,默认值为NaN,设置为NaN将使用组件的measure()方法自动计算尺寸
         * @member egret.gui.Skin#width
         */
-        public width: number;
+        public width : number;
+        public _hasHeightSet: Boolean;
+        public _height: number;
         /**
-        * 组件高度
+        * 组件高度,默认值为NaN,设置为NaN将使用组件的measure()方法自动计算尺寸
         * @member egret.gui.Skin#height
         */
-        public height: number;
+        public height : number;
+        /**
+        * 组件的默认宽度（以像素为单位）。此值由 measure() 方法设置。
+        * @member egret.gui.Skin#measuredWidth
+        */
+        public measuredWidth: number;
+        /**
+        * 组件的默认高度（以像素为单位）。此值由 measure() 方法设置。
+        * @member egret.gui.Skin#measuredHeight
+        */
+        public measuredHeight: number;
+        /**
+        * @member egret.gui.Skin#preferredWidth
+        */
+        public preferredWidth : number;
+        /**
+        * @member egret.gui.Skin#preferredHeight
+        */
+        public preferredHeight : number;
         private _initialized;
         /**
         * 创建子项,子类覆盖此方法以完成组件子项的初始化操作，
@@ -6301,7 +6402,7 @@ declare module egret.gui {
         /**
         * 设置容器子对象数组 。数组包含要添加到容器的子项列表，之前的已存在于容器中的子项列表被全部移除后添加列表里的每一项到容器。
         * 设置该属性时会对您输入的数组进行一次浅复制操作，所以您之后对该数组的操作不会影响到添加到容器的子项列表数量。
-        */ 
+        */
         public elementsContent : any[];
         /**
         * @member egret.gui.Skin#numElements
@@ -6357,7 +6458,7 @@ declare module egret.gui {
         * @param element {IVisualElement}
         * @param index {number}
         * @param notifyListeners {boolean}
-        */ 
+        */
         public _elementAdded(element: IVisualElement, index: number, notifyListeners?: boolean): void;
         /**
         * 从容器移除一个显示元素
@@ -6365,8 +6466,21 @@ declare module egret.gui {
         * @param element {IVisualElement}
         * @param index {number}
         * @param notifyListeners {boolean}
-        */ 
+        */
         public _elementRemoved(element: IVisualElement, index: number, notifyListeners?: boolean): void;
+        private skinLayout;
+        /**
+        * 测量组件尺寸
+        * @method egret.gui.Skin#measure
+        */
+        public measure(): void;
+        /**
+        * 更新显示列表
+        * @method egret.gui.Skin#updateDisplayList
+        * @param unscaledWidth {number}
+        * @param unscaledHeight {number}
+        */
+        public updateDisplayList(unscaledWidth: number, unscaledHeight: number): void;
         private _states;
         /**
         * 为此组件定义的视图状态。
@@ -6839,7 +6953,6 @@ declare module egret.gui {
         * 实体容器实例化之前缓存子对象的容器
         */
         public _placeHolderGroup: Group;
-        public a: any;
         /**
         * 获取当前的实体容器
         */
@@ -8977,11 +9090,9 @@ declare module egret.gui {
         * 卸载视域组件
         */
         private uninstallViewport();
-        private touchEndTimer;
-        private delayTouchEndEvent;
         private onTouchEndCapture(event);
-        private onTouchEndTimer(e);
         private dispatchPropagationEvent(event);
+        public _dispatchPropagationEvent(event: Event, list: DisplayObject[], targetIndex?: number): void;
         private touchBeginTimer;
         private delayTouchBeginEvent;
         /**

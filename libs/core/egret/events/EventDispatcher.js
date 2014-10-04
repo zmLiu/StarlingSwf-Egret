@@ -194,20 +194,25 @@ var egret;
         EventDispatcher.prototype.dispatchEvent = function (event) {
             event._reset();
             event._target = this._eventTarget;
-            event._setCurrentTarget(this._eventTarget);
+            event._currentTarget = this._eventTarget;
             return this._notifyListener(event);
         };
 
         EventDispatcher.prototype._notifyListener = function (event) {
             var eventMap = event._eventPhase == 1 ? this._captureEventsMap : this._eventsMap;
-            if (!eventMap)
+            if (!eventMap) {
                 return true;
-            var list = eventMap[event.type];
+            }
+            var list = eventMap[event._type];
+
             if (!list) {
                 return true;
             }
-            list = list.concat();
             var length = list.length;
+            if (length == 0) {
+                return true;
+            }
+            list = list.concat();
             for (var i = 0; i < length; i++) {
                 var eventBin = list[i];
                 eventBin.listener.call(eventBin.thisObject, event);
@@ -215,7 +220,7 @@ var egret;
                     break;
                 }
             }
-            return !event.isDefaultPrevented();
+            return !event._isDefaultPrevented;
         };
 
         /**

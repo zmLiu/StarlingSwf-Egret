@@ -52,6 +52,7 @@ var egret;
                 this._depth = 0;
                 this._hasChildren = false;
                 this._isOpen = false;
+                this.hostComponentKey = "egret.gui.TreeItemRenderer";
                 this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onItemMouseDown, this, false, 1000);
             }
             TreeItemRenderer.prototype.onItemMouseDown = function (event) {

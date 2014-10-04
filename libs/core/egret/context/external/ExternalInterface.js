@@ -35,13 +35,9 @@ var egret;
         * 如果该容器是某个 App 容器，该容器将处理该事件。
         * @method egret.ExternalInterface#call
         * @param functionName {string}
-        * @param arguments
+        * @param value {string}
         */
-        ExternalInterface.call = function (functionName) {
-            var args = [];
-            for (var _i = 0; _i < (arguments.length - 1); _i++) {
-                args[_i] = arguments[_i + 1];
-            }
+        ExternalInterface.call = function (functionName, value) {
         };
 
         /**

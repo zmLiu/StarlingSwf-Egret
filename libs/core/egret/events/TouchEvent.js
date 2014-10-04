@@ -66,8 +66,6 @@ var egret;
             _super.call(this, type, bubbles, cancelable);
             this._stageX = 0;
             this._stageY = 0;
-            this._localX = 0;
-            this._localY = 0;
             this.touchPointID = touchPointID;
             this._stageX = stageX;
             this._stageY = stageY;
@@ -105,7 +103,9 @@ var egret;
             * @member {number} egret.TouchEvent#localX
             */
             get: function () {
-                return this._localX;
+                var dp = this._currentTarget;
+                var point = dp.globalToLocal(this._stageX, this._stageY, egret.Point.identity);
+                return point.x;
             },
             enumerable: true,
             configurable: true
@@ -117,21 +117,13 @@ var egret;
             * @member {number} egret.TouchEvent#localY
             */
             get: function () {
-                return this._localY;
+                var dp = this._currentTarget;
+                var point = dp.globalToLocal(this._stageX, this._stageY, egret.Point.identity);
+                return point.y;
             },
             enumerable: true,
             configurable: true
         });
-
-        TouchEvent.prototype._setCurrentTarget = function (target) {
-            _super.prototype._setCurrentTarget.call(this, target);
-            if (target instanceof egret.DisplayObject) {
-                var dp = target;
-                var point = dp.globalToLocal(this._stageX, this._stageY, egret.Point.identity);
-                this._localX = point.x;
-                this._localY = point.y;
-            }
-        };
 
         /**
         * 使用指定的EventDispatcher对象来抛出Event事件对象。抛出的对象将会缓存在对象池上，供下次循环复用。

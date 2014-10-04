@@ -35,8 +35,6 @@ var GameApp = (function (_super) {
     function GameApp() {
         _super.call(this);
 
-        egret.Injector.mapClass(RES.AnalyzerBase, starlingswf.StarlingSwfSheetAnalyzer, "starlingswf_sheet");
-
         this.addEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
     }
     GameApp.prototype.onAddToStage = function (event) {
@@ -92,11 +90,13 @@ var GameApp = (function (_super) {
 
         this.swf = new starlingswf.Swf(swfData, assetsManager, 60);
 
-        //        this.test1();
+        this.test1();
+
         //        this.test2();
         //        this.test3();
         //        this.test4();
-        this.test5();
+        //        this.test5();
+        this.stage.addEventListener(egret.Event.RESIZE, this.onReSize, this);
 
         egret.Profiler.getInstance().run();
     };
@@ -163,6 +163,11 @@ var GameApp = (function (_super) {
     GameApp.prototype.test5 = function () {
         var spr = this.swf.createSprite("spr_blendmode");
         this.addChild(spr);
+    };
+
+    GameApp.prototype.onReSize = function (e) {
+        console.log(this.stage.stageWidth);
+        console.log(this.stage.stageHeight);
     };
     return GameApp;
 })(egret.DisplayObjectContainer);

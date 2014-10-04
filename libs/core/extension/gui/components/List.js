@@ -358,7 +358,7 @@ var egret;
             * @param event {TouchEvent}
             */
             List.prototype.item_mouseDownHandler = function (event) {
-                if (event.isDefaultPrevented())
+                if (event._isDefaultPrevented)
                     return;
 
                 var itemRenderer = (event.currentTarget);

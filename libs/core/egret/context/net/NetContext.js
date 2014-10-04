@@ -44,6 +44,16 @@ var egret;
         }
         NetContext.prototype.proceed = function (loader) {
         };
+
+        NetContext._getUrl = function (request) {
+            var url = request.url;
+
+            //get请求没有设置参数，而是设置URLVariables的情况
+            if (url.indexOf("?") == -1 && request.method == egret.URLRequestMethod.GET && request.data && request.data instanceof egret.URLVariables) {
+                url = url + "?" + request.data.toString();
+            }
+            return url;
+        };
         return NetContext;
     })(egret.HashObject);
     egret.NetContext = NetContext;

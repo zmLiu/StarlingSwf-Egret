@@ -34,9 +34,9 @@ var egret;
     var URLRequestMethod = (function () {
         function URLRequestMethod() {
         }
-        URLRequestMethod.GET = "GET";
+        URLRequestMethod.GET = "get";
 
-        URLRequestMethod.POST = "POST";
+        URLRequestMethod.POST = "post";
         return URLRequestMethod;
     })();
     egret.URLRequestMethod = URLRequestMethod;

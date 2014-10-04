@@ -47,6 +47,8 @@ var RES;
             var config = resItem.data;
             if (config && config["soundType"]) {
                 data.preload(config.soundType);
+            } else {
+                data.preload(egret.Sound.EFFECT);
             }
         };
         return SoundAnalyzer;

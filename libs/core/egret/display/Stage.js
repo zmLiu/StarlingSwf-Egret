@@ -66,7 +66,9 @@ var egret;
 
                     var scaleModeEnum = {};
                     scaleModeEnum[egret.StageScaleMode.NO_SCALE] = new egret.NoScale();
-                    scaleModeEnum[egret.StageScaleMode.SHOW_ALL] = new egret.FixedWidth();
+                    scaleModeEnum[egret.StageScaleMode.SHOW_ALL] = new egret.ShowAll();
+                    scaleModeEnum[egret.StageScaleMode.NO_BORDER] = new egret.FixedWidth();
+                    scaleModeEnum[egret.StageScaleMode.EXACT_FIT] = new egret.FullScreen();
                     var content = scaleModeEnum[value];
                     if (!content) {
                         throw new Error("使用了尚未实现的ScaleMode");
@@ -74,9 +76,8 @@ var egret;
                     var container = new egret.EqualToFrame();
                     var policy = new egret.ResolutionPolicy(container, content);
                     egret.StageDelegate.getInstance()._setResolutionPolicy(policy);
-                    var canvas = document.getElementById(egret.StageDelegate.canvas_name);
-                    this._stageWidth = canvas.width;
-                    this._stageHeight = canvas.height;
+                    this._stageWidth = egret.StageDelegate.getInstance()._stageWidth;
+                    this._stageHeight = egret.StageDelegate.getInstance()._stageHeight;
                     this.dispatchEventWith(egret.Event.RESIZE);
                 }
             },
@@ -117,11 +118,11 @@ var egret;
         * @returns {egret.DisplayObject}
         */
         Stage.prototype.hitTest = function (x, y) {
-            if (!this.touchEnabled) {
+            if (!this._touchEnabled) {
                 return null;
             }
             var result;
-            if (!this.visible) {
+            if (!this._touchChildren) {
                 return this;
             }
             var children = this._children;
@@ -130,12 +131,12 @@ var egret;
                 var child = children[i];
                 var o = child;
                 var offsetPoint = o._getOffsetPoint();
-                var mtx = egret.Matrix.identity.identity().prependTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, 0, 0, offsetPoint.x, offsetPoint.y);
+                var mtx = egret.Matrix.identity.identity().prependTransform(o._x, o._y, o._scaleX, o._scaleY, o._rotation, 0, 0, offsetPoint.x, offsetPoint.y);
                 mtx.invert();
                 var point = egret.Matrix.transformCoords(mtx, x, y);
                 result = child.hitTest(point.x, point.y, true);
                 if (result) {
-                    if (result.touchEnabled) {
+                    if (result._touchEnabled) {
                         return result;
                     }
                 }

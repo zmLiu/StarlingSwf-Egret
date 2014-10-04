@@ -71,22 +71,87 @@ var egret;
                 * @member egret.gui.Skin#minHeight
                 */
                 this.minHeight = 0;
+                this._hasWidthSet = false;
+                this._width = NaN;
+                this._hasHeightSet = false;
+                this._height = NaN;
                 /**
-                * 组件宽度
-                * @member egret.gui.Skin#width
+                * 组件的默认宽度（以像素为单位）。此值由 measure() 方法设置。
+                * @member egret.gui.Skin#measuredWidth
                 */
-                this.width = NaN;
+                this.measuredWidth = 0;
                 /**
-                * 组件高度
-                * @member egret.gui.Skin#height
+                * 组件的默认高度（以像素为单位）。此值由 measure() 方法设置。
+                * @member egret.gui.Skin#measuredHeight
                 */
-                this.height = NaN;
+                this.measuredHeight = 0;
                 this._initialized = false;
                 this._elementsContent = [];
                 //========================state相关函数===============start=========================
                 this._states = [];
                 this.initialized = false;
+                this.skinLayout = new gui.SkinBasicLayout();
+                this.skinLayout.target = this;
             }
+            Object.defineProperty(Skin.prototype, "width", {
+                /**
+                * 组件宽度,默认值为NaN,设置为NaN将使用组件的measure()方法自动计算尺寸
+                * @member egret.gui.Skin#width
+                */
+                get: function () {
+                    return this._width;
+                },
+                set: function (value) {
+                    if (this._width == value)
+                        return;
+                    this._width = value;
+                    this._hasWidthSet = egret.NumberUtils.isNumber(value);
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+            Object.defineProperty(Skin.prototype, "height", {
+                /**
+                * 组件高度,默认值为NaN,设置为NaN将使用组件的measure()方法自动计算尺寸
+                * @member egret.gui.Skin#height
+                */
+                get: function () {
+                    return this._height;
+                },
+                set: function (value) {
+                    if (this._height == value)
+                        return;
+                    this._height = value;
+                    this._hasHeightSet = egret.NumberUtils.isNumber(value);
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+
+            Object.defineProperty(Skin.prototype, "preferredWidth", {
+                /**
+                * @member egret.gui.Skin#preferredWidth
+                */
+                get: function () {
+                    return this._hasWidthSet ? this._width : this.measuredWidth;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+            Object.defineProperty(Skin.prototype, "preferredHeight", {
+                /**
+                * @member egret.gui.Skin#preferredHeight
+                */
+                get: function () {
+                    return this._hasHeightSet ? this._height : this.measuredHeight;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
             /**
             * 创建子项,子类覆盖此方法以完成组件子项的初始化操作，
             * 请务必调用super.createChildren()以完成父类组件的初始化
@@ -364,6 +429,36 @@ var egret;
                 element.ownerChanged(null);
                 this._hostComponent.invalidateSize();
                 this._hostComponent.invalidateDisplayList();
+            };
+
+            /**
+            * 测量组件尺寸
+            * @method egret.gui.Skin#measure
+            */
+            Skin.prototype.measure = function () {
+                this.skinLayout.measure();
+                if (this.measuredWidth < this.minWidth) {
+                    this.measuredWidth = this.minWidth;
+                }
+                if (this.measuredWidth > this.maxWidth) {
+                    this.measuredWidth = this.maxWidth;
+                }
+                if (this.measuredHeight < this.minHeight) {
+                    this.measuredHeight = this.minHeight;
+                }
+                if (this.measuredHeight > this.maxHeight) {
+                    this.measuredHeight = this.maxHeight;
+                }
+            };
+
+            /**
+            * 更新显示列表
+            * @method egret.gui.Skin#updateDisplayList
+            * @param unscaledWidth {number}
+            * @param unscaledHeight {number}
+            */
+            Skin.prototype.updateDisplayList = function (unscaledWidth, unscaledHeight) {
+                this.skinLayout.updateDisplayList(unscaledWidth, unscaledHeight);
             };
 
             Object.defineProperty(Skin.prototype, "states", {

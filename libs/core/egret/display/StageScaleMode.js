@@ -29,9 +29,13 @@ var egret;
     var StageScaleMode = (function () {
         function StageScaleMode() {
         }
+        StageScaleMode.NO_BORDER = "noBorder";
+
         StageScaleMode.NO_SCALE = "noScale";
 
         StageScaleMode.SHOW_ALL = "showAll";
+
+        StageScaleMode.EXACT_FIT = "exactFit";
         return StageScaleMode;
     })();
     egret.StageScaleMode = StageScaleMode;

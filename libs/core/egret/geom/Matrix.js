@@ -111,11 +111,12 @@ var egret;
             var b1 = this.b;
             var c1 = this.c;
             var d1 = this.d;
-
-            this.a = a * a1 + b * c1;
-            this.b = a * b1 + b * d1;
-            this.c = c * a1 + d * c1;
-            this.d = c * b1 + d * d1;
+            if (a != 1 || b != 0 || c != 0 || d != 1) {
+                this.a = a * a1 + b * c1;
+                this.b = a * b1 + b * d1;
+                this.c = c * a1 + d * c1;
+                this.d = c * b1 + d * d1;
+            }
             this.tx = tx * a1 + ty * c1 + this.tx;
             this.ty = tx * b1 + ty * d1 + this.ty;
             return this;
@@ -305,6 +306,21 @@ var egret;
         Matrix.prototype.identity = function () {
             this.a = this.d = 1;
             this.b = this.c = this.tx = this.ty = 0;
+            return this;
+        };
+
+        /**
+        * 矩阵重置为目标矩阵
+        * @method egret.Matrix#identityMatrix
+        * @returns {egret.Matrix}
+        */
+        Matrix.prototype.identityMatrix = function (matrix) {
+            this.a = matrix.a;
+            this.b = matrix.b;
+            this.c = matrix.c;
+            this.d = matrix.d;
+            this.tx = matrix.tx;
+            this.ty = matrix.ty;
             return this;
         };
 

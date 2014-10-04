@@ -141,3 +141,36 @@ var egret;
     egret.HTML5DeviceContext = HTML5DeviceContext;
     HTML5DeviceContext.prototype.__class__ = "egret.HTML5DeviceContext";
 })(egret || (egret = {}));
+
+var egret_html5_localStorage;
+(function (egret_html5_localStorage) {
+    //todo 有可能没有window.localStorage对象
+    function getItem(key) {
+        return window.localStorage.getItem(key);
+    }
+    egret_html5_localStorage.getItem = getItem;
+
+    function setItem(key, value) {
+        window.localStorage.setItem(key, value);
+    }
+    egret_html5_localStorage.setItem = setItem;
+
+    function removeItem(key) {
+        window.localStorage.removeItem(key);
+    }
+    egret_html5_localStorage.removeItem = removeItem;
+
+    function clear() {
+        window.localStorage.clear();
+    }
+    egret_html5_localStorage.clear = clear;
+
+    function init() {
+        for (var key in egret_html5_localStorage) {
+            egret.localStorage[key] = egret_html5_localStorage[key];
+        }
+    }
+    egret_html5_localStorage.init = init;
+})(egret_html5_localStorage || (egret_html5_localStorage = {}));
+
+egret_html5_localStorage.init();

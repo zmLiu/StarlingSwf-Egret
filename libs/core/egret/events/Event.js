@@ -130,10 +130,6 @@ var egret;
             configurable: true
         });
 
-        Event.prototype._setCurrentTarget = function (target) {
-            this._currentTarget = target;
-        };
-
         Object.defineProperty(Event.prototype, "target", {
             /**
             * 事件目标。此属性包含目标节点。例如，如果用户单击“确定”按钮，则目标节点就是包含该按钮的显示列表节点。

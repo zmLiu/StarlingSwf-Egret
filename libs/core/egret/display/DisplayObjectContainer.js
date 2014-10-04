@@ -105,7 +105,7 @@ var egret;
         * @returns {egret.DisplayObject} 在 child 参数中传递的 DisplayObject 实例。
         */
         DisplayObjectContainer.prototype.addChild = function (child) {
-            var index = this.numChildren;
+            var index = this._children.length;
 
             if (child._parent == this)
                 index--;
@@ -134,7 +134,7 @@ var egret;
                 return child;
             }
 
-            var host = child.parent;
+            var host = child._parent;
             if (host == this) {
                 this.doSetChildIndex(child, index);
                 return child;
@@ -307,7 +307,7 @@ var egret;
         };
 
         DisplayObjectContainer.prototype._updateTransform = function () {
-            if (!this.visible) {
+            if (!this._visible) {
                 return;
             }
             _super.prototype._updateTransform.call(this);
@@ -335,7 +335,7 @@ var egret;
             for (var i = 0; i < l; i++) {
                 var child = this._children[i];
                 var bounds;
-                if (!child.visible || !(bounds = egret.DisplayObject.getTransformBounds(child._getSize(egret.Rectangle.identity), child._getMatrix()))) {
+                if (!child._visible || !(bounds = egret.DisplayObject.getTransformBounds(child._getSize(egret.Rectangle.identity), child._getMatrix()))) {
                     continue;
                 }
                 var x1 = bounds.x, y1 = bounds.y, x2 = bounds.width + bounds.x, y2 = bounds.height + bounds.y;
@@ -368,7 +368,7 @@ var egret;
         DisplayObjectContainer.prototype.hitTest = function (x, y, ignoreTouchEnabled) {
             if (typeof ignoreTouchEnabled === "undefined") { ignoreTouchEnabled = false; }
             var result;
-            if (!this.visible) {
+            if (!this._visible) {
                 return null;
             }
             if (this._scrollRect) {
@@ -398,25 +398,28 @@ var egret;
                 var point = egret.Matrix.transformCoords(mtx, x, y);
                 var childHitTestResult = child.hitTest(point.x, point.y, true);
                 if (childHitTestResult) {
-                    if (childHitTestResult._touchEnabled && touchChildren) {
-                        return childHitTestResult;
-                    } else if (this._touchEnabled) {
+                    if (!touchChildren) {
                         return this;
                     }
-                    if (result == null) {
-                        result = childHitTestResult;
+
+                    if (childHitTestResult._touchEnabled && touchChildren) {
+                        return childHitTestResult;
                     }
+
+                    result = this;
                 }
             }
-            if (!result) {
+            if (result) {
+                return result;
+            } else if (this._texture_to_render || this["graphics"]) {
                 return _super.prototype.hitTest.call(this, x, y, ignoreTouchEnabled);
             }
-            return result;
+            return null;
         };
 
         DisplayObjectContainer.prototype._onAddToStage = function () {
             _super.prototype._onAddToStage.call(this);
-            var length = this.numChildren;
+            var length = this._children.length;
             for (var i = 0; i < length; i++) {
                 var child = this._children[i];
                 child._onAddToStage();
@@ -425,7 +428,7 @@ var egret;
 
         DisplayObjectContainer.prototype._onRemoveFromStage = function () {
             _super.prototype._onRemoveFromStage.call(this);
-            var length = this.numChildren;
+            var length = this._children.length;
             for (var i = 0; i < length; i++) {
                 var child = this._children[i];
                 child._onRemoveFromStage();
@@ -440,9 +443,9 @@ var egret;
         */
         DisplayObjectContainer.prototype.getChildByName = function (name) {
             var locChildren = this._children;
-            var count = this.numChildren;
+            var length = locChildren.length;
             var displayObject;
-            for (var i = 0; i < count; i++) {
+            for (var i = 0; i < length; i++) {
                 displayObject = locChildren[i];
                 if (displayObject.name == name) {
                     return displayObject;

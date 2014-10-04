@@ -150,6 +150,12 @@ var egret;
         RendererContext.prototype.popMask = function () {
         };
 
+        RendererContext.prototype.onRenderStart = function () {
+        };
+
+        RendererContext.prototype.onRenderFinish = function () {
+        };
+
         RendererContext.createRendererContext = function (canvas) {
             return null;
         };

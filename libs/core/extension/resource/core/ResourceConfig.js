@@ -31,6 +31,7 @@ var RES;
             * 加载组字典
             */
             this.groupDic = {};
+            RES["configInstance"] = this;
         }
         /**
         * 根据组名获取组加载项列表
@@ -138,6 +139,19 @@ var RES;
                     }
                     this.groupDic[group.name] = list;
                 }
+            }
+        };
+
+        /**
+        * 添加一个二级键名到配置列表。
+        * @method RES.ResourceConfig#addSubkey
+        * @param subkey {string} 要添加的二级键名
+        * @param name {string} 二级键名所属的资源name属性
+        */
+        ResourceConfig.prototype.addSubkey = function (subkey, name) {
+            var item = this.keyMap[name];
+            if (item && !this.keyMap[subkey]) {
+                this.keyMap[subkey] = item;
             }
         };
 

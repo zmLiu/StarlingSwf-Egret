@@ -103,7 +103,8 @@ var RES;
                 config = this.sheetMap[name];
                 delete this.sheetMap[name];
                 if (texture) {
-                    var spriteSheet = this.parseSpriteSheet(texture, config);
+                    var targetName = resItem.data && resItem.data.subkeys ? "" : name;
+                    var spriteSheet = this.parseSpriteSheet(texture, config, targetName);
                     this.fileDic[name] = spriteSheet;
                 }
             }
@@ -120,18 +121,26 @@ var RES;
             return url;
         };
 
-        SheetAnalyzer.prototype.parseSpriteSheet = function (texture, data) {
+        SheetAnalyzer.prototype.parseSpriteSheet = function (texture, data, name) {
             var frames = data.frames;
             if (!frames) {
                 return null;
             }
             var spriteSheet = new egret.SpriteSheet(texture);
             var textureMap = this.textureMap;
-            for (var name in frames) {
-                var config = frames[name];
-                var texture = spriteSheet.createTexture(name, config.x, config.y, config.w, config.h, config.offX, config.offY, config.sourceW, config.sourceH);
-                if (textureMap[name] == null) {
-                    textureMap[name] = texture;
+            for (var subkey in frames) {
+                var config = frames[subkey];
+                var texture = spriteSheet.createTexture(subkey, config.x, config.y, config.w, config.h, config.offX, config.offY, config.sourceW, config.sourceH);
+                if (config["scale9grid"]) {
+                    var str = config["scale9grid"];
+                    var list = str.split(",");
+                    texture["scale9Grid"] = new egret.Rectangle(parseInt(list[0]), parseInt(list[1]), parseInt(list[2]), parseInt(list[3]));
+                }
+                if (textureMap[subkey] == null) {
+                    textureMap[subkey] = texture;
+                    if (name) {
+                        this.addSubkey(subkey, name);
+                    }
                 }
             }
             return spriteSheet;

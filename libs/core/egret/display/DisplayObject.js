@@ -157,8 +157,9 @@ var egret;
         };
 
         DisplayObject.prototype._setParentSizeDirty = function () {
-            if (this.parent && (!this.parent._hasWidthSet && !this.parent._hasHeightSet)) {
-                this.parent._setSizeDirty();
+            var parent = this._parent;
+            if (parent && (!(parent._hasWidthSet || parent._hasHeightSet))) {
+                parent._setSizeDirty();
             }
         };
 
@@ -203,41 +204,49 @@ var egret;
                 return this._x;
             },
             set: function (value) {
-                if (egret.NumberUtils.isNumber(value)) {
-                    this._x = value;
-
-                    this._setDirty();
-                    this._setParentSizeDirty();
-                }
+                this._setX(value);
             },
             enumerable: true,
             configurable: true
         });
 
+
+        DisplayObject.prototype._setX = function (value) {
+            if (egret.NumberUtils.isNumber(value) && this._x != value) {
+                this._x = value;
+
+                this._setDirty();
+                this._setParentSizeDirty();
+            }
+        };
 
         Object.defineProperty(DisplayObject.prototype, "y", {
             get: function () {
                 return this._y;
             },
             set: function (value) {
-                if (egret.NumberUtils.isNumber(value)) {
-                    this._y = value;
-
-                    this._setDirty();
-                    this._setParentSizeDirty();
-                }
+                this._setY(value);
             },
             enumerable: true,
             configurable: true
         });
 
 
+        DisplayObject.prototype._setY = function (value) {
+            if (egret.NumberUtils.isNumber(value) && this._y != value) {
+                this._y = value;
+
+                this._setDirty();
+                this._setParentSizeDirty();
+            }
+        };
+
         Object.defineProperty(DisplayObject.prototype, "scaleX", {
             get: function () {
                 return this._scaleX;
             },
             set: function (value) {
-                if (egret.NumberUtils.isNumber(value)) {
+                if (egret.NumberUtils.isNumber(value) && this._scaleX != value) {
                     this._scaleX = value;
 
                     this._setDirty();
@@ -254,7 +263,7 @@ var egret;
                 return this._scaleY;
             },
             set: function (value) {
-                if (egret.NumberUtils.isNumber(value)) {
+                if (egret.NumberUtils.isNumber(value) && this._scaleY != value) {
                     this._scaleY = value;
 
                     this._setDirty();
@@ -271,7 +280,7 @@ var egret;
                 return this._anchorOffsetX;
             },
             set: function (value) {
-                if (egret.NumberUtils.isNumber(value)) {
+                if (egret.NumberUtils.isNumber(value) && this._anchorOffsetX != value) {
                     this._anchorOffsetX = value;
 
                     this._setDirty();
@@ -288,7 +297,7 @@ var egret;
                 return this._anchorOffsetY;
             },
             set: function (value) {
-                if (egret.NumberUtils.isNumber(value)) {
+                if (egret.NumberUtils.isNumber(value) && this._anchorOffsetY != value) {
                     this._anchorOffsetY = value;
 
                     this._setDirty();
@@ -305,7 +314,7 @@ var egret;
                 return this._anchorX;
             },
             set: function (value) {
-                if (egret.NumberUtils.isNumber(value)) {
+                if (egret.NumberUtils.isNumber(value) && this._anchorX != value) {
                     this._anchorX = value;
 
                     this._setDirty();
@@ -322,7 +331,7 @@ var egret;
                 return this._anchorY;
             },
             set: function (value) {
-                if (egret.NumberUtils.isNumber(value)) {
+                if (egret.NumberUtils.isNumber(value) && this._anchorY != value) {
                     this._anchorY = value;
 
                     this._setDirty();
@@ -339,20 +348,26 @@ var egret;
                 return this._visible;
             },
             set: function (value) {
-                this._visible = value;
-                this._setSizeDirty();
+                this._setVisible(value);
             },
             enumerable: true,
             configurable: true
         });
 
 
+        DisplayObject.prototype._setVisible = function (value) {
+            if (this._visible != value) {
+                this._visible = value;
+                this._setSizeDirty();
+            }
+        };
+
         Object.defineProperty(DisplayObject.prototype, "rotation", {
             get: function () {
                 return this._rotation;
             },
             set: function (value) {
-                if (egret.NumberUtils.isNumber(value)) {
+                if (egret.NumberUtils.isNumber(value) && this._rotation != value) {
                     this._rotation = value;
 
                     this._setSizeDirty();
@@ -368,7 +383,7 @@ var egret;
                 return this._alpha;
             },
             set: function (value) {
-                if (egret.NumberUtils.isNumber(value)) {
+                if (egret.NumberUtils.isNumber(value) && this._alpha != value) {
                     this._alpha = value;
 
                     this._setDirty();
@@ -384,7 +399,7 @@ var egret;
                 return this._skewX;
             },
             set: function (value) {
-                if (egret.NumberUtils.isNumber(value)) {
+                if (egret.NumberUtils.isNumber(value) && this._skewX != value) {
                     this._skewX = value;
 
                     this._setSizeDirty();
@@ -400,7 +415,7 @@ var egret;
                 return this._skewY;
             },
             set: function (value) {
-                if (egret.NumberUtils.isNumber(value)) {
+                if (egret.NumberUtils.isNumber(value) && this._skewY != value) {
                     this._skewY = value;
 
                     this._setSizeDirty();
@@ -542,7 +557,7 @@ var egret;
         * @param renderContext
         */
         DisplayObject.prototype._draw = function (renderContext) {
-            if (!this.visible) {
+            if (!this._visible) {
                 this.destroyCacheBounds();
                 return;
             }
@@ -590,8 +605,16 @@ var egret;
         * @param renderContext
         */
         DisplayObject.prototype._updateTransform = function () {
+            this._calculateWorldform();
+        };
+
+        /**
+        * 计算全局数据
+        * @private
+        */
+        DisplayObject.prototype._calculateWorldform = function () {
             var o = this;
-            o._worldTransform.identity().appendMatrix(o._parent._worldTransform);
+            o._worldTransform.identityMatrix(o._parent._worldTransform);
             var anchorX, anchorY;
             var resultPoint = o._getOffsetPoint();
             anchorX = resultPoint.x;
@@ -720,7 +743,7 @@ var egret;
         */
         DisplayObject.prototype.hitTest = function (x, y, ignoreTouchEnabled) {
             if (typeof ignoreTouchEnabled === "undefined") { ignoreTouchEnabled = false; }
-            if (!this.visible || (!ignoreTouchEnabled && !this._touchEnabled)) {
+            if (!this._visible || (!ignoreTouchEnabled && !this._touchEnabled)) {
                 return null;
             }
             var bound = this._getSize(egret.Rectangle.identity);
@@ -875,35 +898,47 @@ var egret;
             var list = [];
             var target = this;
             while (target) {
-                list.unshift(target);
-                target = target.parent;
-            }
-
-            var length = list.length;
-            var targetIndex = length - 1;
-            for (var i = length - 2; i >= 0; i--) {
-                list.push(list[i]);
+                list.push(target);
+                target = target._parent;
             }
             event._reset();
-            this._dispatchPropagationEvent(event, list, targetIndex);
-            return !event.isDefaultPrevented();
+            this._dispatchPropagationEvent(event, list);
+            return !event._isDefaultPrevented;
         };
 
         DisplayObject.prototype._dispatchPropagationEvent = function (event, list, targetIndex) {
             var length = list.length;
-            for (var i = 0; i < length; i++) {
+            var eventPhase = 1;
+            for (var i = length - 1; i >= 0; i--) {
                 var currentTarget = list[i];
-                event._setCurrentTarget(currentTarget);
+                event._currentTarget = currentTarget;
                 event._target = this;
-                if (i < targetIndex)
-                    event._eventPhase = 1;
-                else if (i == targetIndex)
-                    event._eventPhase = 2;
-                else
-                    event._eventPhase = 3;
+                event._eventPhase = eventPhase;
                 currentTarget._notifyListener(event);
                 if (event._isPropagationStopped || event._isPropagationImmediateStopped) {
-                    break;
+                    return;
+                }
+            }
+
+            var eventPhase = 2;
+            var currentTarget = list[0];
+            event._currentTarget = currentTarget;
+            event._target = this;
+            event._eventPhase = eventPhase;
+            currentTarget._notifyListener(event);
+            if (event._isPropagationStopped || event._isPropagationImmediateStopped) {
+                return;
+            }
+
+            var eventPhase = 3;
+            for (i = 1; i < length; i++) {
+                var currentTarget = list[i];
+                event._currentTarget = currentTarget;
+                event._target = this;
+                event._eventPhase = eventPhase;
+                currentTarget._notifyListener(event);
+                if (event._isPropagationStopped || event._isPropagationImmediateStopped) {
+                    return;
                 }
             }
         };

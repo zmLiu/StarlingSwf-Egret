@@ -1,0 +1,12 @@
+{
+    "resources":
+        [
+            {"name":"test","type":"starlingswf_sheet","url":"assets/test/test.json"},
+            {"name":"test_swf","type":"json","url":"assets/test/test_swf.json"}
+        ],
+
+    "groups":
+        [
+            {"name":"preload","keys":"test,test_swf"}
+        ]
+}

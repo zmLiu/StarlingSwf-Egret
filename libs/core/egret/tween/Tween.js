@@ -92,6 +92,38 @@ var egret;
             target.tween_count = 0;
         };
 
+        /**
+        * 暂停某个元件的所有缓动
+        * @param target
+        */
+        Tween.pauseTweens = function (target) {
+            if (!target.tween_count) {
+                return;
+            }
+            var tweens = egret.Tween._tweens;
+            for (var i = tweens.length - 1; i >= 0; i--) {
+                if (tweens[i]._target == target) {
+                    tweens[i].paused = true;
+                }
+            }
+        };
+
+        /**
+        * 继续播放某个元件的所有缓动
+        * @param target
+        */
+        Tween.resumeTweens = function (target) {
+            if (!target.tween_count) {
+                return;
+            }
+            var tweens = egret.Tween._tweens;
+            for (var i = tweens.length - 1; i >= 0; i--) {
+                if (tweens[i]._target == target) {
+                    tweens[i].paused = false;
+                }
+            }
+        };
+
         Tween.tick = function (delta, paused) {
             if (typeof paused === "undefined") { paused = false; }
             var tweens = Tween._tweens.concat();

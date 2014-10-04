@@ -51,6 +51,7 @@ var egret;
                 this._selected = false;
                 this._itemIndex = -1;
                 this.touchChildren = true;
+                this.hostComponentKey = "egret.gui.ItemRenderer";
             }
             Object.defineProperty(ItemRenderer.prototype, "data", {
                 /**

@@ -62,6 +62,7 @@ var egret;
                 */
                 this._skinNameExplicitlySet = false;
                 this.createChildrenCalled = false;
+                this.skinLayoutEnabled = false;
                 //========================皮肤视图状态=====================start=======================
                 this.stateIsDirty = false;
                 this._autoMouseEnabled = true;
@@ -186,10 +187,10 @@ var egret;
                     newSkin.hostComponent = this;
                     this.findSkinParts();
                 }
-                if (skin && "hostComponent" in skin && skin instanceof egret.DisplayObject)
-                    this._setSkinLayoutEnabled(false);
+                if (skin && !(skin instanceof egret.DisplayObject))
+                    this.skinLayoutEnabled = true;
                 else
-                    this._setSkinLayoutEnabled(true);
+                    this.skinLayoutEnabled = false;
             };
 
             /**
@@ -398,26 +399,8 @@ var egret;
                 }
             };
 
-            /**
-            * 启用或禁用组件自身的布局。通常用在当组件的皮肤不是ISkinPartHost，又需要自己创建子项并布局时。
-            */
-            SkinnableComponent.prototype._setSkinLayoutEnabled = function (value) {
-                var hasLayout = (this.skinLayout != null);
-                if (hasLayout == value)
-                    return;
-                if (value) {
-                    this.skinLayout = new gui.SkinBasicLayout();
-                    this.skinLayout.target = this;
-                } else {
-                    this.skinLayout.target = null;
-                    this.skinLayout = null;
-                }
-                this.invalidateSize();
-                this.invalidateDisplayList();
-            };
-
             SkinnableComponent.prototype._childXYChanged = function () {
-                if (this.skinLayout) {
+                if (this.skinLayoutEnabled) {
                     this.invalidateSize();
                     this.invalidateDisplayList();
                 }
@@ -428,42 +411,17 @@ var egret;
                 var skin = this._skin;
                 if (!skin)
                     return;
-                var isDisplayObject = (skin instanceof egret.DisplayObject);
-                if (isDisplayObject) {
-                    if (skin && "preferredWidth" in skin) {
-                        this.measuredWidth = (skin).preferredWidth;
-                        this.measuredHeight = (skin).preferredHeight;
+                if (this.skinLayoutEnabled) {
+                    skin.measure();
+                    this.measuredWidth = skin.preferredWidth;
+                    this.measuredHeight = skin.preferredHeight;
+                } else {
+                    if ("preferredWidth" in skin) {
+                        this.measuredWidth = skin.preferredWidth;
+                        this.measuredHeight = skin.preferredHeight;
                     } else {
                         this.measuredWidth = skin.width;
                         this.measuredHeight = skin.height;
-                    }
-                }
-                if (this.skinLayout) {
-                    this.skinLayout.measure();
-                }
-                if (!isDisplayObject) {
-                    var measuredW = this.measuredWidth;
-                    var measuredH = this.measuredHeight;
-                    try  {
-                        if (!isNaN(skin.width))
-                            measuredW = Math.ceil(skin.width);
-                        if (!isNaN(skin.height))
-                            measuredH = Math.ceil(skin.height);
-                        if (skin.hasOwnProperty("minWidth") && measuredW < skin.minWidth) {
-                            measuredW = skin.minWidth;
-                        }
-                        if (skin.hasOwnProperty("maxWidth") && measuredW > skin.maxWidth) {
-                            measuredW = skin.maxWidth;
-                        }
-                        if (skin.hasOwnProperty("minHeight") && measuredH < skin.minHeight) {
-                            measuredH = skin.minHeight;
-                        }
-                        if (skin.hasOwnProperty("maxHeight") && measuredH > skin.maxHeight) {
-                            measuredH = skin.maxHeight;
-                        }
-                        this.measuredWidth = measuredW;
-                        this.measuredHeight = measuredH;
-                    } catch (e) {
                     }
                 }
             };
@@ -477,15 +435,14 @@ var egret;
                 _super.prototype.updateDisplayList.call(this, unscaledWidth, unscaledHeight);
                 var skin = this._skin;
                 if (skin) {
-                    if ("setLayoutBoundsSize" in skin) {
+                    if (this.skinLayoutEnabled) {
+                        skin.updateDisplayList(unscaledWidth, unscaledHeight);
+                    } else if ("setLayoutBoundsSize" in skin) {
                         (skin).setLayoutBoundsSize(unscaledWidth, unscaledHeight);
                     } else if (skin instanceof egret.DisplayObject) {
                         skin.scaleX = skin.width == 0 ? 1 : unscaledWidth / skin.width;
                         skin.scaleY = skin.height == 0 ? 1 : unscaledHeight / skin.height;
                     }
-                }
-                if (this.skinLayout) {
-                    this.skinLayout.updateDisplayList(unscaledWidth, unscaledHeight);
                 }
             };
 

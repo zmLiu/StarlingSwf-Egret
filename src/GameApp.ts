@@ -35,8 +35,6 @@ class GameApp extends egret.DisplayObjectContainer{
     public constructor() {
         super();
 
-        egret.Injector.mapClass(RES.AnalyzerBase,starlingswf.StarlingSwfSheetAnalyzer,"starlingswf_sheet");
-
         this.addEventListener(egret.Event.ADDED_TO_STAGE,this.onAddToStage,this);
     }
 
@@ -91,11 +89,13 @@ class GameApp extends egret.DisplayObjectContainer{
 
         this.swf = new starlingswf.Swf(swfData,assetsManager,60);
 
-//        this.test1();
+        this.test1();
 //        this.test2();
 //        this.test3();
 //        this.test4();
-        this.test5();
+//        this.test5();
+
+        this.stage.addEventListener(egret.Event.RESIZE,this.onReSize,this);
 
         egret.Profiler.getInstance().run();
 
@@ -165,6 +165,12 @@ class GameApp extends egret.DisplayObjectContainer{
     private test5(){
         var spr:starlingswf.SwfSprite = this.swf.createSprite("spr_blendmode");
         this.addChild(spr);
+    }
+
+
+    private onReSize(e:egret.Event){
+        console.log(this.stage.stageWidth);
+        console.log(this.stage.stageHeight);
     }
 
 

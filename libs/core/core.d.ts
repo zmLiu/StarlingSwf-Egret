@@ -419,14 +419,13 @@ declare module egret {
         * @member {boolean} egret.Event#eventPhase
         */
         public eventPhase : number;
-        private _currentTarget;
+        public _currentTarget: any;
         /**
         * 当前正在使用某个事件侦听器处理 Event 对象的对象。例如，如果用户单击“确定”按钮，
         * 则当前目标可以是包含该按钮的节点，也可以是它的已为该事件注册了事件侦听器的始祖之一。
         * @member {any} egret.Event#currentTarget
         */
         public currentTarget : any;
-        public _setCurrentTarget(target: any): void;
         public _target: any;
         /**
         * 事件目标。此属性包含目标节点。例如，如果用户单击“确定”按钮，则目标节点就是包含该按钮的显示列表节点。
@@ -602,26 +601,19 @@ declare module egret {
         */
         static TOUCH_RELEASE_OUTSIDE: string;
         /**
-        * 移动，参考FLash的MouseEvent.MOVE
-        * @member egret.TouchEvent.TOUCH_MOVE
-        * @constant {string} egret.TouchEvent.TOUCH_ROLL_OUT
+        * @deprecated
         */
         static TOUCH_ROLL_OUT: string;
         /**
-        * 移动，参考FLash的MouseEvent.MOVE
-        * @member egret.TouchEvent.TOUCH_MOVE
-        * @constant {string} egret.TouchEvent.TOUCH_ROLL_OVER
+        * @deprecated
         */
         static TOUCH_ROLL_OVER: string;
         /**
-        * 移动，参考FLash的MouseEvent.MOVE
-        * @constant {string} egret.TouchEvent.TOUCH_OUT
+        * @deprecated
         */
         static TOUCH_OUT: string;
         /**
-        * 移动，参考FLash的MouseEvent.MOVE
-        * @member egret.TouchEvent.TOUCH_MOVE
-        * @constant {string} egret.TouchEvent.TOUCH_OVER
+        * @deprecated
         */
         static TOUCH_OVER: string;
         public _stageX: number;
@@ -636,13 +628,11 @@ declare module egret {
         * @member {number} egret.TouchEvent#stageY
         */
         public stageY : number;
-        private _localX;
         /**
         * 事件发生点相对于currentTarget的水平坐标。
         * @member {number} egret.TouchEvent#localX
         */
         public localX : number;
-        private _localY;
         /**
         * 事件发生点相对于currentTarget的垂直坐标。
         * @member {number} egret.TouchEvent#localY
@@ -655,16 +645,19 @@ declare module egret {
         public touchPointID: number;
         /**
         * 事件发生时ctrl键是否被按下。 (Mac OS下为 Cmd 或 Ctrl)
+        * @deprecated
         * @member {boolean} egret.TouchEvent#ctrlKey
         */
         public ctrlKey: boolean;
         /**
         * 事件发生时shift键是否被按下。
+        * @deprecated
         * @member {boolean} egret.TouchEvent#shiftKey
         */
         public shiftKey: boolean;
         /**
         * 事件发生时alt键是否被按下。
+        * @deprecated
         * @member {boolean} egret.TouchEvent#altKey
         */
         public altKey: boolean;
@@ -673,7 +666,6 @@ declare module egret {
         * @member {boolean} egret.TouchEvent#touchDown
         */
         public touchDown: boolean;
-        public _setCurrentTarget(target: any): void;
         /**
         * 使用指定的EventDispatcher对象来抛出Event事件对象。抛出的对象将会缓存在对象池上，供下次循环复用。
         * @method egret.TouchEvent.dispatchTouchEvent
@@ -1070,6 +1062,9 @@ declare module egret {
         static deviceType: string;
         static DEVICE_PC: string;
         static DEVICE_MOBILE: string;
+        static runtimeType: string;
+        static RUNTIME_HTML5: string;
+        static RUNTIME_NATIVE: string;
         /**
         * 游戏启动，开启主循环，参考Flash的滑动跑道模型
         * @method egret.MainContext#run
@@ -1096,9 +1091,11 @@ declare module egret {
         * @member egret.MainContext.instance
         */
         static instance: MainContext;
+        private static cachedEvent;
     }
 }
 declare var testDeviceType: () => boolean;
+declare var testRuntimeType: () => boolean;
 /**
 * Copyright (c) 2014,Egret-Labs.org
 * All rights reserved.
@@ -1817,6 +1814,12 @@ declare module egret {
         */
         public identity(): Matrix;
         /**
+        * 矩阵重置为目标矩阵
+        * @method egret.Matrix#identityMatrix
+        * @returns {egret.Matrix}
+        */
+        public identityMatrix(matrix: Matrix): Matrix;
+        /**
         * 矩阵翻转
         * @method egret.Matrix#invert
         * @returns {egret.Matrix}
@@ -2182,6 +2185,7 @@ declare module egret {
         static getInstance(): StageDelegate;
         /**
         * @member egret.StageDelegate.canvas_name
+        * @deprecated
         */
         static canvas_name: string;
         /**
@@ -2192,7 +2196,10 @@ declare module egret {
         private _designHeight;
         public _scaleX: number;
         public _scaleY: number;
+        public _offSetY: number;
         private _resolutionPolicy;
+        public _stageWidth: number;
+        public _stageHeight: number;
         /**
         * @method egret.StageDelegate#constructor
         */
@@ -2216,6 +2223,10 @@ declare module egret {
         * @method egret.StageDelegate#getScaleY
         */
         public getScaleY(): number;
+        /**
+        * @method egret.StageDelegate#getOffSetY
+        */
+        public getOffSetY(): number;
     }
     /**
     * @class egret.ResolutionPolicy
@@ -2237,16 +2248,6 @@ declare module egret {
         * @param designedResolutionHeigh {any}
         */
         public _apply(view: any, designedResolutionWidth: any, designedResolutionHeight: any): void;
-        /**
-        * @method egret.ResolutionPolicy#setContainerStrategy
-        * @param containerStg {any}
-        */
-        public setContainerStrategy(containerStg: any): void;
-        /**
-        * @method egret.ResolutionPolicy#setContentStrategy
-        * @param contentStg {any}
-        */
-        public setContentStrategy(contentStg: any): void;
     }
     /**
     * @class egret.ContainerStrategy
@@ -2300,6 +2301,7 @@ declare module egret {
         * @param designedResolutionHeight {number}
         */
         public _apply(delegate: StageDelegate, designedResolutionWidth: number, designedResolutionHeight: number): void;
+        public setEgretSize(w: number, h: number, styleW: number, styleH: number, top?: number): void;
     }
     /**
     * @class egret.FixedHeight
@@ -2333,12 +2335,6 @@ declare module egret {
         * @param minHeight 最终游戏内适配的最小stageHeight，默认没有最小高度
         */
         constructor(minHeight?: number);
-        /**
-        * @method egret.FixedWidth#_apply
-        * @param delegate {egret.StageDelegate}
-        * @param designedResolutionWidth {any}
-        * @param designedResolutionHeight {any}
-        */
         public _apply(delegate: StageDelegate, designedResolutionWidth: number, designedResolutionHeight: number): void;
     }
     /**
@@ -2364,6 +2360,26 @@ declare module egret {
     * @extends egret.ContentStrategy
     */
     class NoScale extends ContentStrategy {
+        constructor();
+        /**
+        * @method egret.NoScale#_apply
+        * @param delegate {egret.StageDelegate}
+        * @param designedResolutionWidth {number}
+        * @param designedResolutionHeight {number}
+        */
+        public _apply(delegate: StageDelegate, designedResolutionWidth: number, designedResolutionHeight: number): void;
+    }
+    class ShowAll extends ContentStrategy {
+        constructor();
+        /**
+        * @method egret.NoScale#_apply
+        * @param delegate {egret.StageDelegate}
+        * @param designedResolutionWidth {number}
+        * @param designedResolutionHeight {number}
+        */
+        public _apply(delegate: StageDelegate, designedResolutionWidth: number, designedResolutionHeight: number): void;
+    }
+    class FullScreen extends ContentStrategy {
         constructor();
         /**
         * @method egret.NoScale#_apply
@@ -2660,12 +2676,14 @@ declare module egret {
         */
         public _x: number;
         public x : number;
+        public _setX(value: number): void;
         /**
         * 表示 DisplayObject 实例相对于父级 DisplayObjectContainer 本地坐标的 y 坐标。
         * @member {number} egret.DisplayObject#y
         */
         public _y: number;
         public y : number;
+        public _setY(value: number): void;
         /**
         * 表示从注册点开始应用的对象的水平缩放比例（百分比）。
         * @member {number} egret.DisplayObject#scaleX
@@ -2714,6 +2732,7 @@ declare module egret {
         */
         public _visible: boolean;
         public visible : boolean;
+        public _setVisible(value: boolean): void;
         /**
         * 表示 DisplayObject 实例距其原始方向的旋转程度，以度为单位
         * @member {number} egret.DisplayObject#rotation
@@ -2831,6 +2850,11 @@ declare module egret {
         */
         public _updateTransform(): void;
         /**
+        * 计算全局数据
+        * @private
+        */
+        public _calculateWorldform(): void;
+        /**
         * @private
         * @param renderContext
         */
@@ -2917,7 +2941,7 @@ declare module egret {
         public addEventListener(type: string, listener: Function, thisObject: any, useCapture?: boolean, priority?: number): void;
         public removeEventListener(type: string, listener: Function, thisObject: any, useCapture?: boolean): void;
         public dispatchEvent(event: Event): boolean;
-        public _dispatchPropagationEvent(event: Event, list: DisplayObject[], targetIndex: number): void;
+        public _dispatchPropagationEvent(event: Event, list: DisplayObject[], targetIndex?: number): void;
         public willTrigger(type: string): boolean;
         public cacheAsBitmap : boolean;
         private renderTexture;
@@ -3182,8 +3206,10 @@ declare module egret {
 */
 declare module egret {
     class StageScaleMode {
+        static NO_BORDER: string;
         static NO_SCALE: string;
         static SHOW_ALL: string;
+        static EXACT_FIT: string;
     }
 }
 /**
@@ -3488,7 +3514,7 @@ declare module egret {
         * @param anchorX {number} 一个数字，指定下一个锚点相对于父显示对象注册点的水平位置。
         * @param anchorY {number} 一个数字，指定下一个锚点相对于父显示对象注册点的垂直位置。
         */
-        public curveTo(controlX: Number, controlY: Number, anchorX: Number, anchorY: Number): void;
+        public curveTo(controlX: number, controlY: number, anchorX: number, anchorY: number): void;
         /**
         * 将当前绘图位置移动到 (x, y)。如果缺少任何一个参数，则此方法将失败，并且当前绘图位置不改变。
         * @method egret.Graphics#moveTo
@@ -3507,6 +3533,14 @@ declare module egret {
         */
         public endFill(): void;
         public _draw(renderContext: RendererContext): void;
+        private _minX;
+        private _minY;
+        private _maxX;
+        private _maxY;
+        private checkRect(x, y, w, h);
+        private _lastX;
+        private _lastY;
+        private checkPoint(x, y);
     }
 }
 /**
@@ -3635,37 +3669,43 @@ declare module egret {
         public _text: string;
         public text : string;
         public _setTextDirty(): void;
+        public _setText(value: string): void;
         /**
         * 字体
         * @member {any} egret.TextField#fontFamily
         */
         public _fontFamily: string;
         public fontFamily : string;
+        public _setFontFamily(value: string): void;
         /**
         * 字号
         * @member {number} egret.TextField#size
         */
         public _size: number;
         public size : number;
+        public _setSize(value: number): void;
         /**
         * 是否显示为斜体，默认false。
         * @member {boolean} egret.TextField#italic
         */
         public _italic: boolean;
         public italic : boolean;
+        public _setItalic(value: boolean): void;
         /**
         * 是否显示为粗体，默认false。
         * @member {boolean} egret.TextField#bold
         */
         public _bold: boolean;
         public bold : boolean;
+        public _setBold(value: boolean): void;
         public _textColorString: string;
-        private _textColor;
+        public _textColor: number;
         /**
         * 文字颜色
         * @member {number} egret.TextField#textColor
         */
         public textColor : number;
+        public _setTextColor(value: number): void;
         public _strokeColorString: string;
         private _strokeColor;
         /**
@@ -3673,24 +3713,28 @@ declare module egret {
         * @member {number} egret.TextField#strokeColor
         */
         public strokeColor : number;
+        public _setStrokeColor(value: number): void;
         /**
         * 描边宽度，0为没有描边
         * @member {number} egret.TextField#stroke
         */
         public _stroke: number;
         public stroke : number;
+        public _setStroke(value: number): void;
         /**
         * 文本水平对齐方式,使用HorizontalAlign定义的常量，默认值HorizontalAlign.LEFT。
         * @member {string} egret.TextField#textAlign
         */
         public _textAlign: string;
         public textAlign : string;
+        public _setTextAlign(value: string): void;
         /**
         * 文本垂直对齐方式,使用VerticalAlign定义的常量，默认值VerticalAlign.TOP。
         * @member {string} egret.TextField#verticalAlign
         */
         public _verticalAlign: string;
         public verticalAlign : string;
+        public _setVerticalAlign(value: string): void;
         /**
         * @member {any} egret.TextField#maxWidth
         */
@@ -3701,6 +3745,7 @@ declare module egret {
         */
         public _lineSpacing: number;
         public lineSpacing : number;
+        public _setLineSpacing(value: number): void;
         private _numLines;
         /**
         * 文本行数
@@ -3887,19 +3932,36 @@ declare module egret {
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 declare module egret {
-    class TextInput extends DisplayObject {
+    class TextInput extends Sprite {
+        private _text;
         private stageText;
+        private _isFocus;
         constructor();
         public _onAddToStage(): void;
+        private onFocusHandler(event);
+        private onBlurHandler(event);
+        private onMouseDownHandler(event);
+        private onStageDownHandler(event);
+        private showText();
+        private hideText();
+        public _onRemoveFromStage(): void;
+        private updateTextHandler(event);
+        /**
+        * @deprecated
+        * @param value
+        */
         public setText(value: string): void;
+        /**
+        * @deprecated
+        * @returns {string}
+        */
         public getText(): string;
+        public text : string;
         public setTextType(type: string): void;
         public getTextType(): string;
-        private onMouseDownHandler(event);
-        public _onRemoveFromStage(): void;
-        public _measureBounds(): Rectangle;
-        public hitTest(x: any, y: any, ignoreTouchEnabled?: boolean): DisplayObject;
+        private resetText();
         public _updateTransform(): void;
+        public _draw(renderContext: RendererContext): void;
         /**
         * 字号
         * @member {number} egret.TextField#size
@@ -3913,6 +3975,23 @@ declare module egret {
         * @member {number} egret.TextField#textColor
         */
         public textColor : number;
+        /**
+        * 字体
+        * @member {any} egret.TextField#fontFamily
+        */
+        public _fontFamily: string;
+        public fontFamily : string;
+        public _setFontFamily(value: string): void;
+        public _setWidth(value: number): void;
+        public _setHeight(value: number): void;
+        private _multiline;
+        public _setMultiline(value: boolean): void;
+        /**
+        * 表示字段是否为多行文本字段。如果值为 true，则文本字段为多行文本字段；如果值为 false，则文本字段为单行文本字段。在类型为 TextFieldType.INPUT 的字段中，multiline 值将确定 Enter 键是否创建新行（如果值为 false，则将忽略 Enter 键）。如果将文本粘贴到其 multiline 值为 false 的 TextField 中，则文本中将除去新行。
+        * 默认值为 false。
+        * @returns {boolean}
+        */
+        public multiline : boolean;
     }
 }
 /**
@@ -4107,10 +4186,9 @@ declare module egret {
     * @classdesc
     * @extends egret.HashObject
     */
-    class StageText extends HashObject {
-        private div;
-        private inputElement;
-        private _size;
+    class StageText extends EventDispatcher {
+        public _multiline: boolean;
+        public _maxChars: number;
         constructor();
         /**
         * @method egret.StageText#getText
@@ -4141,13 +4219,26 @@ declare module egret {
         */
         public _open(x: number, y: number, width?: number, height?: number): void;
         /**
+        * @method egret.StageText#add
+        */
+        public _show(): void;
+        /**
         * @method egret.StageText#remove
         */
         public _remove(): void;
+        public _hide(): void;
+        public _draw(): void;
+        public _addListeners(): void;
+        public _removeListeners(): void;
         public changePosition(x: number, y: number): void;
         public changeSize(width: number, height: number): void;
         public setSize(value: number): void;
         public setTextColor(value: string): void;
+        public setTextFontFamily(value: string): void;
+        public setWidth(value: number): void;
+        public setHeight(value: number): void;
+        public _setMultiline(value: boolean): void;
+        static create(): StageText;
     }
 }
 /**
@@ -4706,6 +4797,8 @@ declare module egret {
         public strokeRect(x: any, y: any, w: any, h: any, color: any): void;
         public pushMask(mask: Rectangle): void;
         public popMask(): void;
+        public onRenderStart(): void;
+        public onRenderFinish(): void;
         static createRendererContext(canvas: any): RendererContext;
     }
 }
@@ -4838,6 +4931,7 @@ declare module egret {
     class NetContext extends HashObject {
         constructor();
         public proceed(loader: URLLoader): void;
+        static _getUrl(request: URLRequest): string;
     }
 }
 /**
@@ -4924,9 +5018,9 @@ declare module egret {
         * 如果该容器是某个 App 容器，该容器将处理该事件。
         * @method egret.ExternalInterface#call
         * @param functionName {string}
-        * @param arguments
+        * @param value {string}
         */
-        static call(functionName: String, ...args: any[]): void;
+        static call(functionName: string, value: string): void;
         /**
         * 添加外层容器调用侦听，该容器将传递一个字符串给 Egret 容器
         * 如果该容器是 HTML 页，则此方法不可用。
@@ -4934,7 +5028,7 @@ declare module egret {
         * @param functionName {string}
         * @param listener {Function}
         */
-        static addCallback(functionName: String, listener: Function): void;
+        static addCallback(functionName: string, listener: Function): void;
     }
 }
 /**
@@ -4988,6 +5082,58 @@ declare module egret {
         public scale(a: any): string;
         public skew(a: any): string;
     }
+}
+/**
+* Copyright (c) 2014,Egret-Labs.org
+* All rights reserved.
+* Redistribution and use in source and binary forms, with or without
+* modification, are permitted provided that the following conditions are met:
+*
+*     * Redistributions of source code must retain the above copyright
+*       notice, this list of conditions and the following disclaimer.
+*     * Redistributions in binary form must reproduce the above copyright
+*       notice, this list of conditions and the following disclaimer in the
+*       documentation and/or other materials provided with the distribution.
+*     * Neither the name of the Egret-Labs.org nor the
+*       names of its contributors may be used to endorse or promote products
+*       derived from this software without specific prior written permission.
+*
+* THIS SOFTWARE IS PROVIDED BY EGRET-LABS.ORG AND CONTRIBUTORS "AS IS" AND ANY
+* EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+* WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+* DISCLAIMED. IN NO EVENT SHALL EGRET-LABS.ORG AND CONTRIBUTORS BE LIABLE FOR ANY
+* DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+* LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+* ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+declare module egret.localStorage {
+    /**
+    * 读取数据
+    * @method egret.localStorage.getItem
+    * @param key {string} 要读取的键名称
+    */
+    function getItem(key: string): string;
+    /**
+    * 保存数据
+    * @method egret.localStorage.setItem
+    * @param key {string} 要保存的键名称
+    * @param value {string} 要保存的值
+    */
+    function setItem(key: string, value: string): void;
+    /**
+    * 删除数据
+    * @method egret.localStorage.removeItem
+    * @param key {string} 要删除的键名称
+    */
+    function removeItem(key: string): void;
+    /**
+    * 将所有数据清空
+    * @method egret.localStorage.clear
+    */
+    function clear(): void;
 }
 /**
 * Copyright (c) 2014,Egret-Labs.org
@@ -5327,6 +5473,16 @@ declare module egret {
         * @param target {egret.DisplayObject}
         */
         static removeTweens(target: any): void;
+        /**
+        * 暂停某个元件的所有缓动
+        * @param target
+        */
+        static pauseTweens(target: any): void;
+        /**
+        * 继续播放某个元件的所有缓动
+        * @param target
+        */
+        static resumeTweens(target: any): void;
         private static tick(delta, paused?);
         private static _register(tween, value);
         /**
@@ -5836,6 +5992,13 @@ declare module RES {
         */
         public parseConfig(data: any, folder: string): void;
         /**
+        * 添加一个二级键名到配置列表。
+        * @method RES.ResourceConfig#addSubkey
+        * @param subkey {string} 要添加的二级键名
+        * @param name {string} 二级键名所属的资源name属性
+        */
+        public addSubkey(subkey: string, name: string): void;
+        /**
         * 添加一个加载项数据到列表
         */
         private addItemToKeyMap(item);
@@ -6001,6 +6164,14 @@ declare module RES {
 declare module RES {
     class AnalyzerBase extends egret.HashObject {
         constructor();
+        private resourceConfig;
+        /**
+        * 添加一个二级键名到配置列表。
+        * @method RES.ResourceConfig#addSubkey
+        * @param subkey {string} 要添加的二级键名
+        * @param name {string} 二级键名所属的资源name属性
+        */
+        public addSubkey(subkey: string, name: string): void;
         /**
         * 加载一个资源文件
         * @param resItem 加载项信息
@@ -6208,7 +6379,7 @@ declare module RES {
         */
         public analyzeData(resItem: ResourceItem, data: any): void;
         private getRelativePath(url, file);
-        public parseSpriteSheet(texture: egret.Texture, data: any): egret.SpriteSheet;
+        public parseSpriteSheet(texture: egret.Texture, data: any, name: string): egret.SpriteSheet;
     }
 }
 /**
@@ -6381,7 +6552,7 @@ declare module RES {
     * 异步方式获取配置里的资源。只要是配置文件里存在的资源，都可以通过异步方式获取。
     * @method RES.getResAsync
     * @param key {string} 对应配置文件里的name属性或sbuKeys属性的一项。
-    * @param compFunc {Function} 回调函数。示例：compFunc(data):void,若设置了other参数则为:compFunc(data,other):void。
+    * @param compFunc {Function} 回调函数。示例：compFunc(data,key):void。
     * @param thisObject {any} 回调函数的this引用
     */
     function getResAsync(key: string, compFunc: Function, thisObject: any): void;
@@ -6389,7 +6560,7 @@ declare module RES {
     * 通过完整URL方式获取外部资源。
     * @method RES.getResByUrl
     * @param url {string} 要加载文件的外部路径。
-    * @param compFunc {Function} 回调函数。示例：compFunc(data):void,若设置了other参数则为:compFunc(data,other):void。
+    * @param compFunc {Function} 回调函数。示例：compFunc(data,url):void。
     * @param thisObject {any} 回调函数的this引用
     * @param type {string} 文件类型(可选)。请使用ResourceItem类中定义的静态常量。若不设置将根据文件扩展名生成。
     */

@@ -1,8 +1,8 @@
 {
     "resources":
         [
-            {"name":"test","type":"starlingswf_sheet","url":"assets/test/test.json"},
-            {"name":"test_swf","type":"json","url":"assets/test/test_swf.json"}
+            {"name":"test","type":"sheet","url":"test/test.json"},
+            {"name":"test_swf","type":"json","url":"test/test_swf.json"}
         ],
 
     "groups":

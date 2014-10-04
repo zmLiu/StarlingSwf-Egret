@@ -36,22 +36,20 @@ var starlingswf;
                 return;
 
             if (this._currentFrame > this._endFrame) {
+                var isReturn = false;
+
+                if (!this.loop || this._startFrame == this._endFrame) {
+                    if (this._ownerSwf)
+                        this.stop(false);
+                    isReturn = true;
+                }
+
                 if (this._hasCompleteListener)
                     this.dispatchEventWith(egret.Event.COMPLETE);
 
-                this._currentFrame = this._startFrame;
-
-                if (!this.loop) {
-                    if (this._ownerSwf)
-                        this.stop(false);
+                if (isReturn)
                     return;
-                }
 
-                if (this._startFrame == this._endFrame) {
-                    if (this._ownerSwf)
-                        this.stop(false);
-                    return;
-                }
                 this.setCurrentFrame(this._startFrame);
             } else {
                 this.setCurrentFrame(this._currentFrame);
@@ -87,34 +85,42 @@ var starlingswf;
                 display._x = data[2];
                 display._y = data[3];
 
-                //                }
-                if (data[1] == starlingswf.Swf.dataKey_Scale9) {
-                    display.width = data[11];
-                    display.height = data[12];
-                } else {
-                    display._scaleX = data[4];
-                    display._scaleY = data[5];
+                switch (data[1]) {
+                    case starlingswf.Swf.dataKey_Scale9:
+                        display.width = data[11];
+                        display.height = data[12];
+                        starlingswf.SwfBlendMode.setBlendMode(display, data[13]);
+                        break;
+                    case starlingswf.Swf.dataKey_ShapeImg:
+                        display.width = data[11];
+                        display.height = data[12];
+                        starlingswf.SwfBlendMode.setBlendMode(display, data[13]);
+                        break;
+                    case starlingswf.Swf.dataKey_TextField:
+                        textfield = display;
+                        textfield.width = data[11];
+                        textfield.height = data[12];
+                        textfield.fontFamily = data[13];
+                        textfield.textColor = data[14];
+                        textfield.size = data[15];
+                        textfield.textAlign = data[16];
+
+                        //                        textfield["italic"] = data[17];
+                        //                        textfield["bold"] = data[18];
+                        if (data[19] && data[19] != "\r" && data[19] != "") {
+                            textfield.text = data[19];
+                        }
+                        starlingswf.SwfBlendMode.setBlendMode(textfield, data[20]);
+                        break;
+                    default:
+                        display._scaleX = data[4];
+                        display._scaleY = data[5];
+                        starlingswf.SwfBlendMode.setBlendMode(display, data[11]);
+                        break;
                 }
 
-                //dirty hack  this.addChild(display);
                 this._children.push(display);
                 display._parent = this;
-
-                if (data[1] == starlingswf.Swf.dataKey_TextField) {
-                    textfield = display;
-                    textfield.width = data[11];
-                    textfield.height = data[12];
-                    textfield.fontFamily = data[13];
-                    textfield.textColor = data[14];
-                    textfield.size = data[15];
-                    textfield.textAlign = data[16];
-
-                    //                    textfield["italic"] = data[17];
-                    //                    textfield["bold"] = data[18];
-                    if (data[19] && data[19] != "\r" && data[19] != "") {
-                        textfield.text = data[19];
-                    }
-                }
             }
 
             if (this._frameEvents != null && this._frameEvents[this._currentFrame] != null) {

@@ -41,14 +41,15 @@ var egret;
         __extends(StageText, _super);
         function StageText() {
             _super.call(this);
-            this._size = 20;
+            this._multiline = false;
+            this._maxChars = 0;
         }
         /**
         * @method egret.StageText#getText
         * @returns {string}
         */
         StageText.prototype._getText = function () {
-            return this.inputElement.value;
+            return null;
         };
 
         /**
@@ -56,7 +57,6 @@ var egret;
         * @param value {string}
         */
         StageText.prototype._setText = function (value) {
-            this.inputElement.value = value;
         };
 
         /**
@@ -64,7 +64,6 @@ var egret;
         * @param type {string}
         */
         StageText.prototype._setTextType = function (type) {
-            this.inputElement.type = type;
         };
 
         /**
@@ -72,7 +71,7 @@ var egret;
         * @returns {string}
         */
         StageText.prototype._getTextType = function () {
-            return this.inputElement.type;
+            return null;
         };
 
         /**
@@ -85,86 +84,62 @@ var egret;
         StageText.prototype._open = function (x, y, width, height) {
             if (typeof width === "undefined") { width = 160; }
             if (typeof height === "undefined") { height = 21; }
-            var scaleX = egret.StageDelegate.getInstance().getScaleX();
-            var scaleY = egret.StageDelegate.getInstance().getScaleY();
+        };
 
-            var inputElement = document.createElement("input");
-            inputElement.type = "text";
-            inputElement.style.fontSize = this._size + "px";
-            inputElement.style.color = "#FFFFFF";
-            inputElement.style.border = "none";
-            inputElement.style.background = "none";
-            inputElement.style.width = width + "px";
-            inputElement.style.padding = "0";
-            inputElement.style.outline = "medium";
-
-            var div = egret.Browser.getInstance().$new("div");
-            div.position.x = x * scaleX;
-            div.position.y = y * scaleY;
-            div.style.width = width + "px";
-            div.scale.x = scaleX;
-            div.scale.y = scaleY;
-            div.transforms();
-            div.style[egret_dom.getTrans("transformOrigin")] = "0% 0% 0px";
-
-            div.appendChild(inputElement);
-
-            var stageDelegateDiv = egret.Browser.getInstance().$("#StageDelegateDiv");
-            if (!stageDelegateDiv) {
-                //                var canvas = document.getElementById(egret.StageDelegate.canvas_name);
-                stageDelegateDiv = egret.Browser.getInstance().$new("div");
-                stageDelegateDiv.id = "StageDelegateDiv";
-
-                //                stageDelegateDiv.style.width = canvas.style.width;
-                //                stageDelegateDiv.style.height = canvas.style.height;
-                var container = document.getElementById(egret.StageDelegate.canvas_div_name);
-                container.appendChild(stageDelegateDiv);
-                stageDelegateDiv.transforms();
-            }
-            stageDelegateDiv.appendChild(div);
-            this.div = div;
-            this.inputElement = inputElement;
+        /**
+        * @method egret.StageText#add
+        */
+        StageText.prototype._show = function () {
         };
 
         /**
         * @method egret.StageText#remove
         */
         StageText.prototype._remove = function () {
-            var div = this.div;
-            if (div && div.parentNode) {
-                div.parentNode.removeChild(div);
-            }
+        };
+
+        StageText.prototype._hide = function () {
+        };
+
+        StageText.prototype._draw = function () {
+        };
+
+        StageText.prototype._addListeners = function () {
+        };
+
+        StageText.prototype._removeListeners = function () {
         };
 
         StageText.prototype.changePosition = function (x, y) {
-            var scaleX = egret.StageDelegate.getInstance().getScaleX();
-            var scaleY = egret.StageDelegate.getInstance().getScaleY();
-
-            this.div.position.x = x * scaleX;
-            this.div.position.y = y * scaleY;
-            this.div.transforms();
         };
 
         StageText.prototype.changeSize = function (width, height) {
-            this.inputElement.style.width = width + "px";
-
-            //            this.inputElement.style.height = height + "px";
-            this.div.style.width = width + "px";
-
-            //            this.div.style.height = height + "px";
-            this.div.transforms();
         };
 
         StageText.prototype.setSize = function (value) {
-            this._size = value;
-            this.inputElement.style.fontSize = this._size + "px";
         };
 
         StageText.prototype.setTextColor = function (value) {
-            this.inputElement.style.color = value;
+        };
+
+        StageText.prototype.setTextFontFamily = function (value) {
+        };
+
+        StageText.prototype.setWidth = function (value) {
+        };
+
+        StageText.prototype.setHeight = function (value) {
+        };
+
+        StageText.prototype._setMultiline = function (value) {
+            this._multiline = value;
+        };
+
+        StageText.create = function () {
+            return null;
         };
         return StageText;
-    })(egret.HashObject);
+    })(egret.EventDispatcher);
     egret.StageText = StageText;
     StageText.prototype.__class__ = "egret.StageText";
 })(egret || (egret = {}));

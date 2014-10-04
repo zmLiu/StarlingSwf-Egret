@@ -237,7 +237,6 @@ var egret;
             * @private
             */
             UIAsset.prototype._measureBounds = function () {
-                var bounds = _super.prototype._measureBounds.call(this);
                 if (this._content instanceof egret.Texture) {
                     var texture = this._content;
                     var textureW = texture._textureWidth;
@@ -246,20 +245,9 @@ var egret;
                     var h = this.height;
                     var x = Math.floor(texture._offsetX * w / textureW);
                     var y = Math.floor(texture._offsetY * h / textureH);
-                    if (x < bounds.x) {
-                        bounds.x = x;
-                    }
-                    if (y < bounds.y) {
-                        bounds.y = y;
-                    }
-                    if (x + w > bounds.right) {
-                        bounds.right = x + w;
-                    }
-                    if (y + h > bounds.bottom) {
-                        bounds.bottom = y + h;
-                    }
+                    return egret.Rectangle.identity.initialize(x, y, w, h);
                 }
-                return bounds;
+                return _super.prototype._measureBounds.call(this);
             };
 
             /**
