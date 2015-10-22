@@ -64,8 +64,9 @@ module starlingswf{
 
         private __frameInfos:any[];
         public setCurrentFrame(frame:number):void{
-            //dirty hack this.removeChildren();
-            this._children.length = 0;
+//            dirty hack this.removeChildren();
+            this.removeChildren();
+//            this._children.length = 0;
 
             this._currentFrame = frame;
             this.__frameInfos = this._frames[this._currentFrame];
@@ -80,16 +81,16 @@ module starlingswf{
                 useIndex = data[10];
                 display = this._displayObjects[data[0]][useIndex];
 
-                display._skewX = data[6];
-                display._skewY = data[7];
-                display._alpha = data[8];
+                display.skewX = data[6];
+                display.skewY = data[7];
+                display.alpha = data[8];
                 display.name = data[9];
 
 //                if(data[1] == Swf.dataKey_Particle){
 //                    display["setPostion"](data[2],data[3]);
 //                }else{
-                    display._x = data[2];
-                    display._y = data[3];
+                    display.x = data[2];
+                    display.y = data[3];
 //                }
 
                 switch(data[1]){
@@ -119,14 +120,15 @@ module starlingswf{
                         starlingswf.SwfBlendMode.setBlendMode(textfield,data[20]);
                         break;
                     default:
-                        display._scaleX = data[4];
-                        display._scaleY = data[5];
+                        display.scaleX = data[4];
+                        display.scaleY = data[5];
                         starlingswf.SwfBlendMode.setBlendMode(display,data[11]);
                         break;
                 }
 
-                this._children.push(display);
-                display._parent = this;
+                this.addChild(display);
+//                this._children.push(display);
+                display.parent = this;
             }
 
             if(this._frameEvents != null && this._frameEvents[this._currentFrame] != null){

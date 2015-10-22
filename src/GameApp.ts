@@ -96,9 +96,6 @@ class GameApp extends egret.DisplayObjectContainer{
 //        this.test5();
 
         this.stage.addEventListener(egret.Event.RESIZE,this.onReSize,this);
-
-        egret.Profiler.getInstance().run();
-
     }
 
     /**

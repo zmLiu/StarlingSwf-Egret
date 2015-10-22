@@ -1,3 +1,0 @@
-StarlingSwf-Egret
-=================
-
