@@ -37,17 +37,20 @@ var __extends = (this && this.__extends) || function (d, b) {
 var LoadingUI = (function (_super) {
     __extends(LoadingUI, _super);
     function LoadingUI() {
-        var _this = _super.call(this) || this;
-        _this.createView();
-        return _this;
+        return _super.call(this) || this;
     }
     LoadingUI.prototype.createView = function () {
+        egret.log(this.stage);
         this.textField = new egret.TextField();
         this.addChild(this.textField);
-        this.textField.y = 300;
         this.textField.width = 480;
         this.textField.height = 100;
+        this.textField.anchorOffsetX = 240;
+        this.textField.anchorOffsetY = 50;
         this.textField.textAlign = "center";
+        egret.log(this.stage.stageWidth);
+        this.textField.x = this.stage.stageWidth / 2; // - this.textField.width / 2;
+        this.textField.y = this.stage.stageHeight / 2; // - this.textField.height / 2;
     };
     LoadingUI.prototype.setProgress = function (current, total) {
         this.textField.text = "Loading..." + current + "/" + total;
