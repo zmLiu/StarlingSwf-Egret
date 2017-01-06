@@ -1,3 +1,11 @@
+var __reflect = (this && this.__reflect) || function (p, c, t) {
+    p.__class__ = c, t ? t.push(c) : t = [c], p.__types__ = p.__types__ ? t.concat(p.__types__) : t;
+};
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 /**
  * Created by zmliu on 14-5-11.
  */
@@ -7,23 +15,23 @@ var starlingswf;
         __extends(SwfMovieClip, _super);
         function SwfMovieClip(frames, labels, displayObjects, ownerSwf, frameEvents) {
             if (frameEvents === void 0) { frameEvents = null; }
-            _super.call(this);
-            this._isPlay = false;
-            this.loop = true;
-            this._completeFunction = null; //播放完毕的回调
-            this._hasCompleteListener = false; //是否监听过播放完毕的事件
-            this._frames = frames;
-            this._labels = labels;
-            this._displayObjects = displayObjects;
-            this._frameEvents = frameEvents;
-            this._startFrame = 0;
-            this._endFrame = this._frames.length - 1;
-            this._ownerSwf = ownerSwf;
-            this.setCurrentFrame(0);
-            this.play();
+            var _this = _super.call(this) || this;
+            _this._isPlay = false;
+            _this.loop = true;
+            _this._completeFunction = null; //播放完毕的回调
+            _this._hasCompleteListener = false; //是否监听过播放完毕的事件
+            _this._frames = frames;
+            _this._labels = labels;
+            _this._displayObjects = displayObjects;
+            _this._frameEvents = frameEvents;
+            _this._startFrame = 0;
+            _this._endFrame = _this._frames.length - 1;
+            _this._ownerSwf = ownerSwf;
+            _this.setCurrentFrame(0);
+            _this.play();
+            return _this;
         }
-        var d = __define,c=SwfMovieClip;p=c.prototype;
-        p.update = function () {
+        SwfMovieClip.prototype.update = function () {
             if (!this._isPlay)
                 return;
             if (this._currentFrame > this._endFrame) {
@@ -44,10 +52,10 @@ var starlingswf;
                 this._currentFrame += 1;
             }
         };
-        p.setCurrentFrame = function (frame) {
-            //            dirty hack this.removeChildren();
-            this.removeChildren();
-            //            this._children.length = 0;
+        SwfMovieClip.prototype.setCurrentFrame = function (frame) {
+            //dirty hack this.removeChildren();
+            // this.$children.length = 0;
+            this.removeAllChilds();
             this._currentFrame = frame;
             this.__frameInfos = this._frames[this._currentFrame];
             var data;
@@ -59,15 +67,17 @@ var starlingswf;
                 data = this.__frameInfos[i];
                 useIndex = data[10];
                 display = this._displayObjects[data[0]][useIndex];
-                display.skewX = data[6];
-                display.skewY = data[7];
-                display.alpha = data[8];
+                display.$setSkewX(data[6]);
+                display.$setSkewY(data[7]);
+                ;
+                display.$setAlpha(data[8]);
                 display.name = data[9];
                 //                if(data[1] == Swf.dataKey_Particle){
                 //                    display["setPostion"](data[2],data[3]);
                 //                }else{
-                display.x = data[2];
-                display.y = data[3];
+                display.$setX(data[2]);
+                display.$setY(data[3]);
+                //                }
                 switch (data[1]) {
                     case starlingswf.Swf.dataKey_Scale9:
                         display.width = data[11];
@@ -95,26 +105,24 @@ var starlingswf;
                         starlingswf.SwfBlendMode.setBlendMode(textfield, data[20]);
                         break;
                     default:
-                        display.scaleX = data[4];
-                        display.scaleY = data[5];
+                        display.$setScaleX(data[4]);
+                        display.$setScaleY(data[5]);
                         starlingswf.SwfBlendMode.setBlendMode(display, data[11]);
                         break;
                 }
-                this.addChild(display);
-                //                this._children.push(display);
-                display.parent = this;
+                this.$doAddChild(display, length, false);
             }
             if (this._frameEvents != null && this._frameEvents[this._currentFrame] != null) {
                 this.dispatchEventWith(this._frameEvents[this._currentFrame]);
             }
         };
-        p.getCurrentFrame = function () {
+        SwfMovieClip.prototype.getCurrentFrame = function () {
             return this._currentFrame;
         };
         /**
          * 播放
          * */
-        p.play = function () {
+        SwfMovieClip.prototype.play = function () {
             this._isPlay = true;
             this._ownerSwf.swfUpdateManager.addSwfAnimation(this);
             var k;
@@ -134,7 +142,7 @@ var starlingswf;
          * 停止
          * @param	stopChild	是否停止子动画
          * */
-        p.stop = function (stopChild) {
+        SwfMovieClip.prototype.stop = function (stopChild) {
             if (stopChild === void 0) { stopChild = true; }
             this._isPlay = false;
             this._ownerSwf.swfUpdateManager.removeSwfAnimation(this);
@@ -153,16 +161,16 @@ var starlingswf;
                 }
             }
         };
-        p.gotoAndStop = function (frame, stopChild) {
+        SwfMovieClip.prototype.gotoAndStop = function (frame, stopChild) {
             if (stopChild === void 0) { stopChild = true; }
             this.goTo(frame);
             this.stop(stopChild);
         };
-        p.gotoAndPlay = function (frame) {
+        SwfMovieClip.prototype.gotoAndPlay = function (frame) {
             this.goTo(frame);
             this.play();
         };
-        p.goTo = function (frame) {
+        SwfMovieClip.prototype.goTo = function (frame) {
             if (typeof (frame) == "string") {
                 var labelData = this.getLabelData(frame);
                 this._currentLabel = labelData[0];
@@ -175,7 +183,7 @@ var starlingswf;
             }
             this.setCurrentFrame(this._currentFrame);
         };
-        p.getLabelData = function (label) {
+        SwfMovieClip.prototype.getLabelData = function (label) {
             var length = this._labels.length;
             var labelData;
             for (var i = 0; i < length; i++) {
@@ -189,25 +197,25 @@ var starlingswf;
         /**
          * 是否再播放
          * */
-        p.isPlay = function () {
+        SwfMovieClip.prototype.isPlay = function () {
             return this._isPlay;
         };
         /**
          * 总共有多少帧
          * */
-        p.totalFrames = function () {
+        SwfMovieClip.prototype.totalFrames = function () {
             return this._frames.length;
         };
         /**
          * 返回当前播放的是哪一个标签
          * */
-        p.currentLabel = function () {
+        SwfMovieClip.prototype.currentLabel = function () {
             return this._currentLabel;
         };
         /**
          * 获取所有标签
          * */
-        p.labels = function () {
+        SwfMovieClip.prototype.labels = function () {
             var length = this._labels.length;
             var returnLabels = [];
             for (var i = 0; i < length; i++) {
@@ -218,23 +226,30 @@ var starlingswf;
         /**
          * 是否包含某个标签
          * */
-        p.hasLabel = function (label) {
+        SwfMovieClip.prototype.hasLabel = function (label) {
             var ls = this.labels();
             return !(ls.indexOf(label) == -1);
         };
-        p.addEventListener = function (type, listener, thisObject, useCapture, priority) {
+        SwfMovieClip.prototype.addEventListener = function (type, listener, thisObject, useCapture, priority) {
             if (useCapture === void 0) { useCapture = false; }
             if (priority === void 0) { priority = 0; }
             _super.prototype.addEventListener.call(this, type, listener, thisObject, useCapture, priority);
             this._hasCompleteListener = this.hasEventListener(egret.Event.COMPLETE);
         };
-        p.removeEventListener = function (type, listener, thisObject, useCapture) {
+        SwfMovieClip.prototype.removeEventListener = function (type, listener, thisObject, useCapture) {
             if (useCapture === void 0) { useCapture = false; }
             _super.prototype.removeEventListener.call(this, type, listener, thisObject, useCapture);
             this._hasCompleteListener = this.hasEventListener(egret.Event.COMPLETE);
         };
+        SwfMovieClip.prototype.removeAllChilds = function () {
+            var children = this.$children;
+            for (var i = children.length - 1; i >= 0; i--) {
+                this.$doRemoveChild(i, false);
+            }
+        };
         return SwfMovieClip;
-    })(starlingswf.SwfSprite);
+    }(starlingswf.SwfSprite));
     starlingswf.SwfMovieClip = SwfMovieClip;
-    egret.registerClass(SwfMovieClip,"starlingswf.SwfMovieClip",["starlingswf.ISwfAnimation"]);
+    __reflect(SwfMovieClip.prototype, "starlingswf.SwfMovieClip", ["starlingswf.ISwfAnimation"]);
 })(starlingswf || (starlingswf = {}));
+//# sourceMappingURL=SwfMovieClip.js.map

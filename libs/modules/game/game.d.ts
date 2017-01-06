@@ -1,4 +1,4 @@
-declare module egret {
+declare namespace egret {
     /**
      * @version Egret 2.4
      * @platform Web,Native
@@ -76,7 +76,7 @@ declare module egret {
         clone(): FrameLabel;
     }
 }
-declare module egret {
+declare namespace egret {
     /**
     * @language en_US
     * @version Egret 2.4
@@ -89,13 +89,14 @@ declare module egret {
      * @extends egret.DisplayObject
      * @event egret.Event.COMPLETE 动画播放完成。
      * @event egret.Event.LOOP_COMPLETE 动画循环播放完成。
-     * @see http://edn.egret.com/cn/index.php/article/index/id/151 MovieClip序列帧动画
+     * @see http://edn.egret.com/cn/docs/page/596 MovieClip序列帧动画
      * @version Egret 2.4
      * @platform Web,Native
      * @includeExample extension/game/display/MovieClip.ts
      */
     class MovieClip extends DisplayObject {
         $bitmapData: Texture;
+        private offsetPoint;
         $movieClipData: MovieClipData;
         /**
          * @private
@@ -159,12 +160,33 @@ declare module egret {
          */
         private passedTime;
         /**
+         * @private
+         */
+        private $frameRate;
+        /**
          * 创建新的 MovieClip 实例。创建 MovieClip 之后，调用舞台上的显示对象容器的addElement方法。
          * @param movieClipData {movieClipData} 被引用的 movieClipData 对象
          * @version Egret 2.4
          * @platform Web,Native
          */
         constructor(movieClipData?: MovieClipData);
+        /**
+         * @private
+         */
+        $smoothing: boolean;
+        /**
+         * @language en_US
+         * Whether or not is smoothed when scaled.
+         * @version Egret 3.0
+         * @platform Web
+         */
+        /**
+         * @language zh_CN
+         * 控制在缩放时是否进行平滑处理。
+         * @version Egret 3.0
+         * @platform Web
+         */
+        smoothing: boolean;
         /**
          * @private
          *
@@ -183,7 +205,7 @@ declare module egret {
         /**
          * @private
          */
-        $render(context: sys.RenderContext): void;
+        $render(): void;
         /**
          * @private
          */
@@ -300,6 +322,11 @@ declare module egret {
          * @private
          *
          */
+        $renderFrame(): void;
+        /**
+         * @private
+         *
+         */
         private handlePendingEvent();
         /**
          * MovieClip 实例中帧的总数
@@ -365,10 +392,10 @@ declare module egret {
         private setIsStopped(value);
     }
 }
-declare module egret {
+declare namespace egret {
     /**
      * @classdesc 使用 MovieClipData 类，您可以创建 MovieClip 对象和处理 MovieClip 对象的数据。MovieClipData 一般由MovieClipDataFactory生成
-     * @see http://docs.egret-labs.org/post/manual/displaycon/movieclip.html MovieClip序列帧动画
+     * @see http://edn.egret.com/cn/docs/page/596 MovieClip序列帧动画
      * @version Egret 2.4
      * @platform Web,Native
      */
@@ -450,6 +477,7 @@ declare module egret {
          * @platform Web,Native
          */
         getTextureByFrame(frame: number): Texture;
+        $getOffsetByFrame(frame: number, point: Point): void;
         /**
          * @private
          *
@@ -509,10 +537,10 @@ declare module egret {
         private setMCData(value);
     }
 }
-declare module egret {
+declare namespace egret {
     /**
      * @classdesc 使用 MovieClipDataFactory 类，可以生成 MovieClipData 对象用于创建MovieClip
-     * @see http://docs.egret-labs.org/post/manual/displaycon/movieclip.html MovieClip序列帧动画
+     * @see http://edn.egret.com/cn/docs/page/596 MovieClip序列帧动画
      * @version Egret 2.4
      * @platform Web,Native
      */
@@ -597,7 +625,7 @@ declare module egret {
         private setTexture(value);
     }
 }
-declare module egret {
+declare namespace egret {
     /**
      * @language en_US
      * When the movieClip's current frame have a frameLabel, dispatches MovieClipEvent object. FrameLabel Event type: MovieClipEvent.FRAME_LABEL
@@ -679,7 +707,7 @@ declare module egret {
         static dispatchMovieClipEvent(target: IEventDispatcher, type: string, frameLabel?: string): boolean;
     }
 }
-declare module egret {
+declare namespace egret {
     /**
      * @private
      */
@@ -717,21 +745,6 @@ declare module egret {
         static quartOut: Function;
     }
     /**
-     * @language en_US
-     * ScrollTween is the animation easing class of Egret
-     * @see http://docs.egret-labs.org/post/manual/anim/tween.html Tween缓动动画
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/tween/ScrollTween.ts
-     * @private
-     */
-    /**
-     * @language zh_CN
-     * Tween是Egret的动画缓动类
-     * @see http://docs.egret-labs.org/post/manual/anim/tween.html ScrollTween ease animation
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/tween/ScrollTween.ts
      * @private
      */
     class ScrollTween extends EventDispatcher {
@@ -888,7 +901,7 @@ declare module egret {
          * @param actionsMode
          * @returns
          */
-        private setPosition(value);
+        private setPosition(value, actionsMode?);
         /**
          * @private
          *
@@ -975,7 +988,7 @@ declare module egret {
          * Execute callback function
          * @param callback {Function} Callback method
          * @param thisObj {any} this action scope of the callback method
-         * @param params {Array<any>} Parameter of the callback method
+         * @param params {any[]} Parameter of the callback method
          * @returns {egret.ScrollTween} ScrollTween object itself
          * @version Egret 2.4
          * @platform Web,Native
@@ -985,12 +998,12 @@ declare module egret {
          * 执行回调函数
          * @param callback {Function} 回调方法
          * @param thisObj {any} 回调方法this作用域
-         * @param params {Array<any>} 回调方法参数
+         * @param params {any[]} 回调方法参数
          * @returns {egret.ScrollTween} Tween对象本身
          * @version Egret 2.4
          * @platform Web,Native
          */
-        call(callback: Function, thisObj?: any, params?: Array<any>): ScrollTween;
+        call(callback: Function, thisObj?: any, params?: any[]): ScrollTween;
         /**
          * @method egret.ScrollTween#tick
          * @param delta {number}
@@ -1001,7 +1014,7 @@ declare module egret {
         tick(delta: number): void;
     }
 }
-declare module egret {
+declare namespace egret {
     /**
      * @language en_US
      * ScrollView auxiliary classes for slides, you will pass a display object constructor. It can display more than the range display object within the specified size range. And can easily drag in this range.
@@ -1496,7 +1509,7 @@ declare module egret {
         swapChildrenAt(index1: number, index2: number): void;
     }
 }
-declare module egret {
+declare namespace egret {
     /**
      * @private
      * @version Egret 2.4
@@ -1576,11 +1589,170 @@ declare module egret {
         _bounces: boolean;
     }
 }
-declare module egret {
+declare namespace egret {
+    /**
+     * @private
+     * @version Egret 2.4
+     * @platform Web,Native
+     */
+    interface NetContext extends HashObject {
+        /**
+         *
+         * @param loader
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        proceed(loader: URLLoader): void;
+    }
+    /**
+     * @private
+     * @version Egret 2.4
+     * @platform Web,Native
+     */
+    let NetContext: {
+        new (): NetContext;
+        getNetContext(): NetContext;
+    };
+    /**
+     * @private
+     *
+     * @param request
+     * @returns
+     */
+    function $getUrl(request: URLRequest): string;
+}
+declare namespace egret {
+    /**
+     * @language en_US
+     * Run the designated function in specified delay (in milliseconds).
+     * @param listener {Function} Listener function
+     * @param thisObject {any} this object
+     * @param delay {number} Delay time, in milliseconds
+     * @param ...args {any} Parameter list
+     * @returns {number} Return index which can be used for clearTimeout
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @includeExample extension/game/utils/setTimeout.ts
+     */
+    /**
+     * @language zh_CN
+     * 在指定的延迟（以毫秒为单位）后运行指定的函数。
+     * @param listener {Function} 侦听函数
+     * @param thisObject {any} this对象
+     * @param delay {number} 延迟时间，以毫秒为单位
+     * @param ...args {any} 参数列表
+     * @returns {number} 返回索引，可以用于 clearTimeout
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @includeExample extension/game/utils/setTimeout.ts
+     */
+    function setTimeout(listener: Function, thisObject: any, delay: number, ...args: any[]): number;
+    /**
+     * @language en_US
+     * Function run after the specified delay is cleared.
+     * @param key {number} Index that egret.setTimeout returns
+     * @version Egret 2.4
+     * @platform Web,Native
+     */
+    /**
+     * @language zh_CN
+     * 清除指定延迟后运行的函数。
+     * @param key {number} egret.setTimeout所返回的索引
+     * @version Egret 2.4
+     * @platform Web,Native
+     */
+    function clearTimeout(key: number): void;
+}
+declare namespace egret {
+    /**
+     * @language en_US
+     * The URLLoaderDataFormat class provides values that specify how downloaded data is received.
+     * @see http://edn.egret.com/cn/docs/page/600 Read different data format
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @includeExample extension/game/net/URLLoaderDataFormat.ts
+     */
+    /**
+     * @language zh_CN
+     * URLLoaderDataFormat 类提供了一些用于指定如何接收已下载数据的值。
+     * @see http://edn.egret.com/cn/docs/page/600 读取不同数据格式
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @includeExample extension/game/net/URLLoaderDataFormat.ts
+     */
+    class URLLoaderDataFormat {
+        /**
+         * @language en_US
+         * Specify that downloaded data is received as raw binary data.
+         * @version Egret 2.4
+         * @platform Web
+         */
+        /**
+         * @language zh_CN
+         * 指定以原始二进制数据形式接收下载的数据。
+         * @version Egret 2.4
+         * @platform Web
+         */
+        static BINARY: string;
+        /**
+         * @language en_US
+         * Specify that downloaded data is received as text.
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        /**
+         * @language zh_CN
+         * 指定以文本形式接收已下载的数据。
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        static TEXT: string;
+        /**
+         * @language en_US
+         * Specify that downloaded data is received as URL-encoded variables.
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        /**
+         * @language zh_CN
+         * 指定以 URL 编码变量形式接收下载的数据。
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        static VARIABLES: string;
+        /**
+         * @language en_US
+         * Specify that downloaded data is received as bitmap texture.
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        /**
+         * @language zh_CN
+         * 指定以位图纹理形式接收已下载的数据。
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        static TEXTURE: string;
+        /**
+         * @language en_US
+         * Specify that downloaded data is received as sound.
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        /**
+         * @language zh_CN
+         * 指定以声音形式接收已下载的数据。
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        static SOUND: string;
+    }
+}
+declare namespace egret {
     /**
      * @language en_US
      * The URLRequest class captures all of the information in a single HTTP request.
-     * @see http://docs.egret-labs.org/post/manual/net/createconnect.html Build communication request
+     * @see http://edn.egret.com/cn/index.php/article/index/id/601 Build communication request
      * @version Egret 2.4
      * @platform Web,Native
      * @includeExample extension/game/net/URLRequest.ts
@@ -1588,7 +1760,7 @@ declare module egret {
     /**
      * @language zh_CN
      * URLRequest 类可捕获单个 HTTP 请求中的所有信息。
-     * @see http://docs.egret-labs.org/post/manual/net/createconnect.html 构建通信请求
+     * @see http://edn.egret.com/cn/index.php/article/index/id/601 构建通信请求
      * @version Egret 2.4
      * @platform Web,Native
      * @includeExample extension/game/net/URLRequest.ts
@@ -1614,6 +1786,9 @@ declare module egret {
          * An object contains data to be transmitted with the URL request.
          * This property is used in conjunction with the method property.  When the value of method is GET, the value of data is appended to the value of URLRequest.url, using HTTP query-string syntax.
          * When the method value is POST (or any value other than GET), the value of data is transmitted in the body of the HTTP request.
+         * The URLRequest API offers binary POST support and support for URL-encoded variables, as well as support for strings. The data object can be a ArrayBuffer, URLVariables, or String object.
+         * The way in which the data is used depends on the type of object used:
+         * If the object is a ArrayBuffer object, the binary data of the ArrayBuffer object is used as POST data. For GET, data of ArrayBuffer type is not supported.
          * If the object is a URLVariables object and the method is POST, then the variables are encoded using x-www-form-urlencoded format and the resulting string is used as POST data.
          * If the object is a URLVariables object and the method is GET, the URLVariables object will define variables to be sent with the URLRequest object.
          * Otherwise, the object is converted into a string, and the string is used as the POST or GET data.
@@ -1625,8 +1800,9 @@ declare module egret {
          * 一个对象，它包含将随 URL 请求一起传输的数据。
          * 该属性与 method 属性配合使用。当 method 值为 GET 时，将使用 HTTP 查询字符串语法将 data 值追加到 URLRequest.url 值。
          * 当 method 值为 POST（或 GET 之外的任何值）时，将在 HTTP 请求体中传输 data 值。
-         * URLRequest API 支持二进制 POST，并支持 URL 编码变量和字符串。该数据对象可以是 ByteArray、URLVariables 或 String 对象。
+         * URLRequest API 支持二进制 POST，并支持 URL 编码变量和字符串。该数据对象可以是 ArrayBuffer、URLVariables 或 String 对象。
          * 该数据的使用方式取决于所用对象的类型：
+         * 如果该对象为 ArrayBuffer 对象，则 ArrayBuffer 对象的二进制数据用作 POST 数据。对于 GET，不支持 ArrayBuffer 类型的数据。
          * 如果该对象是 URLVariables 对象，并且该方法是 POST，则使用 x-www-form-urlencoded 格式对变量进行编码，并且生成的字符串会用作 POST 数据。
          * 如果该对象是 URLVariables 对象，并且该方法是 GET，则 URLVariables 对象将定义要随 URLRequest 对象一起发送的变量。
          * 否则，该对象会转换为字符串，并且该字符串会用作 POST 或 GET 数据。
@@ -1679,45 +1855,570 @@ declare module egret {
         requestHeaders: Array<URLRequestHeader>;
     }
 }
-declare module egret {
+declare namespace egret {
     /**
-     * @private
+     * @language en_US
+     * A URLRequestHeader object encapsulates a single HTTP request header and consists of a name/value pair.  URLRequestHeader objects are used in the requestHeaders property of the URLRequest class.
+     * Note: Because of browser compatibility, this property has not been achieved in html5
      * @version Egret 2.4
      * @platform Web,Native
+     * @includeExample extension/game/net/URLRequestHeader.ts
      */
-    interface NetContext extends HashObject {
+    /**
+     * @language zh_CN
+     * URLRequestHeader 对象封装了一个 HTTP 请求标头并由一个名称/值对组成。URLRequestHeader 对象在 URLRequest 类的 requestHeaders 属性中使用。
+     * 注意：由于浏览器兼容性原因，在 html5 中并未实现
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @includeExample extension/game/net/URLRequestHeader.ts
+     */
+    class URLRequestHeader {
         /**
-         *
-         * @param loader
+         * @language en_US
+         * HTTP request header name, such as Content-Type
          * @version Egret 2.4
          * @platform Web,Native
          */
-        proceed(loader: URLLoader): void;
+        /**
+         * @language zh_CN
+         * HTTP 请求标头名称，如 Content-Type
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        name: string;
+        /**
+         * @language en_US
+         * The values associated with the name property (such as text/plain).
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        /**
+         * @language zh_CN
+         * 与 name 属性相关联的值，如 text/plain
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        value: string;
+        /**
+         * @language en_US
+         * Create an egret.URLRequestHeader object
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        /**
+         * @language zh_CN
+         * 创建一个 egret.URLRequestHeader 对象
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        constructor(name: string, value: string);
     }
+}
+declare namespace egret {
     /**
+     * @language en_US
+     * The URLRequestMethod class provides values that specify whether the
+     * URLRequest object should use the POST method or the GET method when sending data to a server.
+     * @see http://edn.egret.com/cn/docs/page/599 POST与GET
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @includeExample extension/game/net/URLRequestMethod.ts
+     */
+    /**
+     * @language zh_CN
+     * URLRequestMethod 类提供了一些值，这些值可指定在将数据发送到服务器时，
+     * URLRequest 对象应使用 POST 方法还是 GET 方法。
+     * @see http://edn.egret.com/cn/docs/page/599 POST与GET
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @includeExample extension/game/net/URLRequestMethod.ts
+     */
+    class URLRequestMethod {
+        /**
+         * @language en_US
+         * Specify that the URLRequest object is a GET.
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        /**
+         * @language zh_CN
+         * 表示 URLRequest 对象是一个 GET。
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        static GET: string;
+        /**
+         * @language en_US
+         * Specify that the URLRequest object is a POST.
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        /**
+         * @language zh_CN
+         * 表示 URLRequest 对象是一个 POST。
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        static POST: string;
+    }
+}
+declare namespace egret {
+    /**
+     * @language en_US
+     * The URLVariables class allows you to transfer variables between an application and a server.
+     * Use URLVariables objects with methods of the URLLoader class and the data property of the URLRequest class.
+     * @see http://edn.egret.com/cn/docs/page/598 Send the request with parameters
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @includeExample extension/game/net/URLVariables.ts
+     */
+    /**
+     * @language zh_CN
+     * 使用 URLVariables 类可以在应用程序和服务器之间传输变量。
+     * 将 URLVariables 对象与 URLLoader 类的方法、URLRequest 类的 data 属性一起使用。
+     * @see http://edn.egret.com/cn/docs/page/598 发送带参数的请求
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @includeExample extension/game/net/URLVariables.ts
+     */
+    class URLVariables extends HashObject {
+        /**
+         * @language en_US
+         * Create an egret.URLVariable object
+         * @param source {String} A URL-encoded string containing name/value pairs.
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        /**
+         * @language zh_CN
+         * 创建一个 egret.URLVariables 对象
+         * @param source {String} 包含名称/值对的 URL 编码的字符串。
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        constructor(source?: string);
+        /**
+         * @language en_US
+         * Key-value pair data object saved in this URLVariables object
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        /**
+         * @language zh_CN
+         * 此 URLVariables 储存的键值对数据对象。
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        variables: Object;
+        /**
+         * @language en_US
+         * Convert the variable string into the property of this URLVariables.variables object.
+         * @param source {string}
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        /**
+         * @language zh_CN
+         * 将变量字符串转换为此 URLVariables.variables 对象的属性。
+         * @param source {string}
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        decode(source: string): void;
+        /**
+         * @language en_US
+         * Return a string containing all enumerable variables using  the MIME content encoding format : application/x-www-form-urlencoded.
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        /**
+         * @language zh_CN
+         * 以 MIME 内容编码格式 application/x-www-form-urlencoded 返回包含所有可枚举变量的字符串。
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        toString(): string;
+        /**
+         * @private
+         *
+         * @param key
+         * @param value
+         */
+        private encodeValue(key, value);
+        /**
+         * @private
+         *
+         * @param key
+         * @param value
+         */
+        private encodeArray(key, value);
+    }
+}
+declare namespace egret {
+    /**
+    * @language en_US
+    * @version Egret 2.4
+    * @platform Web,Native
+    * @includeExample extension/game/player/Ticker.ts
+    */
+    /**
+     * @language zh_CN
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @includeExample extension/game/player/Ticker.ts
+     */
+    class Ticker extends EventDispatcher {
+        /**
+         * @deprecated
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        constructor();
+        private _timeScale;
+        private _paused;
+        private _callIndex;
+        private _callList;
+        private _lastTime;
+        private update(timeStamp);
+        private callBackList;
+        /**
+         * 注册帧回调事件，同一函数的重复监听会被忽略。推荐使用 egret.startTick 替代此方法。
+         * @method egret.Ticker#register
+         * @param listener {Function} 帧回调函数,参数返回上一帧和这帧的间隔时间。示例：onEnterFrame(frameTime:number):void
+         * @param thisObject {any} 帧回调函数的this对象
+         * @param priority {number} 事件优先级，开发者请勿传递 Number.NEGATIVE_INFINITY 和 Number.POSITIVE_INFINITY
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @deprecated
+         */
+        register(listener: Function, thisObject: any, priority?: number): void;
+        /**
+         * 取消侦听enterFrame事件。推荐使用 egret.stopTick 替代此方法。
+         * @method egret.Ticker#unregister
+         * @param listener {Function} 事件侦听函数
+         * @param thisObject {any} 侦听函数的this对象
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @deprecated
+         */
+        unregister(listener: Function, thisObject: any): void;
+        /**
+         * @deprecated
+         * @param timeScale {number}
+         * @private
+         */
+        setTimeScale(timeScale: number): void;
+        /**
+         * @deprecated
+         * @method egret.Ticker#getTimeScale
+         * @private
+         */
+        getTimeScale(): number;
+        /**
+         * 暂停
+         * @deprecated
+         * @method egret.Ticker#pause
+         */
+        pause(): void;
+        /**
+         * 继续
+         * @deprecated
+         * @method egret.Ticker#resume
+         */
+        resume(): void;
+        /**
+         * @private
+         */
+        private static instance;
+        /**
+         * @method egret.Ticker.getInstance
+         * @returns {Ticker}
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @deprecated
+         */
+        static getInstance(): egret.Ticker;
+    }
+}
+declare namespace egret {
+    /**
+     * @class egret.MainContext
+     * @classdesc
+     * MainContext是游戏的核心跨平台接口，组合了多个功能Context，并是游戏启动的主入口
+     * @extends egret.EventDispatcher
      * @private
      * @version Egret 2.4
      * @platform Web,Native
      */
-    var NetContext: {
-        new (): NetContext;
-        getNetContext(): NetContext;
-    };
-    /**
-     * @private
-     *
-     * @param request
-     * @returns
-     */
-    function $getUrl(request: URLRequest): string;
+    class MainContext extends EventDispatcher {
+        /**
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        constructor();
+        /**
+         * 渲染Context
+         * @member egret.MainContext#rendererContext
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        /**
+         * 触摸Context
+         * @member egret.MainContext#touchContext
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        /**
+         * 网络Context
+         * @member egret.MainContext#netContext
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        /**
+         * 设备divice
+         * @member egret.MainContext#deviceContext
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        /**
+         * 舞台
+         * @member egret.MainContext#stage
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        stage: Stage;
+        /**
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        static deviceType: string;
+        /**
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        static DEVICE_PC: string;
+        /**
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        static DEVICE_MOBILE: string;
+        /**
+         * @private
+         */
+        static _runtimeType: string;
+        /**
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        static runtimeType: string;
+        /**
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        static RUNTIME_HTML5: string;
+        /**
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        static RUNTIME_NATIVE: string;
+        /**
+         * 游戏启动，开启主循环，参考Flash的滑动跑道模型
+         * @method egret.MainContext#run
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        run(): void;
+        /**
+         * @private
+         */
+        private static _instance;
+        /**
+         * @method egret.Ticker.getInstance
+         * @returns {Ticker}
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        static instance: egret.MainContext;
+    }
 }
-declare module egret {
+/**
+ * @private
+ */
+declare let testDeviceType1: () => boolean;
+/**
+ * @private
+ */
+declare let testRuntimeType1: () => boolean;
+declare namespace egret {
+    /**
+     * @language en_US
+     * Tool class for object cache repeat use, which can be used to construct an object pool. Objects are automatically recycled after a certain duration.
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @includeExample extension/game/utils/Recycler.ts
+     * @private
+     */
+    /**
+     * @language zh_CN
+     * 对象缓存复用工具类，可用于构建对象池，一段时间后会自动回收对象。
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @includeExample extension/game/utils/Recycler.ts
+     * @private
+     */
+    class Recycler extends HashObject {
+        /**
+         * @language en_US
+         * Create an egret.Recycler object
+         * @param autoDisposeTime {number} Number of frames when objects are destroyed automatically. Default value: 300
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        /**
+         * @language zh_CN
+         * 创建一个 egret.Recycler 对象
+         * @param autoDisposeTime {number} 多少帧后自动销毁对象，默认值300
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        constructor(autoDisposeTime?: number);
+        /**
+         * @private
+         */
+        static _callBackList: any[];
+        static $init(): void;
+        static onUpdate(timeStamp: number): boolean;
+        /**
+         * @private
+         * 多少帧后自动销毁对象。
+         */
+        private autoDisposeTime;
+        /**
+         * @private
+         */
+        private frameCount;
+        /**
+         * @private
+         *
+         */
+        $checkFrame(): void;
+        /**
+         * @private
+         */
+        private objectPool;
+        /**
+         * @private
+         */
+        private _length;
+        /**
+         * @language en_US
+         * Number of cached objects"
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        /**
+         * @language zh_CN
+         * 缓存的对象数量
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        length: number;
+        /**
+         * @language en_US
+         * Cache an object for repeat use
+         * @param object {any} The object to be cached
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        /**
+         * @language zh_CN
+         * 缓存一个对象以复用
+         * @param object {any} 需要缓存的对象
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        push(object: any): void;
+        /**
+         * @language en_US
+         * Obtain a cached object
+         * @returns {any} The obtained cached object
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        /**
+         * @language zh_CN
+         * 获取一个缓存的对象
+         * @returns {any} 获得的缓存对象
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        pop(): any;
+        /**
+         * @language en_US
+         * Immediately clear all cached objects.
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        /**
+         * @language zh_CN
+         * 立即清空所有缓存的对象。
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        dispose(): void;
+    }
+}
+declare namespace egret {
+    /**
+     * @language en_US
+     * To specify a delay (in milliseconds) calls the function specified interval loop.
+     * @param listener {Function} Listener function
+     * @param thisObject {any} this object
+     * @param delay {number} Delay time, in milliseconds
+     * @param ...args {any} Parameter list
+     * @returns {number} Return index which can be used for clearInterval
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @includeExample extension/game/utils/setInterval.ts
+     */
+    /**
+     * @language zh_CN
+     * 以指定的延迟（以毫秒为单位）间隔循环调用指定的函数。
+     * @param listener {Function} 侦听函数
+     * @param thisObject {any} this对象
+     * @param delay {number} 延迟时间，以毫秒为单位
+     * @param ...args {any} 参数列表
+     * @returns {number} 返回索引，可以用于 clearInterval
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @includeExample extension/game/utils/setInterval.ts
+     */
+    function setInterval(listener: Function, thisObject: any, delay: number, ...args: any[]): number;
+    /**
+     * @language en_US
+     * Clear function to run after a specified delay.
+     * @param key {number} Index that egret.setInterval returns
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @includeExample egret/utils/setInterval.ts
+     */
+    /**
+     * @language zh_CN
+     * 清除指定延迟后运行的函数。
+     * @param key {number} egret.setInterval所返回的索引
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @includeExample egret/utils/setInterval.ts
+     */
+    function clearInterval(key: number): void;
+}
+declare namespace egret {
     /**
      * @language en_US
      * UThe URLLoader class downloads data from a URL as text, binary data, or URL-encoded variables.  It is useful for downloading text files, XML, or other information to be used in a dynamic, data-driven application.
      * A URLLoader object downloads all of the data from a URL before making it available to code in the applications. It sends out notifications about the progress of the download,
      * which you can monitor through bytesLoaded and bytesTotal properties, as well as through dispatched events.
-     * @see http://docs.egret-labs.org/post/manual/net/createconnect.html Build communication request
+     * @see http://edn.egret.com/cn/docs/page/601 Build communication request
      * @event egret.Event.COMPLETE Dispatched when the net request is complete.
      * @event egret.IOErrorEvent.IO_ERROR io error.
      * @version Egret 2.4
@@ -1729,7 +2430,7 @@ declare module egret {
      * URLLoader 类以文本、二进制数据或 URL 编码变量的形式从 URL 下载数据。在下载文本文件、XML 或其他用于动态数据驱动应用程序的信息时，它很有用。
      * URLLoader 对象会先从 URL 中下载所有数据，然后才将数据用于应用程序中的代码。它会发出有关下载进度的通知，
      * 通过 bytesLoaded 和 bytesTotal 属性以及已调度的事件，可以监视下载进度。
-     * @see http://docs.egret-labs.org/post/manual/net/createconnect.html 构建通信请求
+     * @see http://edn.egret.com/cn/docs/page/601 构建通信请求
      * @event egret.Event.COMPLETE 加载完成后调度。
      * @event egret.IOErrorEvent.IO_ERROR 加载错误后调度。
      * @version Egret 2.4
@@ -1830,678 +2531,4 @@ declare module egret {
          */
         __recycle(): void;
     }
-}
-declare module egret {
-    /**
-     * @language en_US
-     * The URLLoaderDataFormat class provides values that specify how downloaded data is received.
-     * @see http://docs.egret-labs.org/post/manual/net/netformat.html Read different data format
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample extension/game/net/URLLoaderDataFormat.ts
-     */
-    /**
-     * @language zh_CN
-     * URLLoaderDataFormat 类提供了一些用于指定如何接收已下载数据的值。
-     * @see http://docs.egret-labs.org/post/manual/net/netformat.html 读取不同数据格式
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample extension/game/net/URLLoaderDataFormat.ts
-     */
-    class URLLoaderDataFormat {
-        /**
-         * @language en_US
-         * Specify that downloaded data is received as raw binary data.
-         * @version Egret 2.4
-         * @platform Web
-         */
-        /**
-         * @language zh_CN
-         * 指定以原始二进制数据形式接收下载的数据。
-         * @version Egret 2.4
-         * @platform Web
-         */
-        static BINARY: string;
-        /**
-         * @language en_US
-         * Specify that downloaded data is received as text.
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        /**
-         * @language zh_CN
-         * 指定以文本形式接收已下载的数据。
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        static TEXT: string;
-        /**
-         * @language en_US
-         * Specify that downloaded data is received as URL-encoded variables.
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        /**
-         * @language zh_CN
-         * 指定以 URL 编码变量形式接收下载的数据。
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        static VARIABLES: string;
-        /**
-         * @language en_US
-         * Specify that downloaded data is received as bitmap texture.
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        /**
-         * @language zh_CN
-         * 指定以位图纹理形式接收已下载的数据。
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        static TEXTURE: string;
-        /**
-         * @language en_US
-         * Specify that downloaded data is received as sound.
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        /**
-         * @language zh_CN
-         * 指定以声音形式接收已下载的数据。
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        static SOUND: string;
-    }
-}
-declare module egret {
-    /**
-     * @language en_US
-     * A URLRequestHeader object encapsulates a single HTTP request header and consists of a name/value pair.  URLRequestHeader objects are used in the requestHeaders property of the URLRequest class.
-     * Note: Because of browser compatibility, this property has not been achieved in html5
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample extension/game/net/URLRequestHeader.ts
-     */
-    /**
-     * @language zh_CN
-     * URLRequestHeader 对象封装了一个 HTTP 请求标头并由一个名称/值对组成。URLRequestHeader 对象在 URLRequest 类的 requestHeaders 属性中使用。
-     * 注意：由于浏览器兼容性原因，在 html5 中并未实现
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample extension/game/net/URLRequestHeader.ts
-     */
-    class URLRequestHeader {
-        /**
-         * @language en_US
-         * HTTP request header name, such as Content-Type
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        /**
-         * @language zh_CN
-         * HTTP 请求标头名称，如 Content-Type
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        name: string;
-        /**
-         * @language en_US
-         * The values associated with the name property (such as text/plain).
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        /**
-         * @language zh_CN
-         * 与 name 属性相关联的值，如 text/plain
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        value: string;
-        /**
-         * @language en_US
-         * Create an egret.URLRequestHeader object
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        /**
-         * @language zh_CN
-         * 创建一个 egret.URLRequestHeader 对象
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        constructor(name: string, value: string);
-    }
-}
-declare module egret {
-    /**
-     * @language en_US
-     * The URLRequestMethod class provides values that specify whether the
-     * URLRequest object should use the POST method or the GET method when sending data to a server.
-     * @see http://docs.egret-labs.org/post/manual/net/postget.html POST与GET
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample extension/game/net/URLRequestMethod.ts
-     */
-    /**
-     * @language zh_CN
-     * URLRequestMethod 类提供了一些值，这些值可指定在将数据发送到服务器时，
-     * URLRequest 对象应使用 POST 方法还是 GET 方法。
-     * @see http://docs.egret-labs.org/post/manual/net/postget.html POST与GET
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample extension/game/net/URLRequestMethod.ts
-     */
-    class URLRequestMethod {
-        /**
-         * @language en_US
-         * Specify that the URLRequest object is a GET.
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        /**
-         * @language zh_CN
-         * 表示 URLRequest 对象是一个 GET。
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        static GET: string;
-        /**
-         * @language en_US
-         * Specify that the URLRequest object is a POST.
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        /**
-         * @language zh_CN
-         * 表示 URLRequest 对象是一个 POST。
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        static POST: string;
-    }
-}
-declare module egret {
-    /**
-     * @language en_US
-     * The URLVariables class allows you to transfer variables between an application and a server.
-     * Use URLVariables objects with methods of the URLLoader class and the data property of the URLRequest class.
-     * @see http://docs.egret-labs.org/post/manual/net/senddata.html Send the request with parameters
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample extension/game/net/URLVariables.ts
-     */
-    /**
-     * @language zh_CN
-     * 使用 URLVariables 类可以在应用程序和服务器之间传输变量。
-     * 将 URLVariables 对象与 URLLoader 类的方法、URLRequest 类的 data 属性一起使用。
-     * @see http://docs.egret-labs.org/post/manual/net/senddata.html 发送带参数的请求
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample extension/game/net/URLVariables.ts
-     */
-    class URLVariables extends HashObject {
-        /**
-         * @language en_US
-         * Create an egret.URLVariable object
-         * @param source {String} A URL-encoded string containing name/value pairs.
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        /**
-         * @language zh_CN
-         * 创建一个 egret.URLVariables 对象
-         * @param source {String} 包含名称/值对的 URL 编码的字符串。
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        constructor(source?: string);
-        /**
-         * @language en_US
-         * Key-value pair data object saved in this URLVariables object
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        /**
-         * @language zh_CN
-         * 此 URLVariables 储存的键值对数据对象。
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        variables: Object;
-        /**
-         * @language en_US
-         * Convert the variable string into the property of this URLVariables.variables object.
-         * @param source {string}
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        /**
-         * @language zh_CN
-         * 将变量字符串转换为此 URLVariables.variables 对象的属性。
-         * @param source {string}
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        decode(source: string): void;
-        /**
-         * @language en_US
-         * Return a string containing all enumerable variables using  the MIME content encoding format : application/x-www-form-urlencoded.
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        /**
-         * @language zh_CN
-         * 以 MIME 内容编码格式 application/x-www-form-urlencoded 返回包含所有可枚举变量的字符串。
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        toString(): string;
-        /**
-         * @private
-         *
-         * @param key
-         * @param value
-         */
-        private encodeValue(key, value);
-        /**
-         * @private
-         *
-         * @param key
-         * @param value
-         */
-        private encodeArray(key, value);
-    }
-}
-declare module egret {
-    /**
-    * @language en_US
-    * @version Egret 2.4
-    * @platform Web,Native
-    * @includeExample extension/game/player/Ticker.ts
-    */
-    /**
-     * @language zh_CN
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample extension/game/player/Ticker.ts
-     */
-    class Ticker extends EventDispatcher {
-        /**
-         * @deprecated
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        constructor();
-        private _timeScale;
-        private _paused;
-        private _callIndex;
-        private _callList;
-        private _lastTime;
-        private update(timeStamp);
-        private callBackList;
-        /**
-         * 注册帧回调事件，同一函数的重复监听会被忽略。
-         * @method egret.Ticker#register
-         * @param listener {Function} 帧回调函数,参数返回上一帧和这帧的间隔时间。示例：onEnterFrame(frameTime:number):void
-         * @param thisObject {any} 帧回调函数的this对象
-         * @param priority {number} 事件优先级，开发者请勿传递 Number.NEGATIVE_INFINITY 和 Number.POSITIVE_INFINITY
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @deprecated
-         */
-        register(listener: Function, thisObject: any, priority?: number): void;
-        /**
-         * 取消侦听enterFrame事件
-         * @method egret.Ticker#unregister
-         * @param listener {Function} 事件侦听函数
-         * @param thisObject {any} 侦听函数的this对象
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @deprecated
-         */
-        unregister(listener: Function, thisObject: any): void;
-        /**
-         * @deprecated
-         * @param timeScale {number}
-         * @private
-         */
-        setTimeScale(timeScale: number): void;
-        /**
-         * @deprecated
-         * @method egret.Ticker#getTimeScale
-         * @private
-         */
-        getTimeScale(): number;
-        /**
-         * 暂停
-         * @deprecated
-         * @method egret.Ticker#pause
-         */
-        pause(): void;
-        /**
-         * 继续
-         * @deprecated
-         * @method egret.Ticker#resume
-         */
-        resume(): void;
-        /**
-         * @private
-         */
-        private static instance;
-        /**
-         * @method egret.Ticker.getInstance
-         * @returns {Ticker}
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @deprecated
-         */
-        static getInstance(): egret.Ticker;
-    }
-}
-declare module egret {
-    /**
-     * @class egret.MainContext
-     * @classdesc
-     * MainContext是游戏的核心跨平台接口，组合了多个功能Context，并是游戏启动的主入口
-     * @extends egret.EventDispatcher
-     * @private
-     * @version Egret 2.4
-     * @platform Web,Native
-     */
-    class MainContext extends EventDispatcher {
-        /**
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        constructor();
-        /**
-         * 渲染Context
-         * @member egret.MainContext#rendererContext
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        /**
-         * 触摸Context
-         * @member egret.MainContext#touchContext
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        /**
-         * 网络Context
-         * @member egret.MainContext#netContext
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        /**
-         * 设备divice
-         * @member egret.MainContext#deviceContext
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        /**
-         * 舞台
-         * @member egret.MainContext#stage
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        stage: Stage;
-        /**
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        static deviceType: string;
-        /**
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        static DEVICE_PC: string;
-        /**
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        static DEVICE_MOBILE: string;
-        /**
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        static runtimeType: string;
-        /**
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        static RUNTIME_HTML5: string;
-        /**
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        static RUNTIME_NATIVE: string;
-        /**
-         * 游戏启动，开启主循环，参考Flash的滑动跑道模型
-         * @method egret.MainContext#run
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        run(): void;
-        /**
-         * @private
-         */
-        private static _instance;
-        /**
-         * @method egret.Ticker.getInstance
-         * @returns {Ticker}
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        static instance: egret.MainContext;
-    }
-}
-declare var testDeviceType1: () => boolean;
-declare var testRuntimeType1: () => boolean;
-declare module egret {
-    /**
-     * @language en_US
-     * Tool class for object cache repeat use, which can be used to construct an object pool. Objects are automatically recycled after a certain duration.
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample extension/game/utils/Recycler.ts
-     * @private
-     */
-    /**
-     * @language zh_CN
-     * 对象缓存复用工具类，可用于构建对象池，一段时间后会自动回收对象。
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample extension/game/utils/Recycler.ts
-     * @private
-     */
-    class Recycler extends HashObject {
-        /**
-         * @language en_US
-         * Create an egret.Recycler object
-         * @param autoDisposeTime {number} Number of frames when objects are destroyed automatically. Default value: 300
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        /**
-         * @language zh_CN
-         * 创建一个 egret.Recycler 对象
-         * @param autoDisposeTime {number} 多少帧后自动销毁对象，默认值300
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        constructor(autoDisposeTime?: number);
-        /**
-         * @private
-         */
-        static _callBackList: Array<any>;
-        static $init(): void;
-        static onUpdate(timeStamp: number): boolean;
-        /**
-         * @private
-         * 多少帧后自动销毁对象。
-         */
-        private autoDisposeTime;
-        /**
-         * @private
-         */
-        private frameCount;
-        /**
-         * @private
-         *
-         */
-        $checkFrame(): void;
-        /**
-         * @private
-         */
-        private objectPool;
-        /**
-         * @private
-         */
-        private _length;
-        /**
-         * @language en_US
-         * Number of cached objects"
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        /**
-         * @language zh_CN
-         * 缓存的对象数量
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        length: number;
-        /**
-         * @language en_US
-         * Cache an object for repeat use
-         * @param object {any} The object to be cached
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        /**
-         * @language zh_CN
-         * 缓存一个对象以复用
-         * @param object {any} 需要缓存的对象
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        push(object: any): void;
-        /**
-         * @language en_US
-         * Obtain a cached object
-         * @returns {any} The obtained cached object
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        /**
-         * @language zh_CN
-         * 获取一个缓存的对象
-         * @returns {any} 获得的缓存对象
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        pop(): any;
-        /**
-         * @language en_US
-         * Immediately clear all cached objects.
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        /**
-         * @language zh_CN
-         * 立即清空所有缓存的对象。
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        dispose(): void;
-    }
-}
-declare module egret {
-    /**
-     * @language en_US
-     * Specified function after a specified delay run (in milliseconds).
-     * @param listener {Function} Listener function
-     * @param thisObject {any} this object
-     * @param delay {number} Delay time, in milliseconds
-     * @param ...args {any} Parameter list
-     * @returns {number} Return index which can be used for clearInterval
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample extension/game/utils/setInterval.ts
-     */
-    /**
-     * @language zh_CN
-     * 在指定的延迟（以毫秒为单位）后运行指定的函数。
-     * @param listener {Function} 侦听函数
-     * @param thisObject {any} this对象
-     * @param delay {number} 延迟时间，以毫秒为单位
-     * @param ...args {any} 参数列表
-     * @returns {number} 返回索引，可以用于 clearInterval
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample extension/game/utils/setInterval.ts
-     */
-    function setInterval(listener: Function, thisObject: any, delay: number, ...args: any[]): number;
-    /**
-     * @language en_US
-     * Clear function to run after a specified delay.
-     * @param key {number} Index that egret.setInterval returns
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/utils/setInterval.ts
-     */
-    /**
-     * @language zh_CN
-     * 清除指定延迟后运行的函数。
-     * @param key {number} egret.setInterval所返回的索引
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/utils/setInterval.ts
-     */
-    function clearInterval(key: number): void;
-}
-declare module egret {
-    /**
-     * @language en_US
-     * Run the designated function in specified delay (in milliseconds).
-     * @param listener {Function} Listener function
-     * @param thisObject {any} this object
-     * @param delay {number} Delay time, in milliseconds
-     * @param ...args {any} Parameter list
-     * @returns {number} Return index which can be used for clearTimeout
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample extension/game/utils/setTimeout.ts
-     */
-    /**
-     * @language zh_CN
-     * 在指定的延迟（以毫秒为单位）后运行指定的函数。
-     * @param listener {Function} 侦听函数
-     * @param thisObject {any} this对象
-     * @param delay {number} 延迟时间，以毫秒为单位
-     * @param ...args {any} 参数列表
-     * @returns {number} 返回索引，可以用于 clearTimeout
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample extension/game/utils/setTimeout.ts
-     */
-    function setTimeout(listener: Function, thisObject: any, delay: number, ...args: any[]): number;
-    /**
-     * @language en_US
-     * Function run after the specified delay is cleared.
-     * @param key {number} Index that egret.setTimeout returns
-     * @version Egret 2.4
-     * @platform Web,Native
-     */
-    /**
-     * @language zh_CN
-     * 清除指定延迟后运行的函数。
-     * @param key {number} egret.setTimeout所返回的索引
-     * @version Egret 2.4
-     * @platform Web,Native
-     */
-    function clearTimeout(key: number): void;
 }

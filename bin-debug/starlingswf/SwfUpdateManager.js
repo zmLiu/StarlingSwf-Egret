@@ -1,3 +1,6 @@
+var __reflect = (this && this.__reflect) || function (p, c, t) {
+    p.__class__ = c, t ? t.push(c) : t = [c], p.__types__ = p.__types__ ? t.concat(p.__types__) : t;
+};
 /**
  * Created by zmliu on 14-5-11.
  */
@@ -7,7 +10,6 @@ var starlingswf;
     var SwfUpdateManager = (function () {
         function SwfUpdateManager() {
         }
-        var d = __define,c=SwfUpdateManager;p=c.prototype;
         SwfUpdateManager.createSwfUpdateManager = function (fps) {
             var updateManager = new SwfUpdateManager();
             updateManager._animations = [];
@@ -18,17 +20,17 @@ var starlingswf;
             egret.Ticker.getInstance().register(updateManager.update, updateManager);
             return updateManager;
         };
-        p.setFps = function (fps) {
+        SwfUpdateManager.prototype.setFps = function (fps) {
             this._fps = fps;
             this._fpsTime = 1000 / fps;
         };
-        p.addSwfAnimation = function (animation) {
+        SwfUpdateManager.prototype.addSwfAnimation = function (animation) {
             this._addQueue.push(animation);
         };
-        p.removeSwfAnimation = function (animation) {
+        SwfUpdateManager.prototype.removeSwfAnimation = function (animation) {
             this._removeQueue.push(animation);
         };
-        p.updateAdd = function () {
+        SwfUpdateManager.prototype.updateAdd = function () {
             var len = this._addQueue.length;
             var index;
             var animation;
@@ -40,7 +42,7 @@ var starlingswf;
                 }
             }
         };
-        p.updateRemove = function () {
+        SwfUpdateManager.prototype.updateRemove = function () {
             var len = this._removeQueue.length;
             var index;
             var animation;
@@ -52,7 +54,7 @@ var starlingswf;
                 }
             }
         };
-        p.update = function (time) {
+        SwfUpdateManager.prototype.update = function (time) {
             this._currentTime += time;
             if (this._currentTime < this._fpsTime) {
                 return;
@@ -69,7 +71,8 @@ var starlingswf;
             }
         };
         return SwfUpdateManager;
-    })();
+    }());
     starlingswf.SwfUpdateManager = SwfUpdateManager;
-    egret.registerClass(SwfUpdateManager,"starlingswf.SwfUpdateManager");
+    __reflect(SwfUpdateManager.prototype, "starlingswf.SwfUpdateManager");
 })(starlingswf || (starlingswf = {}));
+//# sourceMappingURL=SwfUpdateManager.js.map

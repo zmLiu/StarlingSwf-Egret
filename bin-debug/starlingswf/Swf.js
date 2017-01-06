@@ -1,3 +1,6 @@
+var __reflect = (this && this.__reflect) || function (p, c, t) {
+    p.__class__ = c, t ? t.push(c) : t = [c], p.__types__ = p.__types__ ? t.concat(p.__types__) : t;
+};
 /**
  * Created by zmliu on 14-5-11.
  */
@@ -7,10 +10,9 @@ var starlingswf;
      * Swf文档类
      * */
     var Swf = (function () {
-        function Swf(swfData, assetManager, fps) {
+        function Swf(swfData, fps) {
             if (fps === void 0) { fps = 24; }
             this._swfData = swfData;
-            this._assetManager = assetManager;
             this._createDisplayFuns = new Object();
             this._createDisplayFuns[Swf.dataKey_Sprite] = this.createSprite;
             this._createDisplayFuns[Swf.dataKey_MovieClip] = this.createMovie;
@@ -20,8 +22,7 @@ var starlingswf;
             this._createDisplayFuns[Swf.dataKey_TextField] = this.createTextField;
             this.swfUpdateManager = starlingswf.SwfUpdateManager.createSwfUpdateManager(fps);
         }
-        var d = __define,c=Swf;p=c.prototype;
-        p.createSprite = function (name, data, sprData) {
+        Swf.prototype.createSprite = function (name, data, sprData) {
             if (data === void 0) { data = null; }
             if (sprData === void 0) { sprData = null; }
             if (sprData == null) {
@@ -56,7 +57,7 @@ var starlingswf;
             }
             return sprite;
         };
-        p.createMovie = function (name, data) {
+        Swf.prototype.createMovie = function (name, data) {
             if (data === void 0) { data = null; }
             var movieClipData = this._swfData[Swf.dataKey_MovieClip][name];
             var objectCountData = movieClipData["objCount"];
@@ -85,10 +86,11 @@ var starlingswf;
             }
             return mc;
         };
-        p.createImage = function (name, data) {
+        Swf.prototype.createImage = function (name, data) {
             if (data === void 0) { data = null; }
             var imageData = this._swfData[Swf.dataKey_Image][name];
-            var bitmap = this._assetManager.createBitmap(name);
+            var bitmap = new egret.Bitmap();
+            bitmap.texture = RES.getRes(name);
             bitmap.anchorOffsetX = imageData[0];
             bitmap.anchorOffsetY = imageData[1];
             if (data != null) {
@@ -96,10 +98,11 @@ var starlingswf;
             }
             return bitmap;
         };
-        p.createS9Image = function (name, data) {
+        Swf.prototype.createS9Image = function (name, data) {
             if (data === void 0) { data = null; }
             var scale9Data = this._swfData[Swf.dataKey_Scale9][name];
-            var bitmap = this._assetManager.createBitmap(name);
+            var bitmap = new egret.Bitmap();
+            bitmap.texture = RES.getRes(name);
             bitmap.scale9Grid = new egret.Rectangle(scale9Data[0], scale9Data[1], scale9Data[2], scale9Data[3]);
             if (data != null) {
                 bitmap.width = data[10];
@@ -108,9 +111,10 @@ var starlingswf;
             }
             return bitmap;
         };
-        p.createShapeImage = function (name, data) {
+        Swf.prototype.createShapeImage = function (name, data) {
             if (data === void 0) { data = null; }
-            var bitmap = this._assetManager.createBitmap(name);
+            var bitmap = new egret.Bitmap();
+            bitmap.texture = RES.getRes(name);
             bitmap.fillMode = egret.BitmapFillMode.REPEAT;
             if (data != null) {
                 bitmap.width = data[10];
@@ -119,7 +123,7 @@ var starlingswf;
             }
             return bitmap;
         };
-        p.createTextField = function (name, data) {
+        Swf.prototype.createTextField = function (name, data) {
             if (data === void 0) { data = null; }
             var textfield = new egret.TextField();
             if (data != null) {
@@ -136,17 +140,18 @@ var starlingswf;
             }
             return textfield;
         };
-        Swf.dataKey_Sprite = "spr";
-        Swf.dataKey_Image = "img";
-        Swf.dataKey_MovieClip = "mc";
-        Swf.dataKey_TextField = "text";
-        Swf.dataKey_Button = "btn";
-        Swf.dataKey_Scale9 = "s9";
-        Swf.dataKey_ShapeImg = "shapeImg";
-        Swf.dataKey_Component = "comp";
-        Swf.dataKey_Particle = "particle";
         return Swf;
-    })();
+    }());
+    Swf.dataKey_Sprite = "spr";
+    Swf.dataKey_Image = "img";
+    Swf.dataKey_MovieClip = "mc";
+    Swf.dataKey_TextField = "text";
+    Swf.dataKey_Button = "btn";
+    Swf.dataKey_Scale9 = "s9";
+    Swf.dataKey_ShapeImg = "shapeImg";
+    Swf.dataKey_Component = "comp";
+    Swf.dataKey_Particle = "particle";
     starlingswf.Swf = Swf;
-    egret.registerClass(Swf,"starlingswf.Swf");
+    __reflect(Swf.prototype, "starlingswf.Swf");
 })(starlingswf || (starlingswf = {}));
+//# sourceMappingURL=Swf.js.map

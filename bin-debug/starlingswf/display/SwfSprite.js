@@ -1,3 +1,11 @@
+var __reflect = (this && this.__reflect) || function (p, c, t) {
+    p.__class__ = c, t ? t.push(c) : t = [c], p.__types__ = p.__types__ ? t.concat(p.__types__) : t;
+};
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 /**
  * Created by zmliu on 14-5-11.
  */
@@ -7,23 +15,23 @@ var starlingswf;
     var SwfSprite = (function (_super) {
         __extends(SwfSprite, _super);
         function SwfSprite() {
-            _super.apply(this, arguments);
+            return _super.apply(this, arguments) || this;
         }
-        var d = __define,c=SwfSprite;p=c.prototype;
-        p.getTextField = function (name) {
+        SwfSprite.prototype.getTextField = function (name) {
             return this.getChildByName(name);
         };
-        p.getMovie = function (name) {
+        SwfSprite.prototype.getMovie = function (name) {
             return this.getChildByName(name);
         };
-        p.getSprite = function (name) {
+        SwfSprite.prototype.getSprite = function (name) {
             return this.getChildByName(name);
         };
-        p.getImage = function (name) {
+        SwfSprite.prototype.getImage = function (name) {
             return this.getChildByName(name);
         };
         return SwfSprite;
-    })(egret.DisplayObjectContainer);
+    }(egret.DisplayObjectContainer));
     starlingswf.SwfSprite = SwfSprite;
-    egret.registerClass(SwfSprite,"starlingswf.SwfSprite");
+    __reflect(SwfSprite.prototype, "starlingswf.SwfSprite");
 })(starlingswf || (starlingswf = {}));
+//# sourceMappingURL=SwfSprite.js.map

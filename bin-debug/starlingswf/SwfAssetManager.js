@@ -1,3 +1,6 @@
+var __reflect = (this && this.__reflect) || function (p, c, t) {
+    p.__class__ = c, t ? t.push(c) : t = [c], p.__types__ = p.__types__ ? t.concat(p.__types__) : t;
+};
 /**
  * Created by zmliu on 14-5-11.
  */
@@ -11,14 +14,13 @@ var starlingswf;
             this._sheets = {};
             this._textures = {};
         }
-        var d = __define,c=SwfAssetManager;p=c.prototype;
-        p.addSpriteSheet = function (name, spriteSheep) {
+        SwfAssetManager.prototype.addSpriteSheet = function (name, spriteSheep) {
             this._sheets[name] = spriteSheep;
         };
-        p.addTexture = function (name, texture) {
+        SwfAssetManager.prototype.addTexture = function (name, texture) {
             this._textures[name] = texture;
         };
-        p.createBitmap = function (name) {
+        SwfAssetManager.prototype.createBitmap = function (name) {
             var sheet;
             var bitmap;
             var texture;
@@ -38,7 +40,8 @@ var starlingswf;
             return bitmap;
         };
         return SwfAssetManager;
-    })();
+    }());
     starlingswf.SwfAssetManager = SwfAssetManager;
-    egret.registerClass(SwfAssetManager,"starlingswf.SwfAssetManager");
+    __reflect(SwfAssetManager.prototype, "starlingswf.SwfAssetManager");
 })(starlingswf || (starlingswf = {}));
+//# sourceMappingURL=SwfAssetManager.js.map

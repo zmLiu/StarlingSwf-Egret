@@ -22,14 +22,11 @@ module starlingswf{
 
         //swf数据
         private _swfData:Object;
-        //swf资源
-        private _assetManager:starlingswf.SwfAssetManager;
         //动画更新器
         public swfUpdateManager:starlingswf.SwfUpdateManager;
 
-        constructor(swfData:Object,assetManager:starlingswf.SwfAssetManager,fps:number = 24){
+        constructor(swfData:Object,fps:number = 24){
             this._swfData = swfData;
-            this._assetManager = assetManager;
 
             this._createDisplayFuns = new Object();
             this._createDisplayFuns[Swf.dataKey_Sprite] = this.createSprite;
@@ -117,7 +114,8 @@ module starlingswf{
         public createImage(name:string,data:any[] = null):egret.Bitmap{
             var imageData:number[] = this._swfData[Swf.dataKey_Image][name];
 
-            var bitmap:egret.Bitmap = this._assetManager.createBitmap(name);
+            var bitmap:egret.Bitmap = new egret.Bitmap();
+            bitmap.texture = RES.getRes(name);
 
             bitmap.anchorOffsetX = imageData[0];
             bitmap.anchorOffsetY = imageData[1];
@@ -132,7 +130,8 @@ module starlingswf{
         public createS9Image(name:string,data:any[] = null):egret.Bitmap{
             var scale9Data:any[] = this._swfData[Swf.dataKey_Scale9][name];
 
-            var bitmap:egret.Bitmap = this._assetManager.createBitmap(name);
+            var bitmap:egret.Bitmap = new egret.Bitmap();
+            bitmap.texture = RES.getRes(name);
             bitmap.scale9Grid = new egret.Rectangle(scale9Data[0],scale9Data[1],scale9Data[2],scale9Data[3]);
 
             if(data != null){
@@ -145,7 +144,9 @@ module starlingswf{
         }
 
         public createShapeImage(name:string,data:any[] = null):egret.Bitmap{
-            var bitmap:egret.Bitmap = this._assetManager.createBitmap(name);
+            var bitmap:egret.Bitmap = new egret.Bitmap();
+            bitmap.texture = RES.getRes(name);
+            
             bitmap.fillMode = egret.BitmapFillMode.REPEAT;
             if(data != null){
                 bitmap.width = <number>data[10];

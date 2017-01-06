@@ -64,9 +64,9 @@ module starlingswf{
 
         private __frameInfos:any[];
         public setCurrentFrame(frame:number):void{
-//            dirty hack this.removeChildren();
-            this.removeChildren();
-//            this._children.length = 0;
+            //dirty hack this.removeChildren();
+            // this.$children.length = 0;
+            this.removeAllChilds();
 
             this._currentFrame = frame;
             this.__frameInfos = this._frames[this._currentFrame];
@@ -81,16 +81,16 @@ module starlingswf{
                 useIndex = data[10];
                 display = this._displayObjects[data[0]][useIndex];
 
-                display.skewX = data[6];
-                display.skewY = data[7];
-                display.alpha = data[8];
+                display.$setSkewX(data[6]);
+                display.$setSkewY(data[7]);;
+                display.$setAlpha(data[8]);
                 display.name = data[9];
 
 //                if(data[1] == Swf.dataKey_Particle){
 //                    display["setPostion"](data[2],data[3]);
 //                }else{
-                    display.x = data[2];
-                    display.y = data[3];
+                    display.$setX(data[2]);
+                    display.$setY(data[3]);
 //                }
 
                 switch(data[1]){
@@ -120,15 +120,16 @@ module starlingswf{
                         starlingswf.SwfBlendMode.setBlendMode(textfield,data[20]);
                         break;
                     default:
-                        display.scaleX = data[4];
-                        display.scaleY = data[5];
+                        display.$setScaleX(data[4]);
+                        display.$setScaleY(data[5]);
                         starlingswf.SwfBlendMode.setBlendMode(display,data[11]);
                         break;
                 }
+                
+                this.$doAddChild(display,length,false);
 
-                this.addChild(display);
-//                this._children.push(display);
-                display.parent = this;
+                // this.$children.push(display);
+                // display.$parent = this;
             }
 
             if(this._frameEvents != null && this._frameEvents[this._currentFrame] != null){
@@ -271,6 +272,14 @@ module starlingswf{
         public removeEventListener(type:string, listener:Function,thisObject:any,useCapture:boolean = false):void{
             super.removeEventListener(type,listener,thisObject,useCapture);
             this._hasCompleteListener = this.hasEventListener(egret.Event.COMPLETE);
+        }
+
+
+        private removeAllChilds():void{
+            let children = this.$children;
+            for (let i: number = children.length - 1; i >= 0; i--) {
+                this.$doRemoveChild(i,false);
+            }
         }
     }
 }

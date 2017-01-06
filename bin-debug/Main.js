@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  Copyright (c) 2014-present, Egret Technology.
 //  All rights reserved.
 //  Redistribution and use in source and binary forms, with or without
 //  modification, are permitted provided that the following conditions are met:
@@ -26,95 +26,151 @@
 //  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 //////////////////////////////////////////////////////////////////////////////////////
+var __reflect = (this && this.__reflect) || function (p, c, t) {
+    p.__class__ = c, t ? t.push(c) : t = [c], p.__types__ = p.__types__ ? t.concat(p.__types__) : t;
+};
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var Main = (function (_super) {
     __extends(Main, _super);
     function Main() {
-        _super.call(this);
-        this.addEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
+        var _this = _super.call(this) || this;
+        _this.addEventListener(egret.Event.ADDED_TO_STAGE, _this.onAddToStage, _this);
+        return _this;
     }
-    var d = __define,c=Main;p=c.prototype;
-    p.onAddToStage = function (event) {
-        //inject the custom material parser
-        //注入自定义的素材解析器
-        egret.gui.mapClass("egret.gui.IAssetAdapter", AssetAdapter);
-        egret.gui.mapClass("egret.gui.IThemeAdapter", ThemeAdapter);
-        //Config loading process interface
+    Main.prototype.onAddToStage = function (event) {
         //设置加载进度界面
+        //Config to load process interface
         this.loadingView = new LoadingUI();
         this.stage.addChild(this.loadingView);
-        // initialize the Resource loading library
         //初始化Resource资源加载库
+        //initiate Resource loading library
         RES.addEventListener(RES.ResourceEvent.CONFIG_COMPLETE, this.onConfigComplete, this);
         RES.loadConfig("resource/default.res.json", "resource/");
     };
     /**
      * 配置文件加载完成,开始预加载preload资源组。
-     * Loading of configuration file is complete, start to pre-load the preload resource group
+     * configuration file loading is completed, start to pre-load the preload resource group
      */
-    p.onConfigComplete = function (event) {
+    Main.prototype.onConfigComplete = function (event) {
         RES.removeEventListener(RES.ResourceEvent.CONFIG_COMPLETE, this.onConfigComplete, this);
-        // load skin theme configuration file, you can manually modify the file. And replace the default skin.
-        //加载皮肤主题配置文件,可以手动修改这个文件。替换默认皮肤。
-        egret.gui.Theme.load("resource/default.thm.json");
         RES.addEventListener(RES.ResourceEvent.GROUP_COMPLETE, this.onResourceLoadComplete, this);
         RES.addEventListener(RES.ResourceEvent.GROUP_LOAD_ERROR, this.onResourceLoadError, this);
         RES.addEventListener(RES.ResourceEvent.GROUP_PROGRESS, this.onResourceProgress, this);
+        RES.addEventListener(RES.ResourceEvent.ITEM_LOAD_ERROR, this.onItemLoadError, this);
         RES.loadGroup("preload");
     };
     /**
      * preload资源组加载完成
-     * preload resource group is loaded
+     * Preload resource group is loaded
      */
-    p.onResourceLoadComplete = function (event) {
+    Main.prototype.onResourceLoadComplete = function (event) {
         if (event.groupName == "preload") {
             this.stage.removeChild(this.loadingView);
             RES.removeEventListener(RES.ResourceEvent.GROUP_COMPLETE, this.onResourceLoadComplete, this);
             RES.removeEventListener(RES.ResourceEvent.GROUP_LOAD_ERROR, this.onResourceLoadError, this);
             RES.removeEventListener(RES.ResourceEvent.GROUP_PROGRESS, this.onResourceProgress, this);
-            this.createScene();
+            RES.removeEventListener(RES.ResourceEvent.ITEM_LOAD_ERROR, this.onItemLoadError, this);
+            this.createGameScene();
         }
     };
     /**
      * 资源组加载出错
-     * Resource group loading failed
+     *  The resource group loading failed
      */
-    p.onResourceLoadError = function (event) {
+    Main.prototype.onItemLoadError = function (event) {
+        console.warn("Url:" + event.resItem.url + " has failed to load");
+    };
+    /**
+     * 资源组加载出错
+     *  The resource group loading failed
+     */
+    Main.prototype.onResourceLoadError = function (event) {
         //TODO
         console.warn("Group:" + event.groupName + " has failed to load");
         //忽略加载失败的项目
-        //ignore loading failed projects
+        //Ignore the loading failed projects
         this.onResourceLoadComplete(event);
     };
     /**
      * preload资源组加载进度
-     * loading process of preload resource
+     * Loading process of preload resource group
      */
-    p.onResourceProgress = function (event) {
+    Main.prototype.onResourceProgress = function (event) {
         if (event.groupName == "preload") {
             this.loadingView.setProgress(event.itemsLoaded, event.itemsTotal);
         }
     };
     /**
-     * 创建场景界面
-     * Create scene interface
+     * 创建游戏场景
+     * Create a game scene
      */
-    p.createScene = function () {
-        //游戏场景层，游戏场景相关内容可以放在这里面。
-        //Game scene layer, the game content related to the scene can be placed inside this layer.
-        this.gameLayer = new egret.DisplayObjectContainer();
-        this.addChild(this.gameLayer);
-        var bitmap = new egret.Bitmap();
-        bitmap.texture = RES.getRes("bgImage");
-        this.gameLayer.addChild(bitmap);
-        //GUI的组件必须都在这个容器内部,UIStage会始终自动保持跟舞台一样大小。
-        //GUI components must be within the container, UIStage will always remain the same as stage size automatically.
-        this.guiLayer = new egret.gui.UIStage();
-        this.addChild(this.guiLayer);
-        var showcase = new Showcase();
-        //在GUI范围内一律使用addElement等方法替代addChild等方法。
-        //Within GUI scope, addChild methods should be replaced by addElement methods.
-        this.guiLayer.addElement(showcase);
+    Main.prototype.createGameScene = function () {
+        var swfData = RES.getRes("test_swf");
+        var spriteSheet = RES.getRes("test");
+        this.swf = new starlingswf.Swf(swfData, this.stage.frameRate);
+        this.test1();
+    };
+    /**
+     * Sprite测试
+     * */
+    Main.prototype.test1 = function () {
+        var sprite = this.swf.createSprite("spr_1");
+        this.addChild(sprite);
+    };
+    /**
+     * MovieClip测试
+     * */
+    Main.prototype.test2 = function () {
+        var mcNames = ["mc_lajiao", "mc_test1", "mc_Tain", "mc_Zombie_balloon", "mc_Zombie_dolphinrider", "mc_Zombie_gargantuar", "mc_Zombie_imp", "mc_Zombie_jackbox", "mc_Zombie_ladder", "mc_Zombie_polevaulter"];
+        for (var i = 0; i < 50; i++) {
+            var mcName = mcNames[Math.floor(Math.random() * mcNames.length)];
+            var mc = this.swf.createMovie(mcName);
+            mc.x = Math.random() * 480;
+            mc.y = Math.random() * 320;
+            this.addChild(mc);
+        }
+    };
+    /**
+     * 动画事件测试
+     * */
+    Main.prototype.test3 = function () {
+        var mc = this.swf.createMovie("mc_Tain");
+        mc.x = 480 / 2;
+        mc.y = 320 / 2;
+        mc.addEventListener(egret.Event.COMPLETE, this.mcComplete, mc);
+        mc.gotoAndPlay("walk");
+        this.addChild(mc);
+    };
+    Main.prototype.mcComplete = function (e) {
+        console.log("mcComplete");
+    };
+    /**
+     * 帧事件测试
+     * */
+    Main.prototype.test4 = function () {
+        var mc = this.swf.createMovie("mc_frame_event");
+        mc.addEventListener("@out", this.frameEventOut, mc);
+        mc.addEventListener("@in", this.frameEventIn, mc);
+        this.addChild(mc);
+    };
+    Main.prototype.frameEventOut = function (e) {
+        egret.log("@out");
+    };
+    Main.prototype.frameEventIn = function (e) {
+        egret.log("@in");
+    };
+    /**
+     * blendMode
+     * */
+    Main.prototype.test5 = function () {
+        var spr = this.swf.createSprite("spr_blendmode");
+        this.addChild(spr);
     };
     return Main;
-})(egret.DisplayObjectContainer);
-egret.registerClass(Main,"Main");
+}(egret.DisplayObjectContainer));
+__reflect(Main.prototype, "Main");
+//# sourceMappingURL=Main.js.map

@@ -20,90 +20,56 @@
         }
     </style>
 
-    <!--这个标签为通过egret提供的第三方库的方式生成的 javascript 文件-->
+    <!--这个标签为通过egret提供的第三方库的方式生成的 javascript 文件。删除 modules_files 标签后，库文件加载列表将不会变化，请谨慎操作！-->
     <!--modules_files_start-->
 	<script egret="lib" src="libs/modules/egret/egret.js" src-release="libs/modules/egret/egret.min.js"></script>
 	<script egret="lib" src="libs/modules/egret/egret.web.js" src-release="libs/modules/egret/egret.web.min.js"></script>
 	<script egret="lib" src="libs/modules/game/game.js" src-release="libs/modules/game/game.min.js"></script>
 	<script egret="lib" src="libs/modules/game/game.web.js" src-release="libs/modules/game/game.web.min.js"></script>
+	<script egret="lib" src="libs/modules/tween/tween.js" src-release="libs/modules/tween/tween.min.js"></script>
 	<script egret="lib" src="libs/modules/res/res.js" src-release="libs/modules/res/res.min.js"></script>
-	<script egret="lib" src="libs/modules/gui/gui.js" src-release="libs/modules/gui/gui.min.js"></script>
-	<script egret="lib" src="libs/modules/dragonbones/dragonbones.js" src-release="libs/modules/dragonbones/dragonbones.min.js"></script>
 	<!--modules_files_end-->
 
     <!--这个标签为不通过egret提供的第三方库的方式使用的 javascript 文件，请将这些文件放在libs下，但不要放在modules下面。-->
     <!--other_libs_files_start-->
     <!--other_libs_files_end-->
 
-    <!--这个标签会被替换为项目中所有的 javascript 文件-->
+    <!--这个标签会被替换为项目中所有的 javascript 文件。删除 game_files 标签后，项目文件加载列表将不会变化，请谨慎操作！-->
     <!--game_files_start-->
-	<script egret="game" src="bin-debug/AssetAdapter.js"></script>
-	<script egret="game" src="bin-debug/GameApp.js"></script>
-	<script egret="game" src="bin-debug/LoadingUI.js"></script>
-	<script egret="game" src="bin-debug/Main.js"></script>
-	<script egret="game" src="bin-debug/ThemeAdapter.js"></script>
-	<script egret="game" src="bin-debug/scene/Showcase.js"></script>
-	<script egret="game" src="bin-debug/skins/scene/ShowcaseSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/AlertSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/ButtonSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/CheckBoxSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/CloseButtonSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/DropDownListItemRendererSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/DropDownListOpenButtonSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/DropDownListSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/HScrollBarSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/HScrollBarThumbSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/HSliderSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/HSliderThumbSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/ItemRendererSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/ListSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/PanelSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/ProgressBarSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/RadioButtonSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/ScrollerSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/SkinnableContainerSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/SkinnableDataContainer.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/SliderThumbSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/TabBarButtonSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/TabBarSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/TextAreaSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/TextInputSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/TitleWindowSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/ToggleButtonSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/ToggleSwitchSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/TreeDisclosureButtonSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/TreeItemRendererSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/TreeSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/VScrollBarSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/VScrollBarThumbSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/VSliderSkin.g.js"></script>
-	<script egret="game" src="bin-debug/skins/simple/VSliderThumbSkin.g.js"></script>
-	<script egret="game" src="bin-debug/starlingswf/Swf.js"></script>
-	<script egret="game" src="bin-debug/starlingswf/SwfAssetManager.js"></script>
+	<script egret="game" src="bin-debug/starlingswf/display/SwfSprite.js"></script>
 	<script egret="game" src="bin-debug/starlingswf/SwfUpdateManager.js"></script>
 	<script egret="game" src="bin-debug/starlingswf/blendmode/SwfBlendMode.js"></script>
-	<script egret="game" src="bin-debug/starlingswf/display/ISwfAnimation.js"></script>
-	<script egret="game" src="bin-debug/starlingswf/display/SwfSprite.js"></script>
+	<script egret="game" src="bin-debug/LoadingUI.js"></script>
 	<script egret="game" src="bin-debug/starlingswf/display/SwfMovieClip.js"></script>
+	<script egret="game" src="bin-debug/starlingswf/SwfAssetManager.js"></script>
+	<script egret="game" src="bin-debug/starlingswf/Swf.js"></script>
+	<script egret="game" src="bin-debug/Main.js"></script>
+	<script egret="game" src="bin-debug/starlingswf/display/ISwfAnimation.js"></script>
 	<!--game_files_end-->
 </head>
 <body>
 
     <div style="margin: auto;width: 100%;height: 100%;" class="egret-player"
-         data-entry-class="GameApp"
+         data-entry-class="Main"
          data-orientation="auto"
-         data-scale-mode="showAll"
-         data-resolution-mode="retina"
+         data-scale-mode="noScale"
          data-frame-rate="30"
          data-content-width="480"
-         data-content-height="800"
+         data-content-height="320"
          data-show-paint-rect="false"
          data-multi-fingered="2"
-         data-show-fps="false" data-show-log="false"
-         data-log-filter="" data-show-fps-style="x:0,y:0,size:30,textColor:0x00c200,bgAlpha:0.9">
+         data-show-fps="true" data-show-log="false"
+         data-show-fps-style="x:0,y:0,size:12,textColor:0xffffff,bgAlpha:0.9">
     </div>
     <script>
-        egret.runEgret();
+        /**
+         * {
+         * "renderMode":, //引擎渲染模式，"canvas" 或者 "webgl"
+         * "audioType": "" //使用的音频类型，0:默认，1:qq audio，2:web audio，3:audio
+         * "antialias": //WebGL模式下是否开启抗锯齿，true:开启，false:关闭，默认为false
+         * }
+         **/
+        egret.runEgret({renderMode:"webgl", audioType:0});
     </script>
 </body>
 </html>

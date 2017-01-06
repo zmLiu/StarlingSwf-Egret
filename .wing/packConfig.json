@@ -1,0 +1,8 @@
+{
+    "maxImageWidth": 1024,
+    "maxImageHeight": 1024,
+    "defaultResPath": "/Users/zmliu1/Downloads/TestEgret/resource/default.res.json",
+    "packGroups": {
+        "preload": true
+    }
+}

@@ -1,3 +1,6 @@
+var __reflect = (this && this.__reflect) || function (p, c, t) {
+    p.__class__ = c, t ? t.push(c) : t = [c], p.__types__ = p.__types__ ? t.concat(p.__types__) : t;
+};
 /**
  * Created by zmliu on 14-9-25.
  */
@@ -6,18 +9,18 @@ var starlingswf;
     var SwfBlendMode = (function () {
         function SwfBlendMode() {
         }
-        var d = __define,c=SwfBlendMode;p=c.prototype;
         SwfBlendMode.setBlendMode = function (display, blendMode) {
             if (SwfBlendMode.modes[blendMode]) {
                 display.blendMode = blendMode;
             }
         };
-        SwfBlendMode.modes = {
-            "normal": true,
-            "add": true
-        };
         return SwfBlendMode;
-    })();
+    }());
+    SwfBlendMode.modes = {
+        "normal": true,
+        "add": true
+    };
     starlingswf.SwfBlendMode = SwfBlendMode;
-    egret.registerClass(SwfBlendMode,"starlingswf.SwfBlendMode");
+    __reflect(SwfBlendMode.prototype, "starlingswf.SwfBlendMode");
 })(starlingswf || (starlingswf = {}));
+//# sourceMappingURL=SwfBlendMode.js.map
