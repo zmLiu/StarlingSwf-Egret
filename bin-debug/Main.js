@@ -110,7 +110,6 @@ var Main = (function (_super) {
      */
     Main.prototype.createGameScene = function () {
         var swfData = RES.getRes("test_swf");
-        var spriteSheet = RES.getRes("test");
         this.swf = new starlingswf.Swf(swfData, this.stage.frameRate);
         this.test1();
     };

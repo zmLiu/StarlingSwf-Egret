@@ -7,5 +7,8 @@ module starlingswf{
      * */
     export interface ISwfAnimation{
         update():void;
+        getStage():egret.Stage;
     }
+
+
 }

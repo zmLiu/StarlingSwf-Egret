@@ -78,8 +78,10 @@ module starlingswf{
             this.updateAdd();
 
             var len:number = this._animations.length;
+            var ani:starlingswf.ISwfAnimation;
             for(var i:number = 0; i < len; i++){
-                this._animations[i].update();
+                ani = this._animations[i];
+                if(ani.getStage() != null) ani.update();
             }
         }
     }

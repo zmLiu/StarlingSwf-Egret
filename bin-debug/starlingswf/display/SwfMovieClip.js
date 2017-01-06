@@ -31,26 +31,31 @@ var starlingswf;
             _this.play();
             return _this;
         }
+        SwfMovieClip.prototype.getStage = function () {
+            return this.stage;
+        };
         SwfMovieClip.prototype.update = function () {
             if (!this._isPlay)
                 return;
-            if (this._currentFrame > this._endFrame) {
+            if (this._currentFrame >= this._endFrame) {
                 var isReturn = false;
                 if (!this.loop || this._startFrame == this._endFrame) {
                     if (this._ownerSwf)
                         this.stop(false);
                     isReturn = true;
                 }
+                if (this._completeFunction)
+                    this._completeFunction(this);
                 if (this._hasCompleteListener)
                     this.dispatchEventWith(egret.Event.COMPLETE);
                 if (isReturn)
                     return;
-                this.setCurrentFrame(this._startFrame);
+                this._currentFrame = this._startFrame;
             }
             else {
-                this.setCurrentFrame(this._currentFrame);
-                this._currentFrame += 1;
+                this._currentFrame++;
             }
+            this.setCurrentFrame(this._currentFrame);
         };
         SwfMovieClip.prototype.setCurrentFrame = function (frame) {
             //dirty hack this.removeChildren();

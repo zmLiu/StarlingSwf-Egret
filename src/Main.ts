@@ -119,12 +119,8 @@ class Main extends egret.DisplayObjectContainer {
      * Create a game scene
      */
     private createGameScene():void {
-
         var swfData:Object = RES.getRes("test_swf");
-        var spriteSheet:egret.SpriteSheet = RES.getRes("test");
-
         this.swf = new starlingswf.Swf(swfData,this.stage.frameRate);
-
         this.test1();
     }
 

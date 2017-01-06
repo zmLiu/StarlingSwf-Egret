@@ -66,8 +66,11 @@ var starlingswf;
             this.updateRemove();
             this.updateAdd();
             var len = this._animations.length;
+            var ani;
             for (var i = 0; i < len; i++) {
-                this._animations[i].update();
+                ani = this._animations[i];
+                if (ani.getStage() != null)
+                    ani.update();
             }
         };
         return SwfUpdateManager;

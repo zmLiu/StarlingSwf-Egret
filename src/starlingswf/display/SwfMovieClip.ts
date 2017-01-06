@@ -39,27 +39,31 @@ module starlingswf{
 
         }
 
+        public getStage():egret.Stage{
+            return this.stage;
+        }
+
         public update():void {
             if (!this._isPlay) return;
-
-            if(this._currentFrame > this._endFrame){
-
-                var isReturn:boolean = false;
-
-                if(!this.loop || this._startFrame == this._endFrame){//只有一帧就不要循环下去了
-                    if(this._ownerSwf) this.stop(false);
-                    isReturn = true;
-                }
-
-                if(this._hasCompleteListener) this.dispatchEventWith(egret.Event.COMPLETE);
-
-                if(isReturn) return;
-
-                this.setCurrentFrame(this._startFrame);
-            }else{
-                this.setCurrentFrame(this._currentFrame);
-                this._currentFrame += 1;
-            }
+			
+			if(this._currentFrame >= this._endFrame){
+				var isReturn:boolean = false;
+				
+				if(!this.loop || this._startFrame == this._endFrame){//只有一帧就不要循环下去了
+					if(this._ownerSwf) this.stop(false);
+					isReturn = true;
+				}
+				
+				if(this._completeFunction) this._completeFunction(this);
+				if(this._hasCompleteListener) this.dispatchEventWith(egret.Event.COMPLETE);
+				
+				if(isReturn) return;
+				
+				this._currentFrame = this._startFrame;
+			}else{
+				this._currentFrame ++
+			}
+            this.setCurrentFrame(this._currentFrame);
         }
 
         private __frameInfos:any[];
