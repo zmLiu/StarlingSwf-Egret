@@ -8,15 +8,15 @@ var game_file_list = [
 	"libs/modules/game/game.native.js",
 	"libs/modules/tween/tween.js",
 	"libs/modules/res/res.js",
-	"bin-debug/starlingswf/display/SwfSprite.js",
-	"bin-debug/starlingswf/blendmode/SwfBlendMode.js",
-	"bin-debug/starlingswf/display/SwfButton.js",
+	"bin-debug/lzm/starlingswf/display/SwfSprite.js",
+	"bin-debug/lzm/starlingswf/blendmode/SwfBlendMode.js",
+	"bin-debug/lzm/starlingswf/display/ISwfAnimation.js",
 	"bin-debug/LoadingUI.js",
-	"bin-debug/starlingswf/display/SwfMovieClip.js",
-	"bin-debug/starlingswf/SwfUpdateManager.js",
-	"bin-debug/starlingswf/Swf.js",
+	"bin-debug/lzm/starlingswf/display/SwfMovieClip.js",
+	"bin-debug/lzm/starlingswf/SwfUpdateManager.js",
+	"bin-debug/lzm/starlingswf/Swf.js",
 	"bin-debug/Main.js",
-	"bin-debug/starlingswf/display/ISwfAnimation.js",
+	"bin-debug/lzm/starlingswf/display/SwfButton.js",
 	//----auto game_file_list end----
 ];
 
