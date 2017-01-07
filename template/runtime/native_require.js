@@ -13,6 +13,7 @@ var game_file_list = [
 	"bin-debug/lzm/starlingswf/display/ISwfAnimation.js",
 	"bin-debug/LoadingUI.js",
 	"bin-debug/lzm/starlingswf/display/SwfMovieClip.js",
+	"bin-debug/lzm/utils/HttpClient.js",
 	"bin-debug/lzm/starlingswf/SwfUpdateManager.js",
 	"bin-debug/lzm/starlingswf/Swf.js",
 	"bin-debug/Main.js",

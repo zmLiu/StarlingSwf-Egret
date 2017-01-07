@@ -113,6 +113,9 @@ var Main = (function (_super) {
         var swfData = RES.getRes("test_swf");
         this.swf = new starlingswf.Swf(swfData, this.stage.frameRate);
         this.test1();
+        // lzm.HttpClient.send("http://192.168.2.188/aptana/rings_server/test.php",{'a':123,"b":321},(data:string)=>{
+        //     egret.log(data);
+        // },null,'post');
     };
     /**
      * Sprite测试
