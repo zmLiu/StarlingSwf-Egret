@@ -170,6 +170,13 @@ var Main = (function (_super) {
         var spr = this.swf.createSprite("spr_blendmode");
         this.addChild(spr);
     };
+    Main.prototype.testBtn = function () {
+        var btn = this.swf.createButton("btn_test1");
+        this.addChild(btn);
+        btn.addEventListener(starlingswf.SwfButton.onClick, function (evt) {
+            egret.log("onClick");
+        }, this);
+    };
     return Main;
 }(egret.DisplayObjectContainer));
 __reflect(Main.prototype, "Main");

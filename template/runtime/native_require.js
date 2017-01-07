@@ -10,6 +10,7 @@ var game_file_list = [
 	"libs/modules/res/res.js",
 	"bin-debug/starlingswf/display/SwfSprite.js",
 	"bin-debug/starlingswf/blendmode/SwfBlendMode.js",
+	"bin-debug/starlingswf/display/SwfButton.js",
 	"bin-debug/LoadingUI.js",
 	"bin-debug/starlingswf/display/SwfMovieClip.js",
 	"bin-debug/starlingswf/SwfUpdateManager.js",

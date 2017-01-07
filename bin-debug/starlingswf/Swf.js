@@ -16,6 +16,7 @@ var starlingswf;
             this._createDisplayFuns = new Object();
             this._createDisplayFuns[Swf.dataKey_Sprite] = this.createSprite;
             this._createDisplayFuns[Swf.dataKey_MovieClip] = this.createMovie;
+            this._createDisplayFuns[Swf.dataKey_Button] = this.createButton;
             this._createDisplayFuns[Swf.dataKey_Image] = this.createImage;
             this._createDisplayFuns[Swf.dataKey_Scale9] = this.createS9Image;
             this._createDisplayFuns[Swf.dataKey_ShapeImg] = this.createShapeImage;
@@ -85,6 +86,16 @@ var starlingswf;
                 starlingswf.SwfBlendMode.setBlendMode(mc, data[11]);
             }
             return mc;
+        };
+        /**
+         * 创建按钮
+         * */
+        Swf.prototype.createButton = function (name, data) {
+            if (data === void 0) { data = null; }
+            var sprData = this._swfData[Swf.dataKey_Button][name];
+            var skin = this.createSprite(null, null, sprData);
+            var button = new starlingswf.SwfButton(skin);
+            return button;
         };
         Swf.prototype.createImage = function (name, data) {
             if (data === void 0) { data = null; }

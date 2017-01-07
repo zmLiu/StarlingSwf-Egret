@@ -31,6 +31,7 @@ module starlingswf{
             this._createDisplayFuns = new Object();
             this._createDisplayFuns[Swf.dataKey_Sprite] = this.createSprite;
             this._createDisplayFuns[Swf.dataKey_MovieClip] = this.createMovie;
+            this._createDisplayFuns[Swf.dataKey_Button] = this.createButton;
             this._createDisplayFuns[Swf.dataKey_Image] = this.createImage;
             this._createDisplayFuns[Swf.dataKey_Scale9] = this.createS9Image;
             this._createDisplayFuns[Swf.dataKey_ShapeImg] = this.createShapeImage;
@@ -110,6 +111,16 @@ module starlingswf{
             return mc;
 
         }
+
+        /**
+		 * 创建按钮
+		 * */
+		public createButton(name:string,data:any[]=null):starlingswf.SwfButton{
+			var sprData:any[] = this._swfData[Swf.dataKey_Button][name];
+			var skin:SwfSprite = this.createSprite(null,null,sprData);
+			var button:starlingswf.SwfButton = new starlingswf.SwfButton(skin);
+            return button;
+		}
 
         public createImage(name:string,data:any[] = null):egret.Bitmap{
             var imageData:number[] = this._swfData[Swf.dataKey_Image][name];

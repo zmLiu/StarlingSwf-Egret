@@ -125,6 +125,8 @@ class Main extends egret.DisplayObjectContainer {
         this.test1();
     }
 
+    
+
     /**
      * Sprite测试
      * */
@@ -189,6 +191,15 @@ class Main extends egret.DisplayObjectContainer {
     private test5(){
         var spr:starlingswf.SwfSprite = this.swf.createSprite("spr_blendmode");
         this.addChild(spr);
+    }
+
+    private testBtn(){
+        var btn:starlingswf.SwfButton = this.swf.createButton("btn_test1");
+        this.addChild(btn);
+        
+        btn.addEventListener(starlingswf.SwfButton.onClick,( evt:egret.Event )=>{
+            egret.log("onClick");
+        },this)
     }
 }
 
