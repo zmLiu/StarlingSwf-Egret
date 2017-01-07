@@ -124,6 +124,8 @@ class Main extends egret.DisplayObjectContainer {
         this.swf = new starlingswf.Swf(swfData,this.stage.frameRate);
         this.test1();
 
+        // this.testSocket();
+
         // lzm.HttpClient.send("http://192.168.2.188/aptana/rings_server/test.php",{'a':123,"b":321},(data:string)=>{
         //     egret.log(data);
         // },null,'post');
@@ -204,6 +206,25 @@ class Main extends egret.DisplayObjectContainer {
         btn.addEventListener(starlingswf.SwfButton.onClick,( evt:egret.Event )=>{
             egret.log("onClick");
         },this)
+    }
+
+    private testSocket(){
+        var socket:lzm.JSONWebSocketClient = new lzm.JSONWebSocketClient("127.0.0.1",8501);
+
+        socket.onConnectCallBack = ()=>{
+            egret.log("链接成功");
+            socket.sendData({"a":"a","b":"b"});
+        }
+
+        socket.onDataCallBack = (data:Object)=>{
+            egret.log(data);
+        }
+
+        socket.onCloseCallBack = ()=>{
+             egret.log("链接关闭");
+        }
+
+        socket.connect(); 
     }
 }
 
