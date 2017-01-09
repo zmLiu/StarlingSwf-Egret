@@ -124,6 +124,8 @@ class Main extends egret.DisplayObjectContainer {
         this.swf = new starlingswf.Swf(swfData,this.stage.frameRate);
         this.test1();
 
+        // this.testAlert();
+
         // this.testSocket();
 
         // lzm.HttpClient.send("http://192.168.2.188/aptana/rings_server/test.php",{'a':123,"b":321},(data:string)=>{
@@ -229,6 +231,18 @@ class Main extends egret.DisplayObjectContainer {
         }
 
         socket.connect(); 
+    }
+
+    private testAlert(){
+        lzm.Alert.init(this.stage);
+
+        var shape:egret.Shape = new egret.Shape();
+        shape.graphics.beginFill(0xff00ff);
+        shape.graphics.drawRect(0,0,100,100);
+        shape.graphics.endFill();
+        
+        lzm.Alert.alert(shape);
+
     }
 }
 

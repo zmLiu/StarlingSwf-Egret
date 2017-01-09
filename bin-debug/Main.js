@@ -112,7 +112,8 @@ var Main = (function (_super) {
     Main.prototype.createGameScene = function () {
         var swfData = RES.getRes("test_swf");
         this.swf = new starlingswf.Swf(swfData, this.stage.frameRate);
-        this.test1();
+        // this.test1();
+        this.testAlert();
         // this.testSocket();
         // lzm.HttpClient.send("http://192.168.2.188/aptana/rings_server/test.php",{'a':123,"b":321},(data:string)=>{
         //     egret.log(data);
@@ -197,6 +198,14 @@ var Main = (function (_super) {
             egret.log("链接关闭");
         };
         socket.connect();
+    };
+    Main.prototype.testAlert = function () {
+        lzm.Alert.init(this.stage);
+        var shape = new egret.Shape();
+        shape.graphics.beginFill(0xff00ff);
+        shape.graphics.drawRect(0, 0, 100, 100);
+        shape.graphics.endFill();
+        lzm.Alert.alert(shape);
     };
     return Main;
 }(egret.DisplayObjectContainer));
