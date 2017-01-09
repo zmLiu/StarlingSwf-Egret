@@ -7,6 +7,7 @@ module lzm {
 
 		public isConnect:boolean = false;
 		public onConnectCallBack:Function;
+		public onIOErrorCallBack:Function;
 		public onCloseCallBack:Function;
 		public onDataCallBack:Function;
 
@@ -17,6 +18,7 @@ module lzm {
 			this.socket.addEventListener(egret.ProgressEvent.SOCKET_DATA, this.onReceiveMessage, this);
 			this.socket.addEventListener(egret.Event.CONNECT, this.onSocketOpen, this);
 			this.socket.addEventListener(egret.Event.CLOSE, this.onSocketClose, this);
+			this.socket.addEventListener(egret.IOErrorEvent.IO_ERROR, this.onSocketIOError, this);
 		}
 
 		public connect():void{
@@ -38,6 +40,9 @@ module lzm {
 		private onSocketClose(e:egret.Event):void {
 			this.isConnect = false;
 			if(this.onCloseCallBack != null) this.onCloseCallBack();
+		}
+		private onSocketIOError(e:egret.IOErrorEvent):void {
+			if(this.onIOErrorCallBack != null) this.onIOErrorCallBack();
 		}
 
 	}

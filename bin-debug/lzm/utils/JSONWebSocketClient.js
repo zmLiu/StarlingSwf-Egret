@@ -12,6 +12,7 @@ var lzm;
             this.socket.addEventListener(egret.ProgressEvent.SOCKET_DATA, this.onReceiveMessage, this);
             this.socket.addEventListener(egret.Event.CONNECT, this.onSocketOpen, this);
             this.socket.addEventListener(egret.Event.CLOSE, this.onSocketClose, this);
+            this.socket.addEventListener(egret.IOErrorEvent.IO_ERROR, this.onSocketIOError, this);
         }
         JSONWebSocketClient.prototype.connect = function () {
             this.socket.connect(this.host, this.port);
@@ -33,6 +34,10 @@ var lzm;
             this.isConnect = false;
             if (this.onCloseCallBack != null)
                 this.onCloseCallBack();
+        };
+        JSONWebSocketClient.prototype.onSocketIOError = function (e) {
+            if (this.onIOErrorCallBack != null)
+                this.onIOErrorCallBack();
         };
         return JSONWebSocketClient;
     }());

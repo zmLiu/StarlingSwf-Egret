@@ -216,6 +216,10 @@ class Main extends egret.DisplayObjectContainer {
             socket.sendData({"a":"a","b":"b"});
         }
 
+        socket.onIOErrorCallBack = ()=>{
+             egret.log("链接失败");
+        }
+
         socket.onDataCallBack = (data:Object)=>{
             egret.log(data);
         }

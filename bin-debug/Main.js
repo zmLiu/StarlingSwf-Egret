@@ -187,6 +187,9 @@ var Main = (function (_super) {
             egret.log("链接成功");
             socket.sendData({ "a": "a", "b": "b" });
         };
+        socket.onIOErrorCallBack = function () {
+            egret.log("链接失败");
+        };
         socket.onDataCallBack = function (data) {
             egret.log(data);
         };
