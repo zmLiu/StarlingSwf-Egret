@@ -15,23 +15,22 @@ var lzm;
             if (method === void 0) { method = "get"; }
             var request = new egret.HttpRequest();
             var parStr = lzm.HttpClient.getRequestPars(params);
-            var thisObj = lzm.HttpClient.send;
             var callback = function (e) {
-                request.removeEventListener(egret.Event.COMPLETE, callback, thisObj);
-                request.removeEventListener(egret.IOErrorEvent.IO_ERROR, timeout, thisObj);
+                request.removeEventListener(egret.Event.COMPLETE, callback, request);
+                request.removeEventListener(egret.IOErrorEvent.IO_ERROR, timeout, request);
                 if (completeFunction != null) {
                     completeFunction(request.response);
                 }
             };
             var timeout = function (e) {
-                request.removeEventListener(egret.Event.COMPLETE, callback, thisObj);
-                request.removeEventListener(egret.IOErrorEvent.IO_ERROR, timeout, thisObj);
+                request.removeEventListener(egret.Event.COMPLETE, callback, request);
+                request.removeEventListener(egret.IOErrorEvent.IO_ERROR, timeout, request);
                 if (timeoutFunction != null) {
                     timeoutFunction(request.response);
                 }
             };
-            request.addEventListener(egret.Event.COMPLETE, callback, this);
-            request.addEventListener(egret.IOErrorEvent.IO_ERROR, timeout, thisObj);
+            request.addEventListener(egret.Event.COMPLETE, callback, request);
+            request.addEventListener(egret.IOErrorEvent.IO_ERROR, timeout, request);
             request.responseType = egret.HttpResponseType.TEXT;
             if (method == "get") {
                 request.open(url + "?" + parStr, egret.HttpMethod.GET);
@@ -44,7 +43,7 @@ var lzm;
             }
         };
         HttpClient.getRequestPars = function (params) {
-            var pars = "?";
+            var pars = "";
             var k;
             for (k in params) {
                 pars += k + "=" + params[k] + "&";

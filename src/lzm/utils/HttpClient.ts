@@ -7,28 +7,25 @@ module lzm {
 		public static send(url:string,params:Object,completeFunction:Function=null,timeoutFunction:Function=null,method:String="get"):void{
 			var request:egret.HttpRequest = new egret.HttpRequest();
 			var parStr = lzm.HttpClient.getRequestPars(params);
-			
-			
-			var thisObj:Object = lzm.HttpClient.send;
 
 			var callback:Function = function(e:egret.Event):void{
-				request.removeEventListener(egret.Event.COMPLETE,callback,thisObj);
-				request.removeEventListener(egret.IOErrorEvent.IO_ERROR,timeout,thisObj);
+				request.removeEventListener(egret.Event.COMPLETE,callback,request);
+				request.removeEventListener(egret.IOErrorEvent.IO_ERROR,timeout,request);
 				if(completeFunction!=null){
 					completeFunction(request.response);
 				}
 			};
 			
 			var timeout:Function = function(e:egret.IOErrorEvent):void{
-				request.removeEventListener(egret.Event.COMPLETE,callback,thisObj);
-				request.removeEventListener(egret.IOErrorEvent.IO_ERROR,timeout,thisObj);
+				request.removeEventListener(egret.Event.COMPLETE,callback,request);
+				request.removeEventListener(egret.IOErrorEvent.IO_ERROR,timeout,request);
 				if(timeoutFunction != null){
 					timeoutFunction(request.response);
 				}
 			};
 			
-			request.addEventListener(egret.Event.COMPLETE,callback,this);
-			request.addEventListener(egret.IOErrorEvent.IO_ERROR,timeout,thisObj);
+			request.addEventListener(egret.Event.COMPLETE,callback,request);
+			request.addEventListener(egret.IOErrorEvent.IO_ERROR,timeout,request);
 			request.responseType = egret.HttpResponseType.TEXT;
 			if(method=="get"){
 				request.open(url + "?" + parStr,egret.HttpMethod.GET);
@@ -41,7 +38,7 @@ module lzm {
 		}
 		
 		static getRequestPars(params:Object):string{
-			var pars:string = "?";
+			var pars:string = "";
 			var k:string;
 			for (k in params){
 				pars += k+"="+params[k] + "&";
