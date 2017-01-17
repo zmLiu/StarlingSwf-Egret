@@ -33,6 +33,7 @@ module lzm {
         	lzm.Alert.background.graphics.drawRect(0,0, lzm.Alert.stageWidth, lzm.Alert.stageHeight);
         	lzm.Alert.background.graphics.endFill();
 			lzm.Alert.background.alpha = 0.5;
+			lzm.Alert.background.touchEnabled = true;
 		}
 
 		public static show(display:egret.DisplayObject):void{

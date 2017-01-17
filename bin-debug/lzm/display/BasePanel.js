@@ -21,7 +21,7 @@ var lzm;
         BasePanel.prototype.removeFromStage = function (e) {
         };
         BasePanel.prototype.gotoPanel = function (panel) {
-            this.stage.addChild(panel);
+            this.parent.addChild(panel);
             this.dispose();
         };
         BasePanel.prototype.dispose = function () {
@@ -32,7 +32,7 @@ var lzm;
             this.removeEventListener(egret.Event.REMOVED_FROM_STAGE, this.removeFromStage, this);
         };
         return BasePanel;
-    }(egret.DisplayObject));
+    }(egret.DisplayObjectContainer));
     lzm.BasePanel = BasePanel;
     __reflect(BasePanel.prototype, "lzm.BasePanel");
 })(lzm || (lzm = {}));

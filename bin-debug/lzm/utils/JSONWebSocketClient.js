@@ -39,6 +39,13 @@ var lzm;
             if (this.onIOErrorCallBack != null)
                 this.onIOErrorCallBack();
         };
+        JSONWebSocketClient.prototype.dispose = function () {
+            this.socket.close();
+            this.onConnectCallBack = null;
+            this.onIOErrorCallBack = null;
+            this.onCloseCallBack = null;
+            this.onDataCallBack = null;
+        };
         return JSONWebSocketClient;
     }());
     lzm.JSONWebSocketClient = JSONWebSocketClient;

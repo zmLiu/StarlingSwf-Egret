@@ -21,5 +21,9 @@ module starlingswf{
             return <egret.Bitmap>this.getChildByName(name);
         }
 
+        public getButton(name:string):starlingswf.SwfButton{
+            return <starlingswf.SwfButton>this.getChildByName(name);
+        }
+
     }
 }

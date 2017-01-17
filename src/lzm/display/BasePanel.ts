@@ -1,5 +1,5 @@
 module lzm {
-	export class BasePanel extends egret.DisplayObject {
+	export class BasePanel extends egret.DisplayObjectContainer {
 
 		public constructor() {
 			super();
@@ -17,7 +17,7 @@ module lzm {
 		}
 
 		public gotoPanel(panel:lzm.BasePanel){
-			this.stage.addChild(panel);
+			this.parent.addChild(panel);
 			this.dispose();
 		}
 

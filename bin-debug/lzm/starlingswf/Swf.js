@@ -44,6 +44,9 @@ var starlingswf;
                 display.name = objData[9];
                 display.x = objData[2];
                 display.y = objData[3];
+                if (objData[1] == Swf.dataKey_TextField) {
+                    display.y += 6;
+                }
                 if (objData[1] != Swf.dataKey_Scale9 && objData[1] != Swf.dataKey_ShapeImg) {
                     display.scaleX = objData[4];
                     display.scaleY = objData[5];
@@ -147,9 +150,19 @@ var starlingswf;
                 //textfield.italic = data[16];
                 //textfield.bold = data[17];
                 textfield.text = data[18];
+                this.createTextFieldFilter(textfield, data[19]);
                 starlingswf.SwfBlendMode.setBlendMode(textfield, data[20]);
             }
             return textfield;
+        };
+        /** 创建文本的滤镜 */
+        Swf.prototype.createTextFieldFilter = function (textField, filterObjects) {
+            for (var filterName in filterObjects) {
+                if (filterName == "flash.filters::GlowFilter") {
+                    textField.stroke = filterObjects[filterName]["strength"];
+                    textField.strokeColor = filterObjects[filterName]["color"];
+                }
+            }
         };
         return Swf;
     }());

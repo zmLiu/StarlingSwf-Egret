@@ -235,15 +235,15 @@ var starlingswf;
             var ls = this.labels();
             return !(ls.indexOf(label) == -1);
         };
-        SwfMovieClip.prototype.addEventListener = function (type, listener, thisObject, useCapture, priority) {
+        SwfMovieClip.prototype.addEventListener1 = function (type, listener, thisObject, useCapture, priority) {
             if (useCapture === void 0) { useCapture = false; }
             if (priority === void 0) { priority = 0; }
-            _super.prototype.addEventListener.call(this, type, listener, thisObject, useCapture, priority);
+            this.addEventListener(type, listener, thisObject, useCapture, priority);
             this._hasCompleteListener = this.hasEventListener(egret.Event.COMPLETE);
         };
-        SwfMovieClip.prototype.removeEventListener = function (type, listener, thisObject, useCapture) {
+        SwfMovieClip.prototype.removeEventListener1 = function (type, listener, thisObject, useCapture) {
             if (useCapture === void 0) { useCapture = false; }
-            _super.prototype.removeEventListener.call(this, type, listener, thisObject, useCapture);
+            this.removeEventListener(type, listener, thisObject, useCapture);
             this._hasCompleteListener = this.hasEventListener(egret.Event.COMPLETE);
         };
         SwfMovieClip.prototype.removeAllChilds = function () {

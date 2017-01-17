@@ -45,5 +45,13 @@ module lzm {
 			if(this.onIOErrorCallBack != null) this.onIOErrorCallBack();
 		}
 
+		public dispose(){
+			this.socket.close();
+			this.onConnectCallBack = null;
+			this.onIOErrorCallBack = null;
+			this.onCloseCallBack = null;
+			this.onDataCallBack = null;
+		}
+
 	}
 }

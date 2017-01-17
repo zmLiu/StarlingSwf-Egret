@@ -29,6 +29,9 @@ var starlingswf;
         SwfSprite.prototype.getImage = function (name) {
             return this.getChildByName(name);
         };
+        SwfSprite.prototype.getButton = function (name) {
+            return this.getChildByName(name);
+        };
         return SwfSprite;
     }(egret.DisplayObjectContainer));
     starlingswf.SwfSprite = SwfSprite;

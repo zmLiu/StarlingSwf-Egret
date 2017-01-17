@@ -12,6 +12,8 @@ var starlingswf;
         __extends(SwfButton, _super);
         function SwfButton(skin) {
             var _this = _super.call(this) || this;
+            _this.defScale = -1;
+            _this.skin = skin;
             _this.addChild(skin);
             _this.touchEnabled = true;
             _this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, _this.mouseDown, _this);
@@ -20,15 +22,27 @@ var starlingswf;
             return _this;
         }
         SwfButton.prototype.mouseDown = function (evt) {
-            this.scaleX = 0.9;
-            this.scaleY = 0.9;
+            if (this.defScale == -1) {
+                this.defScale = this.scaleX;
+            }
+            this.scaleX = 0.9 * this.defScale;
+            this.scaleY = 0.9 * this.defScale;
         };
         SwfButton.prototype.mouseUp = function (evt) {
-            this.scaleX = 1;
-            this.scaleY = 1;
+            this.scaleX = this.defScale;
+            this.scaleY = this.defScale;
         };
         SwfButton.prototype.mouseClick = function (evt) {
             this.dispatchEventWith(starlingswf.SwfButton.onClick);
+        };
+        SwfButton.prototype.setEnable = function (val) {
+            this.touchEnabled = val;
+            if (val) {
+                this.alpha = 1;
+            }
+            else {
+                this.alpha = 0.5;
+            }
         };
         SwfButton.prototype.dispose = function () {
             this.removeEventListener(egret.TouchEvent.TOUCH_BEGIN, this.mouseDown, this);
