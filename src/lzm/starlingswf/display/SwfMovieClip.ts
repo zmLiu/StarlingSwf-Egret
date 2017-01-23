@@ -40,7 +40,10 @@ module starlingswf{
         }
 
         public getStage():egret.Stage{
-            return this.stage;
+            if(this.visible){
+                return this.stage;
+            }
+            return null;
         }
 
         public update():void {

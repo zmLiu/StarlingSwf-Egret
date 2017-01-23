@@ -18,6 +18,7 @@ var starlingswf;
             _this.touchEnabled = true;
             _this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, _this.mouseDown, _this);
             _this.addEventListener(egret.TouchEvent.TOUCH_END, _this.mouseUp, _this);
+            _this.addEventListener(egret.TouchEvent.TOUCH_RELEASE_OUTSIDE, _this.mouseUp, _this);
             _this.addEventListener(egret.TouchEvent.TOUCH_TAP, _this.mouseClick, _this);
             return _this;
         }
@@ -29,6 +30,8 @@ var starlingswf;
             this.scaleY = 0.9 * this.defScale;
         };
         SwfButton.prototype.mouseUp = function (evt) {
+            if (this.defScale == -1)
+                return;
             this.scaleX = this.defScale;
             this.scaleY = this.defScale;
         };
@@ -47,6 +50,7 @@ var starlingswf;
         SwfButton.prototype.dispose = function () {
             this.removeEventListener(egret.TouchEvent.TOUCH_BEGIN, this.mouseDown, this);
             this.removeEventListener(egret.TouchEvent.TOUCH_END, this.mouseUp, this);
+            this.removeEventListener(egret.TouchEvent.TOUCH_RELEASE_OUTSIDE, this.mouseUp, this);
             this.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.mouseClick, this);
         };
         return SwfButton;

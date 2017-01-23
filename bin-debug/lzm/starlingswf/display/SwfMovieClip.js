@@ -32,7 +32,10 @@ var starlingswf;
             return _this;
         }
         SwfMovieClip.prototype.getStage = function () {
-            return this.stage;
+            if (this.visible) {
+                return this.stage;
+            }
+            return null;
         };
         SwfMovieClip.prototype.update = function () {
             if (!this._isPlay)

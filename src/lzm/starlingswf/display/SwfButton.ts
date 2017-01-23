@@ -13,8 +13,8 @@ module starlingswf {
 			this.touchEnabled = true;
 			this.addEventListener(egret.TouchEvent.TOUCH_BEGIN,this.mouseDown,this);
 			this.addEventListener(egret.TouchEvent.TOUCH_END,this.mouseUp,this);
+			this.addEventListener(egret.TouchEvent.TOUCH_RELEASE_OUTSIDE,this.mouseUp,this);
 			this.addEventListener(egret.TouchEvent.TOUCH_TAP,this.mouseClick,this);
-
 		}
 
 		public mouseDown(evt:egret.TouchEvent):void{
@@ -26,6 +26,7 @@ module starlingswf {
 		}
 
 		public mouseUp(evt:egret.TouchEvent):void{
+			if(this.defScale == -1) return;
 			this.scaleX = this.defScale;
 			this.scaleY = this.defScale;
 		}
@@ -46,10 +47,8 @@ module starlingswf {
 		public dispose(){
 			this.removeEventListener(egret.TouchEvent.TOUCH_BEGIN,this.mouseDown,this);
 			this.removeEventListener(egret.TouchEvent.TOUCH_END,this.mouseUp,this);
+			this.removeEventListener(egret.TouchEvent.TOUCH_RELEASE_OUTSIDE,this.mouseUp,this);
 			this.removeEventListener(egret.TouchEvent.TOUCH_TAP,this.mouseClick,this);
 		}
-
-
-
 	}
 }
