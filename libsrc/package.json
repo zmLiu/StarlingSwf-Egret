@@ -1,0 +1,12 @@
+{
+	"name": "egret",
+	"version": "4.0.1",
+	"modules": [
+		{
+			"name": "starlingSwf",
+			"description": "starlingSwf",
+			"files": [],
+			"root": "src"
+		}
+	]
+}
