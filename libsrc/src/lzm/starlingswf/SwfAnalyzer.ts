@@ -16,7 +16,7 @@ module starlingswf {
             }
             try {
                 let str:string = <string> data;
-				this.fileDic[name] = new Swf(JSON.parse(str));
+				this.fileDic[name] = new Swf(JSON.parse(str),30);
             }
             catch (e) {
                 egret.$warn(1017, resItem.url, data);

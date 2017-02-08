@@ -228,7 +228,7 @@ var starlingswf;
             }
             try {
                 var str = data;
-                this.fileDic[name] = new starlingswf.Swf(JSON.parse(str));
+                this.fileDic[name] = new starlingswf.Swf(JSON.parse(str), 30);
             }
             catch (e) {
                 egret.$warn(1017, resItem.url, data);
