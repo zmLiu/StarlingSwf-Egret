@@ -49,6 +49,7 @@ var Main = (function (_super) {
         this.loadingView.createView();
         //初始化Resource资源加载库
         //initiate Resource loading library
+        RES.registerAnalyzer("swf", starlingswf.SwfAnalyzer);
         RES.addEventListener(RES.ResourceEvent.CONFIG_COMPLETE, this.onConfigComplete, this);
         RES.loadConfig("resource/default.res.json", "resource/");
     };
@@ -111,7 +112,9 @@ var Main = (function (_super) {
      */
     Main.prototype.createGameScene = function () {
         var swfData = RES.getRes("test_swf");
-        this.swf = new starlingswf.Swf(swfData, this.stage.frameRate);
+        // this.swf = new starlingswf.Swf(swfData,this.stage.frameRate);
+        this.swf = RES.getRes("test_swf");
+        this.swf.swfUpdateManager.setFps(this.stage.frameRate);
         this.test1();
         // this.testAlert();
         // this.testSocket();

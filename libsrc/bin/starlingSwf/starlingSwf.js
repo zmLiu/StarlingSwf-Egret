@@ -33,58 +33,6 @@ var starlingswf;
     }(egret.DisplayObjectContainer));
     starlingswf.SwfSprite = SwfSprite;
 })(starlingswf || (starlingswf = {}));
-var starlingswf;
-(function (starlingswf) {
-    var SwfButton = (function (_super) {
-        __extends(SwfButton, _super);
-        function SwfButton(skin) {
-            var _this = _super.call(this) || this;
-            _this.defScale = -1;
-            _this.skin = skin;
-            _this.addChild(skin);
-            _this.touchEnabled = true;
-            _this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, _this.mouseDown, _this);
-            _this.addEventListener(egret.TouchEvent.TOUCH_END, _this.mouseUp, _this);
-            _this.addEventListener(egret.TouchEvent.TOUCH_RELEASE_OUTSIDE, _this.mouseUp, _this);
-            _this.addEventListener(egret.TouchEvent.TOUCH_TAP, _this.mouseClick, _this);
-            return _this;
-        }
-        SwfButton.prototype.mouseDown = function (evt) {
-            if (this.defScale == -1) {
-                this.defScale = this.scaleX;
-            }
-            this.scaleX = 0.9 * this.defScale;
-            this.scaleY = 0.9 * this.defScale;
-        };
-        SwfButton.prototype.mouseUp = function (evt) {
-            if (this.defScale == -1)
-                return;
-            this.scaleX = this.defScale;
-            this.scaleY = this.defScale;
-        };
-        SwfButton.prototype.mouseClick = function (evt) {
-            this.dispatchEventWith(starlingswf.SwfButton.onClick);
-        };
-        SwfButton.prototype.setEnable = function (val) {
-            this.touchEnabled = val;
-            if (val) {
-                this.alpha = 1;
-            }
-            else {
-                this.alpha = 0.5;
-            }
-        };
-        SwfButton.prototype.dispose = function () {
-            this.removeEventListener(egret.TouchEvent.TOUCH_BEGIN, this.mouseDown, this);
-            this.removeEventListener(egret.TouchEvent.TOUCH_END, this.mouseUp, this);
-            this.removeEventListener(egret.TouchEvent.TOUCH_RELEASE_OUTSIDE, this.mouseUp, this);
-            this.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.mouseClick, this);
-        };
-        return SwfButton;
-    }(starlingswf.SwfSprite));
-    SwfButton.onClick = "SwfButton.onClick";
-    starlingswf.SwfButton = SwfButton;
-})(starlingswf || (starlingswf = {}));
 /**
  * Created by zmliu on 14-5-11.
  */
@@ -261,6 +209,35 @@ var starlingswf;
     Swf.dataKey_Particle = "particle";
     starlingswf.Swf = Swf;
 })(starlingswf || (starlingswf = {}));
+var starlingswf;
+(function (starlingswf) {
+    var SwfAnalyzer = (function (_super) {
+        __extends(SwfAnalyzer, _super);
+        function SwfAnalyzer() {
+            var _this = _super.call(this) || this;
+            _this._dataFormat = egret.HttpResponseType.TEXT;
+            return _this;
+        }
+        /**
+         * 解析并缓存加载成功的数据
+         */
+        SwfAnalyzer.prototype.analyzeData = function (resItem, data) {
+            var name = resItem.name;
+            if (this.fileDic[name] || !data) {
+                return;
+            }
+            try {
+                var str = data;
+                this.fileDic[name] = new starlingswf.Swf(JSON.parse(str));
+            }
+            catch (e) {
+                egret.$warn(1017, resItem.url, data);
+            }
+        };
+        return SwfAnalyzer;
+    }(RES.BinAnalyzer));
+    starlingswf.SwfAnalyzer = SwfAnalyzer;
+})(starlingswf || (starlingswf = {}));
 /**
  * Created by zmliu on 14-5-11.
  */
@@ -387,6 +364,58 @@ var lzm;
     }(egret.DisplayObjectContainer));
     lzm.BasePanel = BasePanel;
 })(lzm || (lzm = {}));
+var starlingswf;
+(function (starlingswf) {
+    var SwfButton = (function (_super) {
+        __extends(SwfButton, _super);
+        function SwfButton(skin) {
+            var _this = _super.call(this) || this;
+            _this.defScale = -1;
+            _this.skin = skin;
+            _this.addChild(skin);
+            _this.touchEnabled = true;
+            _this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, _this.mouseDown, _this);
+            _this.addEventListener(egret.TouchEvent.TOUCH_END, _this.mouseUp, _this);
+            _this.addEventListener(egret.TouchEvent.TOUCH_RELEASE_OUTSIDE, _this.mouseUp, _this);
+            _this.addEventListener(egret.TouchEvent.TOUCH_TAP, _this.mouseClick, _this);
+            return _this;
+        }
+        SwfButton.prototype.mouseDown = function (evt) {
+            if (this.defScale == -1) {
+                this.defScale = this.scaleX;
+            }
+            this.scaleX = 0.9 * this.defScale;
+            this.scaleY = 0.9 * this.defScale;
+        };
+        SwfButton.prototype.mouseUp = function (evt) {
+            if (this.defScale == -1)
+                return;
+            this.scaleX = this.defScale;
+            this.scaleY = this.defScale;
+        };
+        SwfButton.prototype.mouseClick = function (evt) {
+            this.dispatchEventWith(starlingswf.SwfButton.onClick);
+        };
+        SwfButton.prototype.setEnable = function (val) {
+            this.touchEnabled = val;
+            if (val) {
+                this.alpha = 1;
+            }
+            else {
+                this.alpha = 0.5;
+            }
+        };
+        SwfButton.prototype.dispose = function () {
+            this.removeEventListener(egret.TouchEvent.TOUCH_BEGIN, this.mouseDown, this);
+            this.removeEventListener(egret.TouchEvent.TOUCH_END, this.mouseUp, this);
+            this.removeEventListener(egret.TouchEvent.TOUCH_RELEASE_OUTSIDE, this.mouseUp, this);
+            this.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.mouseClick, this);
+        };
+        return SwfButton;
+    }(starlingswf.SwfSprite));
+    SwfButton.onClick = "SwfButton.onClick";
+    starlingswf.SwfButton = SwfButton;
+})(starlingswf || (starlingswf = {}));
 /**
  * Created by zmliu on 14-5-11.
  */

@@ -23,7 +23,7 @@
 		},
 		{
 			"url": "assets/test_swf.json",
-			"type": "json",
+			"type": "swf",
 			"name": "test_swf"
 		},
 		{

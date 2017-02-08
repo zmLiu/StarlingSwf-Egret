@@ -49,6 +49,7 @@ class Main extends egret.DisplayObjectContainer {
 
         //初始化Resource资源加载库
         //initiate Resource loading library
+        RES.registerAnalyzer("swf",starlingswf.SwfAnalyzer);
         RES.addEventListener(RES.ResourceEvent.CONFIG_COMPLETE, this.onConfigComplete, this);
         RES.loadConfig("resource/default.res.json", "resource/");
     }
@@ -121,7 +122,9 @@ class Main extends egret.DisplayObjectContainer {
      */
     private createGameScene():void {
         var swfData:Object = RES.getRes("test_swf");
-        this.swf = new starlingswf.Swf(swfData,this.stage.frameRate);
+        // this.swf = new starlingswf.Swf(swfData,this.stage.frameRate);
+        this.swf = RES.getRes("test_swf");
+        this.swf.swfUpdateManager.setFps(this.stage.frameRate);
         this.test1();
 
         // this.testAlert();

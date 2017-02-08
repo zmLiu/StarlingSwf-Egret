@@ -11,17 +11,16 @@ declare module starlingswf {
         getButton(name: string): starlingswf.SwfButton;
     }
 }
+/**
+ * Created by zmliu on 14-5-11.
+ */
 declare module starlingswf {
-    class SwfButton extends starlingswf.SwfSprite {
-        static onClick: string;
-        skin: SwfSprite;
-        defScale: number;
-        constructor(skin: starlingswf.SwfSprite);
-        mouseDown(evt: egret.TouchEvent): void;
-        mouseUp(evt: egret.TouchEvent): void;
-        mouseClick(evt: egret.TouchEvent): void;
-        setEnable(val: boolean): void;
-        dispose(): void;
+    /**
+     * 动画接口
+     * */
+    interface ISwfAnimation {
+        update(): void;
+        getStage(): egret.Stage;
     }
 }
 /**
@@ -59,6 +58,15 @@ declare module starlingswf {
         createTextFieldFilter(textField: egret.TextField, filterObjects: Object): void;
     }
 }
+declare module starlingswf {
+    class SwfAnalyzer extends RES.BinAnalyzer {
+        constructor();
+        /**
+         * 解析并缓存加载成功的数据
+         */
+        analyzeData(resItem: RES.ResourceItem, data: any): void;
+    }
+}
 /**
  * Created by zmliu on 14-5-11.
  */
@@ -89,24 +97,25 @@ declare module starlingswf {
         static setBlendMode(display: egret.DisplayObject, blendMode: string): void;
     }
 }
-/**
- * Created by zmliu on 14-5-11.
- */
-declare module starlingswf {
-    /**
-     * 动画接口
-     * */
-    interface ISwfAnimation {
-        update(): void;
-        getStage(): egret.Stage;
-    }
-}
 declare module lzm {
     class BasePanel extends egret.DisplayObjectContainer {
         constructor();
         addToStage(e: egret.Event): void;
         removeFromStage(e: egret.Event): void;
         gotoPanel(panel: lzm.BasePanel): void;
+        dispose(): void;
+    }
+}
+declare module starlingswf {
+    class SwfButton extends starlingswf.SwfSprite {
+        static onClick: string;
+        skin: SwfSprite;
+        defScale: number;
+        constructor(skin: starlingswf.SwfSprite);
+        mouseDown(evt: egret.TouchEvent): void;
+        mouseUp(evt: egret.TouchEvent): void;
+        mouseClick(evt: egret.TouchEvent): void;
+        setEnable(val: boolean): void;
         dispose(): void;
     }
 }
