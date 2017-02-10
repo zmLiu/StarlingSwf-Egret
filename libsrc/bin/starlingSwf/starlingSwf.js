@@ -372,6 +372,8 @@ var starlingswf;
             var _this = _super.call(this) || this;
             _this.defScale = -1;
             _this.skin = skin;
+            _this._w = _this.skin.width;
+            _this._h = _this.skin.height;
             _this.addChild(skin);
             _this.touchEnabled = true;
             _this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, _this.mouseDown, _this);
@@ -381,17 +383,15 @@ var starlingswf;
             return _this;
         }
         SwfButton.prototype.mouseDown = function (evt) {
-            if (this.defScale == -1) {
-                this.defScale = this.scaleX;
-            }
-            this.scaleX = 0.9 * this.defScale;
-            this.scaleY = 0.9 * this.defScale;
+            this.skin.scaleX = 0.9;
+            this.skin.scaleY = 0.9;
+            this.skin.x = (1.0 - 0.9) / 2.0 * this._w;
+            this.skin.y = (1.0 - 0.9) / 2.0 * this._h;
         };
         SwfButton.prototype.mouseUp = function (evt) {
-            if (this.defScale == -1)
-                return;
-            this.scaleX = this.defScale;
-            this.scaleY = this.defScale;
+            this.skin.scaleX = 1;
+            this.skin.scaleY = 1;
+            this.skin.x = this.skin.y = 0;
         };
         SwfButton.prototype.mouseClick = function (evt) {
             this.dispatchEventWith(starlingswf.SwfButton.onClick);

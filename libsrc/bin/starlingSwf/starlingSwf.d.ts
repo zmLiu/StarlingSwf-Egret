@@ -111,6 +111,8 @@ declare module starlingswf {
         static onClick: string;
         skin: SwfSprite;
         defScale: number;
+        private _w;
+        private _h;
         constructor(skin: starlingswf.SwfSprite);
         mouseDown(evt: egret.TouchEvent): void;
         mouseUp(evt: egret.TouchEvent): void;

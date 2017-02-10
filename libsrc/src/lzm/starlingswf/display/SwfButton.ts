@@ -6,9 +6,14 @@ module starlingswf {
 		public skin:SwfSprite;
 		public defScale:number = -1;
 
+		private _w:number;
+		private _h:number;
+
 		public constructor(skin:starlingswf.SwfSprite) {
 			super();
 			this.skin = skin;
+			this._w = this.skin.width;
+			this._h = this.skin.height;
 			this.addChild(skin);
 			this.touchEnabled = true;
 			this.addEventListener(egret.TouchEvent.TOUCH_BEGIN,this.mouseDown,this);
@@ -18,17 +23,16 @@ module starlingswf {
 		}
 
 		public mouseDown(evt:egret.TouchEvent):void{
-			if(this.defScale == -1){
-				this.defScale = this.scaleX;
-			}
-			this.scaleX = 0.9 * this.defScale;
-			this.scaleY = 0.9 * this.defScale;
+			this.skin.scaleX = 0.9;
+			this.skin.scaleY = 0.9;
+			this.skin.x = (1.0 - 0.9) / 2.0 * this._w;
+			this.skin.y = (1.0 - 0.9) / 2.0 * this._h;
 		}
 
 		public mouseUp(evt:egret.TouchEvent):void{
-			if(this.defScale == -1) return;
-			this.scaleX = this.defScale;
-			this.scaleY = this.defScale;
+			this.skin.scaleX = 1;
+			this.skin.scaleY = 1;
+			this.skin.x = this.skin.y = 0;
 		}
 
 		public mouseClick(evt:egret.TouchEvent):void{
