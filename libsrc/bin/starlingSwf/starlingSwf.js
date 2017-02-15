@@ -674,10 +674,10 @@ var lzm;
     var Alert = (function () {
         function Alert() {
         }
-        Alert.init = function (stage) {
-            lzm.Alert.root = stage;
-            lzm.Alert.stageWidth = stage.stageWidth;
-            lzm.Alert.stageHeight = stage.stageHeight;
+        Alert.init = function (root, stageWidth, stageHeight) {
+            lzm.Alert.root = root;
+            lzm.Alert.stageWidth = stageWidth;
+            lzm.Alert.stageHeight = stageHeight;
         };
         Alert.container = function () {
             return lzm.Alert.root;

@@ -4,17 +4,17 @@ module lzm {
 		private static background:egret.Shape;
 		private static dialogs:egret.DisplayObject[] = [];
 
-		private static root:egret.Stage;
+		private static root:egret.DisplayObjectContainer;
 		private static stageWidth:number;
 		private static stageHeight:number;
 
-		public static init(stage:egret.Stage):void{
-			lzm.Alert.root = stage;
-			lzm.Alert.stageWidth = stage.stageWidth;
-			lzm.Alert.stageHeight = stage.stageHeight;
+		public static init(root:egret.DisplayObjectContainer,stageWidth:number,stageHeight:number):void{
+			lzm.Alert.root = root;
+			lzm.Alert.stageWidth = stageWidth;
+			lzm.Alert.stageHeight = stageHeight;
 		}
 
-		private static container():egret.Stage{
+		private static container():egret.DisplayObjectContainer{
 			return lzm.Alert.root;
 		}
 
