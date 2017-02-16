@@ -199,6 +199,7 @@ declare module lzm {
         static alert(dialog: egret.DisplayObject, setXY?: boolean): void;
         private static dialogAddToStage(e);
         private static dialogRemoveFromStage(e);
+        static closeAllAlert(): void;
     }
 }
 declare module lzm {

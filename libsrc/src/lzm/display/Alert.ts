@@ -80,6 +80,24 @@ module lzm {
 			}
 		}
 
+		public static closeAllAlert(){
+			var len:number = Alert.dialogs.length;
+			var obj:egret.DisplayObject;
+			var disposeFun:any;
+			var tmpArr:egret.DisplayObject[] = [];
+			for(var i:number = 0; i < len ; i++){
+				tmpArr.push(Alert.dialogs[i]);
+			}
+			for(var i:number = 0; i < len ; i++){
+				obj = tmpArr[i];
+				disposeFun = obj["dispose"];
+				if(disposeFun instanceof Function){
+					(<Function>disposeFun).apply(obj,[]);
+				}
+				if(obj.parent != null) obj.parent.removeChild(obj);
+			}
+		}
+
 
 
 	}

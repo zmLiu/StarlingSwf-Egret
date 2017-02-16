@@ -734,6 +734,24 @@ var lzm;
                 lzm.Alert.container().swapChildren(lzm.Alert.background, dialog);
             }
         };
+        Alert.closeAllAlert = function () {
+            var len = Alert.dialogs.length;
+            var obj;
+            var disposeFun;
+            var tmpArr = [];
+            for (var i = 0; i < len; i++) {
+                tmpArr.push(Alert.dialogs[i]);
+            }
+            for (var i = 0; i < len; i++) {
+                obj = tmpArr[i];
+                disposeFun = obj["dispose"];
+                if (disposeFun instanceof Function) {
+                    disposeFun.apply(obj, []);
+                }
+                if (obj.parent != null)
+                    obj.parent.removeChild(obj);
+            }
+        };
         return Alert;
     }());
     Alert.dialogs = [];
