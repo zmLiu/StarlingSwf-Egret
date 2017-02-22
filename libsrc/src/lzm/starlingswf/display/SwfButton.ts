@@ -3,13 +3,13 @@ module starlingswf {
 
 		static onClick:string = "SwfButton.onClick";
 
-		public skin:SwfSprite;
+		public skin:egret.DisplayObject;
 		public defScale:number = -1;
 
 		private _w:number;
 		private _h:number;
 
-		public constructor(skin:starlingswf.SwfSprite) {
+		public constructor(skin:egret.DisplayObject) {
 			super();
 			this.skin = skin;
 			this._w = this.skin.width;

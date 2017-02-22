@@ -109,11 +109,11 @@ declare module lzm {
 declare module starlingswf {
     class SwfButton extends starlingswf.SwfSprite {
         static onClick: string;
-        skin: SwfSprite;
+        skin: egret.DisplayObject;
         defScale: number;
         private _w;
         private _h;
-        constructor(skin: starlingswf.SwfSprite);
+        constructor(skin: egret.DisplayObject);
         mouseDown(evt: egret.TouchEvent): void;
         mouseUp(evt: egret.TouchEvent): void;
         mouseClick(evt: egret.TouchEvent): void;
