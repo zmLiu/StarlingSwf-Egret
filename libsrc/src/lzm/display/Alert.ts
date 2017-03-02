@@ -40,6 +40,16 @@ module lzm {
 			lzm.Alert.container().addChild(display);
 		}
 
+		public static alertLandscape(display:egret.DisplayObject):void{
+			lzm.Alert.alert(display,false);
+			display.anchorOffsetX = display.width / 2;
+            display.anchorOffsetY = display.height / 2;
+            display.rotation = 90;
+
+            display.x = lzm.Alert.stageWidth / 2;
+            display.y = lzm.Alert.stageHeight / 2;
+		}
+
 		public static alert(dialog:egret.DisplayObject,setXY:boolean = true):void{
 			if(lzm.Alert.dialogs.indexOf(dialog) != -1){
 				return;

@@ -701,6 +701,14 @@ var lzm;
         Alert.show = function (display) {
             lzm.Alert.container().addChild(display);
         };
+        Alert.alertLandscape = function (display) {
+            lzm.Alert.alert(display, false);
+            display.anchorOffsetX = display.width / 2;
+            display.anchorOffsetY = display.height / 2;
+            display.rotation = 90;
+            display.x = lzm.Alert.stageWidth / 2;
+            display.y = lzm.Alert.stageHeight / 2;
+        };
         Alert.alert = function (dialog, setXY) {
             if (setXY === void 0) { setXY = true; }
             if (lzm.Alert.dialogs.indexOf(dialog) != -1) {

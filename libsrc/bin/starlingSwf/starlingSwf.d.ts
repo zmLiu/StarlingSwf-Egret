@@ -196,6 +196,7 @@ declare module lzm {
         private static height();
         private static initBackGround();
         static show(display: egret.DisplayObject): void;
+        static alertLandscape(display: egret.DisplayObject): void;
         static alert(dialog: egret.DisplayObject, setXY?: boolean): void;
         private static dialogAddToStage(e);
         private static dialogRemoveFromStage(e);
