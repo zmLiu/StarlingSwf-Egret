@@ -12,6 +12,7 @@ module lzm {
 			lzm.Alert.root = root;
 			lzm.Alert.stageWidth = stageWidth;
 			lzm.Alert.stageHeight = stageHeight;
+			lzm.Alert.initBackGround();
 		}
 
 		private static container():egret.DisplayObjectContainer{
@@ -27,13 +28,15 @@ module lzm {
 		}
 
 		private static initBackGround():void{
-			if(lzm.Alert.background != null) return;
-			lzm.Alert.background = new egret.Shape();
+			if(lzm.Alert.background == null) {
+				lzm.Alert.background = new egret.Shape();
+				lzm.Alert.background.alpha = 0.5;
+				lzm.Alert.background.touchEnabled = true;
+			}
+			lzm.Alert.background.graphics.clear();
 			lzm.Alert.background.graphics.beginFill(0x000000);
-        	lzm.Alert.background.graphics.drawRect(0,0, lzm.Alert.stageWidth, lzm.Alert.stageHeight);
-        	lzm.Alert.background.graphics.endFill();
-			lzm.Alert.background.alpha = 0.5;
-			lzm.Alert.background.touchEnabled = true;
+			lzm.Alert.background.graphics.drawRect(0,0, lzm.Alert.stageWidth, lzm.Alert.stageHeight);
+			lzm.Alert.background.graphics.endFill();
 		}
 
 		public static show(display:egret.DisplayObject):void{
@@ -56,8 +59,7 @@ module lzm {
 			}
 			
 			dialog.addEventListener(egret.Event.ADDED_TO_STAGE,lzm.Alert.dialogAddToStage,dialog);
-			
-			lzm.Alert.initBackGround();
+
 			lzm.Alert.container().addChild(lzm.Alert.background);
 			lzm.Alert.container().addChild(dialog);
 			

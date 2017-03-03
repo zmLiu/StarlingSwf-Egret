@@ -109,6 +109,7 @@ declare module lzm {
 declare module starlingswf {
     class SwfButton extends starlingswf.SwfSprite {
         static onClick: string;
+        static defSound: egret.Sound;
         skin: egret.DisplayObject;
         defScale: number;
         private _w;

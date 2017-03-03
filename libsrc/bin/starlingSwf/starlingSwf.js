@@ -12,7 +12,7 @@ var starlingswf;
     var SwfSprite = (function (_super) {
         __extends(SwfSprite, _super);
         function SwfSprite() {
-            return _super.apply(this, arguments) || this;
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         SwfSprite.prototype.getTextField = function (name) {
             return this.getChildByName(name);
@@ -395,6 +395,8 @@ var starlingswf;
         };
         SwfButton.prototype.mouseClick = function (evt) {
             this.dispatchEventWith(starlingswf.SwfButton.onClick);
+            if (SwfButton.defSound != null)
+                SwfButton.defSound.play(0, 1);
         };
         SwfButton.prototype.setEnable = function (val) {
             this.touchEnabled = val;
@@ -678,6 +680,7 @@ var lzm;
             lzm.Alert.root = root;
             lzm.Alert.stageWidth = stageWidth;
             lzm.Alert.stageHeight = stageHeight;
+            lzm.Alert.initBackGround();
         };
         Alert.container = function () {
             return lzm.Alert.root;
@@ -689,14 +692,15 @@ var lzm;
             return lzm.Alert.stageHeight;
         };
         Alert.initBackGround = function () {
-            if (lzm.Alert.background != null)
-                return;
-            lzm.Alert.background = new egret.Shape();
+            if (lzm.Alert.background == null) {
+                lzm.Alert.background = new egret.Shape();
+                lzm.Alert.background.alpha = 0.5;
+                lzm.Alert.background.touchEnabled = true;
+            }
+            lzm.Alert.background.graphics.clear();
             lzm.Alert.background.graphics.beginFill(0x000000);
             lzm.Alert.background.graphics.drawRect(0, 0, lzm.Alert.stageWidth, lzm.Alert.stageHeight);
             lzm.Alert.background.graphics.endFill();
-            lzm.Alert.background.alpha = 0.5;
-            lzm.Alert.background.touchEnabled = true;
         };
         Alert.show = function (display) {
             lzm.Alert.container().addChild(display);
@@ -715,7 +719,6 @@ var lzm;
                 return;
             }
             dialog.addEventListener(egret.Event.ADDED_TO_STAGE, lzm.Alert.dialogAddToStage, dialog);
-            lzm.Alert.initBackGround();
             lzm.Alert.container().addChild(lzm.Alert.background);
             lzm.Alert.container().addChild(dialog);
             if (setXY) {

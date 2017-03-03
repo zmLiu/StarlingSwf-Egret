@@ -2,6 +2,7 @@ module starlingswf {
 	export class SwfButton extends starlingswf.SwfSprite {
 
 		static onClick:string = "SwfButton.onClick";
+		static defSound:egret.Sound;
 
 		public skin:egret.DisplayObject;
 		public defScale:number = -1;
@@ -37,6 +38,7 @@ module starlingswf {
 
 		public mouseClick(evt:egret.TouchEvent):void{
 			this.dispatchEventWith(starlingswf.SwfButton.onClick);
+			if(SwfButton.defSound != null) SwfButton.defSound.play(0,1);
 		}
 
 		public setEnable(val:boolean){
