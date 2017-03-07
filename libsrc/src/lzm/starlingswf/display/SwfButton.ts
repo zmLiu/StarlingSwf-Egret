@@ -44,9 +44,16 @@ module starlingswf {
 		public setEnable(val:boolean){
 			this.touchEnabled = val;
 			if(val){
-				this.alpha = 1;
+				this.filters = null;
 			}else{
-				this.alpha = 0.5;
+				var colorMatrix = [
+					0.3,0.6,0,0,0,
+					0.3,0.6,0,0,0,
+					0.3,0.6,0,0,0,
+					0,0,0,1,0
+				];
+				var colorFlilter = new egret.ColorMatrixFilter(colorMatrix);
+				this.filters = [colorFlilter];
 			}
 		}
 
