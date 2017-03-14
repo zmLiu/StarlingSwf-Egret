@@ -701,7 +701,7 @@ var lzm;
         Alert.initBackGround = function () {
             if (lzm.Alert.background == null) {
                 lzm.Alert.background = new egret.Shape();
-                lzm.Alert.background.alpha = 0.5;
+                lzm.Alert.background.alpha = 0.7;
                 lzm.Alert.background.touchEnabled = true;
             }
             lzm.Alert.background.graphics.clear();
