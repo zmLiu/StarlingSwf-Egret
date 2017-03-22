@@ -683,10 +683,11 @@ var lzm;
     var Alert = (function () {
         function Alert() {
         }
-        Alert.init = function (root, stageWidth, stageHeight) {
+        Alert.init = function (root, stageWidth, stageHeight, alertScale) {
             lzm.Alert.root = root;
             lzm.Alert.stageWidth = stageWidth;
             lzm.Alert.stageHeight = stageHeight;
+            lzm.Alert.alertScale = alertScale;
             lzm.Alert.initBackGround();
         };
         Alert.container = function () {
@@ -713,12 +714,8 @@ var lzm;
             lzm.Alert.container().addChild(display);
         };
         Alert.alertLandscape = function (display) {
-            lzm.Alert.alert(display, false);
-            display.anchorOffsetX = display.width / 2;
-            display.anchorOffsetY = display.height / 2;
+            lzm.Alert.alert(display);
             display.rotation = 90;
-            display.x = lzm.Alert.stageWidth / 2;
-            display.y = lzm.Alert.stageHeight / 2;
         };
         Alert.alert = function (dialog, setXY) {
             if (setXY === void 0) { setXY = true; }
@@ -729,10 +726,12 @@ var lzm;
             lzm.Alert.container().addChild(lzm.Alert.background);
             lzm.Alert.container().addChild(dialog);
             if (setXY) {
-                var dialogRect = dialog.getBounds();
-                dialog.x = (lzm.Alert.stageWidth - dialogRect.width) / 2;
-                dialog.y = (lzm.Alert.stageHeight - dialogRect.height) / 2;
+                dialog.anchorOffsetX = dialog.width / 2;
+                dialog.anchorOffsetY = dialog.height / 2;
+                dialog.x = lzm.Alert.stageWidth / 2;
+                dialog.y = lzm.Alert.stageHeight / 2;
             }
+            dialog.scaleX = dialog.scaleY = lzm.Alert.alertScale;
         };
         Alert.dialogAddToStage = function (e) {
             var dialog = e.currentTarget;

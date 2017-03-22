@@ -7,11 +7,13 @@ module lzm {
 		private static root:egret.DisplayObjectContainer;
 		private static stageWidth:number;
 		private static stageHeight:number;
+		private static alertScale:number;
 
-		public static init(root:egret.DisplayObjectContainer,stageWidth:number,stageHeight:number):void{
+		public static init(root:egret.DisplayObjectContainer,stageWidth:number,stageHeight:number,alertScale:number):void{
 			lzm.Alert.root = root;
 			lzm.Alert.stageWidth = stageWidth;
 			lzm.Alert.stageHeight = stageHeight;
+			lzm.Alert.alertScale = alertScale;
 			lzm.Alert.initBackGround();
 		}
 
@@ -44,13 +46,8 @@ module lzm {
 		}
 
 		public static alertLandscape(display:egret.DisplayObject):void{
-			lzm.Alert.alert(display,false);
-			display.anchorOffsetX = display.width / 2;
-            display.anchorOffsetY = display.height / 2;
+			lzm.Alert.alert(display);
             display.rotation = 90;
-
-            display.x = lzm.Alert.stageWidth / 2;
-            display.y = lzm.Alert.stageHeight / 2;
 		}
 
 		public static alert(dialog:egret.DisplayObject,setXY:boolean = true):void{
@@ -64,10 +61,13 @@ module lzm {
 			lzm.Alert.container().addChild(dialog);
 			
 			if(setXY){
-				var dialogRect:egret.Rectangle = dialog.getBounds();
-				dialog.x = (lzm.Alert.stageWidth - dialogRect.width)/2;
-				dialog.y = (lzm.Alert.stageHeight - dialogRect.height)/2;
+				dialog.anchorOffsetX = dialog.width / 2;
+            	dialog.anchorOffsetY = dialog.height / 2;
+				dialog.x = lzm.Alert.stageWidth / 2;
+            	dialog.y = lzm.Alert.stageHeight / 2;
 			}
+
+			dialog.scaleX = dialog.scaleY = lzm.Alert.alertScale;
 		}
 		
 		private static dialogAddToStage(e:egret.Event):void{
