@@ -24,10 +24,10 @@ module starlingswf {
 		}
 
 		public mouseDown(evt:egret.TouchEvent):void{
-			this.skin.scaleX = 0.9;
-			this.skin.scaleY = 0.9;
-			this.skin.x = (1.0 - 0.9) / 2.0 * this._w;
-			this.skin.y = (1.0 - 0.9) / 2.0 * this._h;
+			this.skin.scaleX = 1.1;
+			this.skin.scaleY = 1.1;
+			this.skin.x = (1.0 - 1.1) / 2.0 * this._w;
+			this.skin.y = (1.0 - 1.1) / 2.0 * this._h;
 		}
 
 		public mouseUp(evt:egret.TouchEvent):void{
