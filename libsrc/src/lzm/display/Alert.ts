@@ -8,12 +8,14 @@ module lzm {
 		private static stageWidth:number;
 		private static stageHeight:number;
 		private static alertScale:number;
+		private static landscapeRotation:number;
 
-		public static init(root:egret.DisplayObjectContainer,stageWidth:number,stageHeight:number,alertScale:number):void{
+		public static init(root:egret.DisplayObjectContainer,stageWidth:number,stageHeight:number,alertScale:number = 1,landscapeRotation:number = 90):void{
 			lzm.Alert.root = root;
 			lzm.Alert.stageWidth = stageWidth;
 			lzm.Alert.stageHeight = stageHeight;
 			lzm.Alert.alertScale = alertScale;
+			lzm.Alert.landscapeRotation = landscapeRotation;
 			lzm.Alert.initBackGround();
 		}
 
@@ -47,7 +49,7 @@ module lzm {
 
 		public static alertLandscape(display:egret.DisplayObject):void{
 			lzm.Alert.alert(display);
-            display.rotation = 90;
+            display.rotation = lzm.Alert.landscapeRotation;
 		}
 
 		public static alert(dialog:egret.DisplayObject,setXY:boolean = true):void{
@@ -66,8 +68,8 @@ module lzm {
 				dialog.x = lzm.Alert.stageWidth / 2;
             	dialog.y = lzm.Alert.stageHeight / 2;
 			}
-
-			dialog.scaleX = dialog.scaleY = lzm.Alert.alertScale;
+			dialog.scaleX = dialog.scaleY = 0.1;
+			egret.Tween.get(dialog).to({scaleX:lzm.Alert.alertScale,scaleY:lzm.Alert.alertScale},300,egret.Ease.backOut);
 		}
 		
 		private static dialogAddToStage(e:egret.Event):void{

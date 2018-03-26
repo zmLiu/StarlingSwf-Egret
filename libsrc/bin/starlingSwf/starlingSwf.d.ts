@@ -192,7 +192,8 @@ declare module lzm {
         private static stageWidth;
         private static stageHeight;
         private static alertScale;
-        static init(root: egret.DisplayObjectContainer, stageWidth: number, stageHeight: number, alertScale: number): void;
+        private static landscapeRotation;
+        static init(root: egret.DisplayObjectContainer, stageWidth: number, stageHeight: number, alertScale?: number, landscapeRotation?: number): void;
         private static container();
         private static width();
         private static height();

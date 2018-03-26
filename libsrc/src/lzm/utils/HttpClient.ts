@@ -28,7 +28,11 @@ module lzm {
 			request.addEventListener(egret.IOErrorEvent.IO_ERROR,timeout,request);
 			request.responseType = egret.HttpResponseType.TEXT;
 			if(method=="get"){
-				request.open(url + "?" + parStr,egret.HttpMethod.GET);
+				if(parStr != ""){
+					request.open(url + "?" + parStr,egret.HttpMethod.GET);
+				}else{
+					request.open(url,egret.HttpMethod.GET);
+				}
 				request.send();
 			}else if(method=="post"){
 				request.open(url,egret.HttpMethod.POST);

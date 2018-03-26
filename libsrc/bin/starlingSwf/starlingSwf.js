@@ -1,8 +1,16 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+var __reflect = (this && this.__reflect) || function (p, c, t) {
+    p.__class__ = c, t ? t.push(c) : t = [c], p.__types__ = p.__types__ ? t.concat(p.__types__) : t;
 };
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 /**
  * Created by zmliu on 14-5-11.
  */
@@ -32,6 +40,7 @@ var starlingswf;
         return SwfSprite;
     }(egret.DisplayObjectContainer));
     starlingswf.SwfSprite = SwfSprite;
+    __reflect(SwfSprite.prototype, "starlingswf.SwfSprite");
 })(starlingswf || (starlingswf = {}));
 /**
  * Created by zmliu on 14-5-11.
@@ -196,18 +205,19 @@ var starlingswf;
                 }
             }
         };
+        Swf.dataKey_Sprite = "spr";
+        Swf.dataKey_Image = "img";
+        Swf.dataKey_MovieClip = "mc";
+        Swf.dataKey_TextField = "text";
+        Swf.dataKey_Button = "btn";
+        Swf.dataKey_Scale9 = "s9";
+        Swf.dataKey_ShapeImg = "shapeImg";
+        Swf.dataKey_Component = "comp";
+        Swf.dataKey_Particle = "particle";
         return Swf;
     }());
-    Swf.dataKey_Sprite = "spr";
-    Swf.dataKey_Image = "img";
-    Swf.dataKey_MovieClip = "mc";
-    Swf.dataKey_TextField = "text";
-    Swf.dataKey_Button = "btn";
-    Swf.dataKey_Scale9 = "s9";
-    Swf.dataKey_ShapeImg = "shapeImg";
-    Swf.dataKey_Component = "comp";
-    Swf.dataKey_Particle = "particle";
     starlingswf.Swf = Swf;
+    __reflect(Swf.prototype, "starlingswf.Swf");
 })(starlingswf || (starlingswf = {}));
 var starlingswf;
 (function (starlingswf) {
@@ -237,6 +247,7 @@ var starlingswf;
         return SwfAnalyzer;
     }(RES.BinAnalyzer));
     starlingswf.SwfAnalyzer = SwfAnalyzer;
+    __reflect(SwfAnalyzer.prototype, "starlingswf.SwfAnalyzer");
 })(starlingswf || (starlingswf = {}));
 /**
  * Created by zmliu on 14-5-11.
@@ -313,6 +324,7 @@ var starlingswf;
         return SwfUpdateManager;
     }());
     starlingswf.SwfUpdateManager = SwfUpdateManager;
+    __reflect(SwfUpdateManager.prototype, "starlingswf.SwfUpdateManager");
 })(starlingswf || (starlingswf = {}));
 /**
  * Created by zmliu on 14-9-25.
@@ -327,13 +339,14 @@ var starlingswf;
                 display.blendMode = blendMode;
             }
         };
+        SwfBlendMode.modes = {
+            "normal": true,
+            "add": true
+        };
         return SwfBlendMode;
     }());
-    SwfBlendMode.modes = {
-        "normal": true,
-        "add": true
-    };
     starlingswf.SwfBlendMode = SwfBlendMode;
+    __reflect(SwfBlendMode.prototype, "starlingswf.SwfBlendMode");
 })(starlingswf || (starlingswf = {}));
 var lzm;
 (function (lzm) {
@@ -363,6 +376,7 @@ var lzm;
         return BasePanel;
     }(egret.DisplayObjectContainer));
     lzm.BasePanel = BasePanel;
+    __reflect(BasePanel.prototype, "lzm.BasePanel");
 })(lzm || (lzm = {}));
 var starlingswf;
 (function (starlingswf) {
@@ -420,10 +434,11 @@ var starlingswf;
             this.removeEventListener(egret.TouchEvent.TOUCH_RELEASE_OUTSIDE, this.mouseUp, this);
             this.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.mouseClick, this);
         };
+        SwfButton.onClick = "SwfButton.onClick";
         return SwfButton;
     }(starlingswf.SwfSprite));
-    SwfButton.onClick = "SwfButton.onClick";
     starlingswf.SwfButton = SwfButton;
+    __reflect(SwfButton.prototype, "starlingswf.SwfButton");
 })(starlingswf || (starlingswf = {}));
 /**
  * Created by zmliu on 14-5-11.
@@ -538,6 +553,8 @@ var starlingswf;
                         break;
                 }
                 this.$doAddChild(display, length, false);
+                // this.$children.push(display);
+                // display.$parent = this;
             }
             if (this._frameEvents != null && this._frameEvents[this._currentFrame] != null) {
                 this.dispatchEventWith(this._frameEvents[this._currentFrame]);
@@ -677,17 +694,21 @@ var starlingswf;
         return SwfMovieClip;
     }(starlingswf.SwfSprite));
     starlingswf.SwfMovieClip = SwfMovieClip;
+    __reflect(SwfMovieClip.prototype, "starlingswf.SwfMovieClip", ["starlingswf.ISwfAnimation"]);
 })(starlingswf || (starlingswf = {}));
 var lzm;
 (function (lzm) {
     var Alert = (function () {
         function Alert() {
         }
-        Alert.init = function (root, stageWidth, stageHeight, alertScale) {
+        Alert.init = function (root, stageWidth, stageHeight, alertScale, landscapeRotation) {
+            if (alertScale === void 0) { alertScale = 1; }
+            if (landscapeRotation === void 0) { landscapeRotation = 90; }
             lzm.Alert.root = root;
             lzm.Alert.stageWidth = stageWidth;
             lzm.Alert.stageHeight = stageHeight;
             lzm.Alert.alertScale = alertScale;
+            lzm.Alert.landscapeRotation = landscapeRotation;
             lzm.Alert.initBackGround();
         };
         Alert.container = function () {
@@ -715,7 +736,7 @@ var lzm;
         };
         Alert.alertLandscape = function (display) {
             lzm.Alert.alert(display);
-            display.rotation = 90;
+            display.rotation = lzm.Alert.landscapeRotation;
         };
         Alert.alert = function (dialog, setXY) {
             if (setXY === void 0) { setXY = true; }
@@ -731,7 +752,8 @@ var lzm;
                 dialog.x = lzm.Alert.stageWidth / 2;
                 dialog.y = lzm.Alert.stageHeight / 2;
             }
-            dialog.scaleX = dialog.scaleY = lzm.Alert.alertScale;
+            dialog.scaleX = dialog.scaleY = 0.1;
+            egret.Tween.get(dialog).to({ scaleX: lzm.Alert.alertScale, scaleY: lzm.Alert.alertScale }, 300, egret.Ease.backOut);
         };
         Alert.dialogAddToStage = function (e) {
             var dialog = e.currentTarget;
@@ -769,10 +791,11 @@ var lzm;
                     obj.parent.removeChild(obj);
             }
         };
+        Alert.dialogs = [];
         return Alert;
     }());
-    Alert.dialogs = [];
     lzm.Alert = Alert;
+    __reflect(Alert.prototype, "lzm.Alert");
 })(lzm || (lzm = {}));
 var lzm;
 (function (lzm) {
@@ -806,7 +829,12 @@ var lzm;
             request.addEventListener(egret.IOErrorEvent.IO_ERROR, timeout, request);
             request.responseType = egret.HttpResponseType.TEXT;
             if (method == "get") {
-                request.open(url + "?" + parStr, egret.HttpMethod.GET);
+                if (parStr != "") {
+                    request.open(url + "?" + parStr, egret.HttpMethod.GET);
+                }
+                else {
+                    request.open(url, egret.HttpMethod.GET);
+                }
                 request.send();
             }
             else if (method == "post") {
@@ -826,6 +854,7 @@ var lzm;
         return HttpClient;
     }());
     lzm.HttpClient = HttpClient;
+    __reflect(HttpClient.prototype, "lzm.HttpClient");
 })(lzm || (lzm = {}));
 var lzm;
 (function (lzm) {
@@ -875,4 +904,5 @@ var lzm;
         return JSONWebSocketClient;
     }());
     lzm.JSONWebSocketClient = JSONWebSocketClient;
+    __reflect(JSONWebSocketClient.prototype, "lzm.JSONWebSocketClient");
 })(lzm || (lzm = {}));
