@@ -1,18 +1,5 @@
-
-var game_file_list = [
-    //以下为自动修改，请勿修改
-    //----auto game_file_list start----
-	"libs/modules/egret/egret.js",
-	"libs/modules/egret/egret.native.js",
-	"libs/modules/game/game.js",
-	"libs/modules/tween/tween.js",
-	"libs/modules/res/res.js",
-	"libs/modules/socket/socket.js",
-	"libs/modules/starlingSwf/starlingSwf.js",
-	"bin-debug/LoadingUI.js",
-	"bin-debug/Main.js",
-	//----auto game_file_list end----
-];
+var manifest = JSON.parse(egret_native.readFileSync("manifest.json"));
+var game_file_list = manifest.initial.concat(manifest.game);
 
 var window = this;
 
@@ -28,12 +15,12 @@ egret_native.requireFiles = function () {
 egret_native.egretInit = function () {
     if(egret_native.featureEnable) {
         //控制一些优化方案是否开启
+        //Control whether some optimization options are open
         var result = egret_native.featureEnable({
             
         });
     }
     egret_native.requireFiles();
-    //egret.dom为空实现
     egret.dom = {};
     egret.dom.drawAsCanvas = function () {
     };
@@ -42,12 +29,13 @@ egret_native.egretInit = function () {
 egret_native.egretStart = function () {
     var option = {
         //以下为自动修改，请勿修改
+        //The following is automatically modified, please do not modify
         //----auto option start----
 		entryClassName: "Main",
 		frameRate: 30,
-		scaleMode: "noScale",
-		contentWidth: 480,
-		contentHeight: 320,
+		scaleMode: "showAll",
+		contentWidth: 640,
+		contentHeight: 1136,
 		showPaintRect: false,
 		showFPS: false,
 		fpsStyles: "x:0,y:0,size:12,textColor:0xffffff,bgAlpha:0.9",

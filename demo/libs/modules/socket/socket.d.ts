@@ -83,6 +83,19 @@ declare namespace egret {
          * @language zh_CN
          */
         close(): void;
+        /**
+         *
+         * @version Egret 4.1.0
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         *
+         * @version Egret 4.1.0
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        disconnect(): void;
     }
     /**
      * @version Egret 2.4
@@ -378,28 +391,6 @@ declare namespace egret {
         type: string;
     }
 }
-declare namespace egret.native {
-    /**
-     * @private
-     */
-    class NativeSocket implements ISocket {
-        private socket;
-        constructor();
-        private onConnect;
-        private onClose;
-        private onSocketData;
-        private onError;
-        private thisObject;
-        addCallBacks(onConnect: Function, onClose: Function, onSocketData: Function, onError: Function, thisObject: any): void;
-        private host;
-        private port;
-        connect(host: string, port: number): void;
-        connectByUrl(url: string): void;
-        private _bindEvent();
-        send(message: any): void;
-        close(): void;
-    }
-}
 declare namespace egret.web {
     /**
      * @private
@@ -420,5 +411,6 @@ declare namespace egret.web {
         private _bindEvent();
         send(message: any): void;
         close(): void;
+        disconnect(): void;
     }
 }

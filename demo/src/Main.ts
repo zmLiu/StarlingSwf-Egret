@@ -29,90 +29,61 @@
 
 class Main extends egret.DisplayObjectContainer {
 
-    /**
-     * 加载进度界面
-     * Process interface loading
-     */
-    private loadingView:LoadingUI;
+
 
     public constructor() {
         super();
+
+        RES.processor.map("swf", starlingswf.SwfAnalyzer);
+
         this.addEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
     }
 
-    private onAddToStage(event:egret.Event) {
-        //设置加载进度界面
-        //Config to load process interface
-        this.loadingView = new LoadingUI();
-        this.stage.addChild(this.loadingView);
-        this.loadingView.createView();
+    private onAddToStage(event: egret.Event) {
 
-        //初始化Resource资源加载库
-        //initiate Resource loading library
-        RES.registerAnalyzer("swf",starlingswf.SwfAnalyzer);
-        RES.addEventListener(RES.ResourceEvent.CONFIG_COMPLETE, this.onConfigComplete, this);
-        RES.loadConfig("resource/default.res.json", "resource/");
+        // egret.lifecycle.addLifecycleListener((context) => {
+        //     // custom lifecycle plugin
+
+        //     context.onUpdate = () => {
+
+        //     }
+        // })
+
+        // egret.lifecycle.onPause = () => {
+        //     egret.ticker.pause();
+        // }
+
+        // egret.lifecycle.onResume = () => {
+        //     egret.ticker.resume();
+        // }
+
+        this.runGame().catch(e => {
+            console.log(e);
+        })
+
+
+
     }
 
-    /**
-     * 配置文件加载完成,开始预加载preload资源组。
-     * configuration file loading is completed, start to pre-load the preload resource group
-     */
-    private onConfigComplete(event:RES.ResourceEvent):void {
-        RES.removeEventListener(RES.ResourceEvent.CONFIG_COMPLETE, this.onConfigComplete, this);
-        RES.addEventListener(RES.ResourceEvent.GROUP_COMPLETE, this.onResourceLoadComplete, this);
-        RES.addEventListener(RES.ResourceEvent.GROUP_LOAD_ERROR, this.onResourceLoadError, this);
-        RES.addEventListener(RES.ResourceEvent.GROUP_PROGRESS, this.onResourceProgress, this);
-        RES.addEventListener(RES.ResourceEvent.ITEM_LOAD_ERROR, this.onItemLoadError, this);
-        RES.loadGroup("preload");
+    private async runGame() {
+        await this.loadResource()
+        this.createGameScene();
     }
 
-    /**
-     * preload资源组加载完成
-     * Preload resource group is loaded
-     */
-    private onResourceLoadComplete(event:RES.ResourceEvent):void {
-        if (event.groupName == "preload") {
-            this.stage.removeChild(this.loadingView);
-            RES.removeEventListener(RES.ResourceEvent.GROUP_COMPLETE, this.onResourceLoadComplete, this);
-            RES.removeEventListener(RES.ResourceEvent.GROUP_LOAD_ERROR, this.onResourceLoadError, this);
-            RES.removeEventListener(RES.ResourceEvent.GROUP_PROGRESS, this.onResourceProgress, this);
-            RES.removeEventListener(RES.ResourceEvent.ITEM_LOAD_ERROR, this.onItemLoadError, this);
-            this.createGameScene();
+    private async loadResource() {
+        try {
+            const loadingView = new LoadingUI();
+            this.stage.addChild(loadingView);
+            await RES.loadConfig("resource/default.res.json", "resource/");
+            await RES.loadGroup("preload", 0, loadingView);
+            this.stage.removeChild(loadingView);
+        }
+        catch (e) {
+            console.error(e);
         }
     }
 
-    /**
-     * 资源组加载出错
-     *  The resource group loading failed
-     */
-    private onItemLoadError(event:RES.ResourceEvent):void {
-        console.warn("Url:" + event.resItem.url + " has failed to load");
-    }
-
-    /**
-     * 资源组加载出错
-     *  The resource group loading failed
-     */
-    private onResourceLoadError(event:RES.ResourceEvent):void {
-        //TODO
-        console.warn("Group:" + event.groupName + " has failed to load");
-        //忽略加载失败的项目
-        //Ignore the loading failed projects
-        this.onResourceLoadComplete(event);
-    }
-
-    /**
-     * preload资源组加载进度
-     * Loading process of preload resource group
-     */
-    private onResourceProgress(event:RES.ResourceEvent):void {
-        if (event.groupName == "preload") {
-            this.loadingView.setProgress(event.itemsLoaded, event.itemsTotal);
-        }
-    }
-
-    private textfield:egret.TextField;
+    private textfield: egret.TextField;
 
     private swf:starlingswf.Swf;
 
@@ -120,7 +91,7 @@ class Main extends egret.DisplayObjectContainer {
      * 创建游戏场景
      * Create a game scene
      */
-    private createGameScene():void {
+    private createGameScene() {
         var swfData:Object = RES.getRes("test_swf");
         // this.swf = new starlingswf.Swf(swfData,this.stage.frameRate);
         this.swf = RES.getRes("test_swf");
@@ -135,8 +106,6 @@ class Main extends egret.DisplayObjectContainer {
         //     egret.log(data);
         // },null,'post');
     }
-
-    
 
     /**
      * Sprite测试
@@ -212,41 +181,4 @@ class Main extends egret.DisplayObjectContainer {
             egret.log("onClick");
         },this)
     }
-
-    private testSocket(){
-        var socket:lzm.JSONWebSocketClient = new lzm.JSONWebSocketClient("127.0.0.1",8501);
-
-        socket.onConnectCallBack = ()=>{
-            egret.log("链接成功");
-            socket.sendData({"a":"a","b":"b"});
-        }
-
-        socket.onIOErrorCallBack = ()=>{
-             egret.log("链接失败");
-        }
-
-        socket.onDataCallBack = (data:Object)=>{
-            egret.log(data);
-        }
-
-        socket.onCloseCallBack = ()=>{
-             egret.log("链接关闭");
-        }
-
-        socket.connect(); 
-    }
-
-    private testAlert(){
-        lzm.Alert.init(this.stage);
-
-        var shape:egret.Shape = new egret.Shape();
-        shape.graphics.beginFill(0xff00ff);
-        shape.graphics.drawRect(0,0,100,100);
-        shape.graphics.endFill();
-        
-        lzm.Alert.alert(shape);
-
-    }
 }
-
-
