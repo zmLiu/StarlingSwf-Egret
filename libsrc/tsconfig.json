@@ -1,0 +1,16 @@
+{
+	"compilerOptions": {
+		"target": "es5",
+		"outFile": "bin/starlingSwf/starlingSwf.js",
+		"declaration": true,
+		"lib":[
+			"es5",
+			"dom",
+			"es2015.promise"
+		]
+	},
+	"include": [
+		"src",
+		"libs"
+	]
+}
