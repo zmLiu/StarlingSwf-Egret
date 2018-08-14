@@ -87,10 +87,20 @@ module lzm {
 			lzm.Alert.dialogs.pop();
 			
 			if(lzm.Alert.dialogs.length == 0){
-				lzm.Alert.container().removeChild(lzm.Alert.background);
+				if(lzm.Alert.background.parent == lzm.Alert.container()) lzm.Alert.container().removeChild(lzm.Alert.background);
 			}else{
-				dialog = lzm.Alert.dialogs[lzm.Alert.dialogs.length-1];
-				lzm.Alert.container().swapChildren(lzm.Alert.background,dialog);
+				while(lzm.Alert.dialogs.length > 0){
+					dialog = lzm.Alert.dialogs[lzm.Alert.dialogs.length-1];
+					if(dialog.parent == lzm.Alert.container()){
+						lzm.Alert.container().swapChildren(lzm.Alert.background,dialog);
+						break;
+					}else{
+						lzm.Alert.dialogs.pop();
+					}
+				}
+				if(lzm.Alert.dialogs.length == 0){
+					if(lzm.Alert.background.parent == lzm.Alert.container()) lzm.Alert.container().removeChild(lzm.Alert.background);
+				}
 			}
 		}
 

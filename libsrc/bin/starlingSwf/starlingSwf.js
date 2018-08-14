@@ -1,16 +1,13 @@
 var __reflect = (this && this.__reflect) || function (p, c, t) {
     p.__class__ = c, t ? t.push(c) : t = [c], p.__types__ = p.__types__ ? t.concat(p.__types__) : t;
 };
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
+var __extends = this && this.__extends || function __extends(t, e) { 
+ function r() { 
+ this.constructor = t;
+}
+for (var i in e) e.hasOwnProperty(i) && (t[i] = e[i]);
+r.prototype = e.prototype, t.prototype = new r();
+};
 /**
  * Created by zmliu on 14-5-11.
  */
@@ -766,11 +763,24 @@ var lzm;
             dialog.removeEventListener(egret.Event.REMOVED_FROM_STAGE, lzm.Alert.dialogRemoveFromStage, dialog);
             lzm.Alert.dialogs.pop();
             if (lzm.Alert.dialogs.length == 0) {
-                lzm.Alert.container().removeChild(lzm.Alert.background);
+                if (lzm.Alert.background.parent == lzm.Alert.container())
+                    lzm.Alert.container().removeChild(lzm.Alert.background);
             }
             else {
-                dialog = lzm.Alert.dialogs[lzm.Alert.dialogs.length - 1];
-                lzm.Alert.container().swapChildren(lzm.Alert.background, dialog);
+                while (lzm.Alert.dialogs.length > 0) {
+                    dialog = lzm.Alert.dialogs[lzm.Alert.dialogs.length - 1];
+                    if (dialog.parent == lzm.Alert.container()) {
+                        lzm.Alert.container().swapChildren(lzm.Alert.background, dialog);
+                        break;
+                    }
+                    else {
+                        lzm.Alert.dialogs.pop();
+                    }
+                }
+                if (lzm.Alert.dialogs.length == 0) {
+                    if (lzm.Alert.background.parent == lzm.Alert.container())
+                        lzm.Alert.container().removeChild(lzm.Alert.background);
+                }
             }
         };
         Alert.closeAllAlert = function () {
